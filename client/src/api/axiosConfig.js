@@ -2,9 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL 
-    ? `${import.meta.env.VITE_API_URL}/api` 
-    : '/api', // 프로덕션: 환경변수 사용, 개발: Vite proxy 사용
+  baseURL: '/api', // Vite proxy를 통해 서버로 전달
   headers: {
     'Content-Type': 'application/json',
   },

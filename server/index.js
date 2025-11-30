@@ -6,23 +6,8 @@ require('dotenv').config();
 const app = express();
 
 // 미들웨어
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  process.env.CLIENT_URL, // Vercel 배포 URL
-].filter(Boolean); // undefined 제거
-
 app.use(cors({
-  origin: (origin, callback) => {
-    // origin이 없으면 (같은 도메인 요청 등) 허용
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS 정책에 의해 차단되었습니다'));
-    }
-  },
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
