@@ -1,0 +1,15 @@
+/* Home Page Styles */
+.home {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Section Title 공통 스타일 */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #2b2d42;
+  position: relative;
+  display: inline-block;
+}

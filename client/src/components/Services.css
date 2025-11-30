@@ -1,0 +1,322 @@
+/* Services Section */
+.services {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(-30px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.services-header.animate-in {
+  animation: fadeInDown 1s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.services-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
+  animation: serviceIconPulse 2s ease-in-out infinite, serviceIconFloat 3s ease-in-out infinite;
+  position: relative;
+  font-size: 2.5rem;
+  color: #ffffff;
+}
+
+.services-header-icon::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  opacity: 0.3;
+  z-index: -1;
+  animation: serviceIconRipple 2s ease-out infinite;
+}
+
+.services-header-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  animation: serviceIconRipple 2s ease-out infinite 0.5s;
+}
+
+@keyframes serviceIconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(33, 150, 243, 0.4);
+  }
+}
+
+@keyframes serviceIconFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.05);
+  }
+}
+
+@keyframes serviceIconRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}
+
+.services-header .section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2b2d42;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  display: block;
+  text-align: center;
+  width: 100%;
+  background: none !important;
+  background-color: transparent !important;
+}
+
+
+.services-text {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.services-header .section-description {
+  font-size: 1.1rem;
+  color: #6c757d;
+  max-width: 700px;
+  margin: 0 auto 0;
+  line-height: 1.8;
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.service-card {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(33, 150, 243, 0.1);
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+}
+
+.service-card.animate-in {
+  animation: serviceCardSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes serviceCardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(33, 150, 243, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+.service-card:hover {
+  transform: translateY(-15px) scale(1.02) rotateY(2deg);
+  box-shadow: 0 15px 40px rgba(33, 150, 243, 0.2);
+  border-color: rgba(33, 150, 243, 0.3);
+}
+
+.service-icon {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: #ffffff;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+  position: relative;
+}
+
+.service-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
+}
+
+.service-card:hover .service-icon {
+  transform: rotate(360deg) scale(1.1);
+  box-shadow: 0 12px 30px rgba(33, 150, 243, 0.4);
+}
+
+.service-card:hover .service-icon::after {
+  width: 120px;
+  height: 120px;
+}
+
+.service-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #2b2d42;
+}
+
+.service-description {
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+/* Mobile Responsive */
+@media (max-width: 968px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .services {
+    padding: 60px 0;
+  }
+
+  .services-header-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .services-header-icon::before,
+  .services-header-icon::after {
+    display: none; /* 모바일에서 리플 효과 제거 */
+  }
+
+  .services-header .section-title {
+    font-size: 1.5rem;
+  }
+
+  .services-header .section-description {
+    margin: 0 auto 0;
+  }
+
+  .services-header.animate-in {
+    margin-bottom: 32px;
+  }
+
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+    margin-top: 0;
+    padding: 0 0.75rem;
+  }
+
+  .service-card {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .service-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    border-radius: 16px;
+  }
+
+  .service-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .service-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+

@@ -1,0 +1,785 @@
+/* Header Styles - 기존 styles.css에서 Header 관련 부분만 추출 */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 2px 20px rgba(33, 150, 243, 0.08),
+              0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 9999;
+  padding: 1.25rem 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+  /* 모바일에서 고정 위치 보장 */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.header.scrolled {
+  padding: 1rem 0;
+  box-shadow: 0 4px 30px rgba(33, 150, 243, 0.12),
+              0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  gap: 2rem;
+  min-width: 0;
+}
+
+.header-content > * {
+  flex-shrink: 0;
+}
+
+.header-content .nav {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  cursor: pointer;
+  height: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.logo:hover {
+  transform: translateY(-2px);
+}
+
+.logo-image {
+  height: 100%;
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 4px rgba(33, 150, 243, 0.2));
+}
+
+.logo:hover .logo-image {
+  filter: drop-shadow(0 4px 8px rgba(33, 150, 243, 0.3)) brightness(1.05);
+  transform: scale(1.03);
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #2b2d42;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #2196F3;
+  transform: translateY(-1px);
+}
+
+/* 드롭다운 메뉴 */
+.nav-item.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  min-width: 180px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  border: 1px solid rgba(33, 150, 243, 0.1);
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-link {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #2b2d42;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 0;
+}
+
+.dropdown-link:hover {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.08), rgba(66, 165, 245, 0.08));
+  color: #2196F3;
+  padding-left: 1.75rem;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.btn-login,
+.btn-signup {
+  padding: 0.75rem 1.75rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.btn-login {
+  background: transparent;
+  color: #2b2d42;
+  border: 2px solid rgba(43, 45, 66, 0.2);
+}
+
+.btn-login:hover {
+  background: rgba(43, 45, 66, 0.05);
+  border-color: #2196F3;
+  color: #2196F3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+}
+
+.btn-signup {
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+}
+
+.btn-signup:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.user-name {
+  color: #2b2d42;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(66, 165, 245, 0.1));
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.user-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 160px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  border: 1px solid rgba(33, 150, 243, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.user-menu.open .user-menu-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.user-menu-dropdown .btn-profile,
+.user-menu-dropdown .btn-admin,
+.user-menu-dropdown .btn-logout {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  display: flex;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.user-menu-dropdown .btn-profile {
+  border-color: #4CAF50;
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.user-menu-dropdown .btn-profile:hover {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  border-color: #4CAF50;
+}
+
+.user-menu-dropdown .btn-admin {
+  border-color: #FF9800;
+  color: #FF9800;
+  background: rgba(255, 152, 0, 0.05);
+}
+
+.user-menu-dropdown .btn-admin:hover {
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+  border-color: #FF9800;
+}
+
+.user-menu-dropdown .btn-logout {
+  border-color: #2196F3;
+  color: #2196F3;
+  background: rgba(33, 150, 243, 0.05);
+}
+
+.user-menu-dropdown .btn-logout:hover {
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  border-color: #2196F3;
+}
+
+/* 모바일에서 드롭다운 메뉴 */
+@media (max-width: 968px) {
+  .user-menu {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+  }
+
+  .user-menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 160px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    border: 1px solid rgba(33, 150, 243, 0.12);
+    backdrop-filter: blur(10px);
+  }
+
+  .user-menu.open .user-menu-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .user-menu-dropdown .btn-profile,
+  .user-menu-dropdown .btn-admin,
+  .user-menu-dropdown .btn-logout {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0.65rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
+    min-height: 40px;
+    text-align: center;
+    display: flex;
+  }
+}
+
+.btn-profile {
+  padding: 0.75rem 1.75rem;
+  border: 2px solid #4CAF50;
+  background: transparent;
+  color: #4CAF50;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-profile:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25);
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+}
+
+.btn-admin {
+  padding: 0.75rem 1.75rem;
+  border: 2px solid #FF9800;
+  background: transparent;
+  color: #FF9800;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-admin:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25);
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  border-color: #FF9800;
+}
+
+.btn-logout {
+  padding: 0.75rem 1.75rem;
+  border: 2px solid #2196F3;
+  background: transparent;
+  color: #2196F3;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-logout:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  border-color: #2196F3;
+}
+
+/* 중간 크기 화면 최적화 */
+@media (max-width: 1200px) {
+  .header-content {
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header-content {
+    gap: 1rem;
+  }
+
+  .nav-link {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .btn-profile,
+  .btn-admin,
+  .btn-logout {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(66, 165, 245, 0.1));
+  border: 2px solid rgba(33, 150, 243, 0.2);
+  border-radius: 10px;
+  font-size: 1.3rem;
+  color: #2196F3;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(66, 165, 245, 0.2));
+  border-color: #2196F3;
+  transform: scale(1.05);
+}
+
+/* Mobile Menu */
+@media (max-width: 968px) {
+  .header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important;
+    /* 모바일 브라우저에서 fixed 위치 보장 */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    /* iOS Safari에서 fixed 위치 보장 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .nav.active {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 1rem 0;
+    z-index: 9998;
+  }
+
+  .nav.active .nav-list {
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .nav.active .nav-list li {
+    padding: 0;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  /* 일반 메뉴 항목에만 border-bottom 적용 */
+  .nav.active .nav-list li:not(.dropdown) {
+    border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+  }
+
+  /* 드롭다운이 닫혀있을 때만 border-bottom 적용 */
+  .nav.active .nav-list li.dropdown:not(.active) {
+    border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+  }
+
+  /* 드롭다운이 열려있을 때는 border 제거 (드롭다운 메뉴의 border와 겹치지 않도록) */
+  .nav.active .nav-list li.dropdown.active {
+    border-bottom: none;
+  }
+
+  /* 드롭다운이 열려있는 li 다음 항목의 border-top 제거 (중복 방지) */
+  .nav.active .nav-list li.dropdown.active + li {
+    border-top: none;
+  }
+
+  .nav.active .nav-link {
+    display: block;
+    padding: 1rem 20px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  /* 모바일에서 드롭다운이 활성화된 상위메뉴 스타일 */
+  .nav.active .nav-item.dropdown.active .nav-link {
+    background: rgba(33, 150, 243, 0.08);
+    color: #2196F3;
+  }
+
+  /* 모바일에서 드롭다운 메뉴 */
+  .nav.active .dropdown-menu {
+    position: static;
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid rgba(33, 150, 243, 0.1);
+    border-radius: 0;
+    margin-top: 0;
+    padding: 0;
+    background: rgba(33, 150, 243, 0.03);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .nav.active .nav-item.dropdown.active .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    max-height: 500px;
+    padding: 0.5rem 0;
+  }
+
+  .nav.active .dropdown-link {
+    padding: 0.75rem 20px 0.75rem 3rem;
+    font-size: 0.9rem;
+  }
+
+  /* 드롭다운 메뉴의 마지막 항목에만 border-bottom 추가 */
+  .nav.active .dropdown-menu li:last-child .dropdown-link {
+    border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+  }
+
+  .nav.active .dropdown-link:hover {
+    padding-left: 3.5rem;
+    background: rgba(33, 150, 243, 0.08);
+  }
+
+  .header-content {
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+    padding: 0 12px;
+  }
+
+  .auth-buttons {
+    order: 0;
+    width: auto;
+    justify-content: flex-end;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    flex-shrink: 0;
+    gap: 0.5rem;
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 0.9rem 0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important;
+    /* 모바일 브라우저에서 fixed 위치 보장 */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    /* iOS Safari에서 fixed 위치 보장 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .header-content {
+    gap: 0.6rem;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 0 12px;
+  }
+
+  .logo {
+    height: 24px;
+    flex-shrink: 0;
+    min-width: 80px;
+  }
+
+  .logo-image {
+    max-height: 24px;
+  }
+
+  .auth-buttons {
+    gap: 0.6rem;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .btn-login,
+  .btn-signup {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+    min-width: 70px;
+    min-height: 32px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-menu-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .user-menu {
+    gap: 0;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .user-name {
+    font-size: 0.75rem;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.6rem 1rem;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .user-menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 140px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    border: 1px solid rgba(33, 150, 243, 0.1);
+  }
+
+  .user-menu.open .user-menu-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .user-menu-dropdown .btn-profile,
+  .user-menu-dropdown .btn-admin,
+  .user-menu-dropdown .btn-logout {
+    padding: 0.65rem 1rem;
+    font-size: 0.85rem;
+    min-width: 100%;
+    min-height: 40px;
+    width: 100%;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+  }
+
+  .mobile-menu-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+

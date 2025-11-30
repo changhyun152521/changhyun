@@ -1,0 +1,810 @@
+const Course = require('../models/Course');
+const User = require('../models/User');
+const Class = require('../models/Class');
+const mongoose = require('mongoose');
+
+// 모든 강좌 조회
+exports.getAllCourses = async (req, res) => {
+  console.log('\n=== getAllCourses 함수 호출됨 ===');
+  try {
+    console.log('Course.find() 실행 중...');
+    const courses = await Course.find()
+      .populate('instructorId', 'userId name email userType profileImage')
+      .sort({ createdAt: -1 }); // 생성일 기준 최신순 정렬
+    console.log(`강좌 ${courses.length}개 조회 성공`);
+    res.json({
+      success: true,
+      count: courses.length,
+      data: courses,
+    });
+  } catch (error) {
+    console.error('=== getAllCourses 에러 발생 ===');
+    console.error('에러 타입:', error.name);
+    console.error('에러 메시지:', error.message);
+    console.error('에러 스택:', error.stack);
+    res.status(500).json({
+      success: false,
+      error: '강좌 목록을 가져오는 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
+// 특정 강좌 조회 (ID로)
+exports.getCourseById = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id).populate('instructorId', 'userId name email userType profileImage');
+    
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        error: '강좌를 찾을 수 없습니다',
+      });
+    }
+
+    res.json({
+      success: true,
+      data: course,
+    });
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        error: '유효하지 않은 강좌 ID입니다',
+      });
+    }
+    res.status(500).json({
+      success: false,
+      error: '강좌를 가져오는 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
+// SKU로 강좌 조회
+exports.getCourseBySku = async (req, res) => {
+  try {
+    const course = await Course.findOne({ sku: req.params.sku }).populate('instructorId', 'userId name email userType profileImage');
+    
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        error: '강좌를 찾을 수 없습니다',
+      });
+    }
+
+    res.json({
+      success: true,
+      data: course,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: '강좌를 가져오는 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
+// 새 강좌 생성
+exports.createCourse = async (req, res) => {
+  console.log('\n\n========================================');
+  console.log('=== createCourse 함수 호출됨 ===');
+  console.log('========================================');
+  console.log('요청 메서드:', req.method);
+  console.log('요청 경로:', req.path);
+  console.log('요청 URL:', req.url);
+  console.log('요청 본문:', JSON.stringify(req.body, null, 2));
+  console.log('요청 본문 타입:', typeof req.body);
+  console.log('요청 본문 키:', Object.keys(req.body || {}));
+  
+  try {
+    console.log('=== 강좌 생성 요청 시작 ===');
+    
+    // req.body가 비어있는지 확인
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.error('=== req.body가 비어있음 ===');
+      return res.status(400).json({
+        success: false,
+        error: '요청 본문이 비어있습니다',
+      });
+    }
+    
+    const {
+      sku,
+      courseName,
+      instructorId,
+      instructorName,
+      grade,
+      courseCount,
+      textbook,
+      textbookType,
+      courseStatus,
+      courseType,
+      courseRange,
+      courseDescription,
+      lectures,
+    } = req.body;
+
+    console.log('파싱된 필드:', {
+      sku: sku,
+      courseName: courseName,
+      instructorId: instructorId,
+      instructorName: instructorName,
+      grade: grade,
+      courseCount: courseCount,
+      courseCountType: typeof courseCount,
+      textbook: textbook,
+    });
+    
+    // 각 필드가 실제로 존재하는지 확인
+    console.log('필드 존재 여부 확인:', {
+      'sku 존재': !!sku,
+      'courseName 존재': !!courseName,
+      'instructorId 존재': !!instructorId,
+      'instructorName 존재': !!instructorName,
+      'grade 존재': !!grade,
+      'courseCount 존재': courseCount !== undefined,
+      'textbook 존재': !!textbook,
+    });
+
+    // 필수 필드 검증 (강좌명, 강사, 학년, 강의수, SKU, 교재만 필수)
+    const validationErrors = [];
+    
+    if (!sku || !sku.trim()) {
+      validationErrors.push('SKU를 입력해주세요');
+    }
+    if (!courseName || !courseName.trim()) {
+      validationErrors.push('강좌명을 입력해주세요');
+    }
+    if (!instructorId) {
+      validationErrors.push('강사를 선택해주세요');
+    }
+    if (!instructorName || !instructorName.trim()) {
+      validationErrors.push('강사명을 확인해주세요');
+    }
+    if (!grade) {
+      validationErrors.push('학년을 선택해주세요');
+    }
+    
+    // courseCount 검증 (0 이상이면 허용)
+    console.log('courseCount 검증:', { courseCount, type: typeof courseCount });
+    let courseCountNum;
+    if (courseCount === undefined || courseCount === null || courseCount === '') {
+      validationErrors.push('강의 수를 입력해주세요 (0 이상)');
+    } else {
+      courseCountNum = Number(courseCount);
+      console.log('courseCountNum:', courseCountNum, 'isNaN:', isNaN(courseCountNum));
+      if (isNaN(courseCountNum) || courseCountNum < 0) {
+        validationErrors.push('강의 수는 0 이상의 숫자여야 합니다');
+      }
+    }
+    
+    if (!textbook || !textbook.trim()) {
+      validationErrors.push('교재를 입력해주세요');
+    }
+    
+    if (validationErrors.length > 0) {
+      console.log('=== 검증 실패 ===');
+      console.log('검증 오류 목록:', validationErrors);
+      console.log('실제 받은 데이터:', {
+        sku: sku ? `"${sku}"` : 'undefined',
+        courseName: courseName ? `"${courseName}"` : 'undefined',
+        instructorId: instructorId ? `"${instructorId}"` : 'undefined',
+        instructorName: instructorName ? `"${instructorName}"` : 'undefined',
+        grade: grade ? `"${grade}"` : 'undefined',
+        courseCount: courseCount !== undefined ? `${courseCount} (타입: ${typeof courseCount})` : 'undefined',
+        textbook: textbook ? `"${textbook}"` : 'undefined',
+      });
+      console.log('전체 req.body:', JSON.stringify(req.body, null, 2));
+      return res.status(400).json({
+        success: false,
+        error: validationErrors.join(', '),
+      });
+    }
+
+    // SKU 중복 체크
+    const existingCourse = await Course.findOne({ sku });
+    if (existingCourse) {
+      return res.status(400).json({
+        success: false,
+        error: '이미 사용 중인 SKU입니다',
+      });
+    }
+
+    // 강사 유효성 검증 (강사인지 확인)
+    const instructor = await User.findById(instructorId);
+    if (!instructor) {
+      return res.status(404).json({
+        success: false,
+        error: '강사를 찾을 수 없습니다',
+      });
+    }
+
+    if (instructor.userType !== '강사') {
+      return res.status(400).json({
+        success: false,
+        error: '강사 권한이 있는 사용자만 강좌를 생성할 수 있습니다',
+      });
+    }
+
+    // 강사명 일치 확인 (공백 제거 후 비교)
+    const instructorNameTrimmed = instructor.name ? instructor.name.trim() : '';
+    const submittedNameTrimmed = instructorName ? instructorName.trim() : '';
+    console.log('강사명 비교:', {
+      dbName: instructorNameTrimmed,
+      submittedName: submittedNameTrimmed,
+      match: instructorNameTrimmed === submittedNameTrimmed,
+    });
+    if (instructorNameTrimmed !== submittedNameTrimmed) {
+      console.error('강사명 불일치:', {
+        dbName: instructorNameTrimmed,
+        submittedName: submittedNameTrimmed,
+      });
+      return res.status(400).json({
+        success: false,
+        error: `강사명이 일치하지 않습니다. (DB: "${instructorNameTrimmed}", 전송: "${submittedNameTrimmed}")`,
+      });
+    }
+
+    // 학년 유효성 검증
+    const validGrades = ['중1', '중2', '중3', '고1', '고2', '고3/N수'];
+    if (!validGrades.includes(grade)) {
+      return res.status(400).json({
+        success: false,
+        error: '학년은 중1, 중2, 중3, 고1, 고2, 고3/N수 중 하나여야 합니다',
+      });
+    }
+
+    // 강좌 수 검증 (0 이상 허용)
+    if (courseCount < 0) {
+      return res.status(400).json({
+        success: false,
+        error: '강좌 수는 0 이상이어야 합니다',
+      });
+    }
+
+    const course = new Course({
+      sku: sku.trim(),
+      courseName: courseName.trim(),
+      instructorId,
+      instructorName: instructorName.trim(),
+      grade,
+      courseCount: courseCountNum,
+      textbook: textbook.trim(),
+      textbookType: textbookType || undefined,
+      courseStatus: courseStatus || undefined,
+      courseType: courseType || undefined,
+      courseRange: courseRange ? courseRange.trim() : undefined,
+      courseDescription: courseDescription ? courseDescription.trim() : undefined,
+      lectures: lectures && Array.isArray(lectures) ? lectures.map((lecture, index) => {
+        // lectureNumber 검증 및 변환
+        let lectureNumber;
+        if (lecture.lectureNumber !== undefined && lecture.lectureNumber !== null && lecture.lectureNumber !== '') {
+          lectureNumber = Number(lecture.lectureNumber);
+          if (isNaN(lectureNumber) || lectureNumber < 1) {
+            throw new Error(`강의 ${index + 1}의 회차 번호가 유효하지 않습니다.`);
+          }
+        } else {
+          lectureNumber = index + 1;
+        }
+        
+        // 필수 필드 검증
+        if (!lecture.lectureTitle || !lecture.lectureTitle.trim()) {
+          throw new Error(`강의 ${index + 1}의 제목을 입력해주세요.`);
+        }
+        if (!lecture.videoLink || !lecture.videoLink.trim()) {
+          throw new Error(`강의 ${index + 1}의 영상 링크를 입력해주세요.`);
+        }
+        
+        return {
+          lectureNumber: lectureNumber,
+          lectureTitle: lecture.lectureTitle.trim(),
+          duration: lecture.duration && lecture.duration.trim() ? lecture.duration.trim() : undefined,
+          videoLink: lecture.videoLink.trim(),
+        };
+      }) : [],
+    });
+
+    const savedCourse = await course.save();
+
+    res.status(201).json({
+      success: true,
+      message: '강좌가 성공적으로 생성되었습니다',
+      data: savedCourse,
+    });
+  } catch (error) {
+    console.error('=== 강좌 생성 오류 ===');
+    console.error('에러 타입:', error.name);
+    console.error('에러 메시지:', error.message);
+    console.error('에러 스택:', error.stack);
+    console.error('전체 에러 객체:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    
+    // Mongoose 유효성 검사 오류 처리
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      console.error('Mongoose ValidationError 상세:');
+      Object.values(error.errors).forEach((err) => {
+        console.error(`  - ${err.path}: ${err.message}`);
+      });
+      return res.status(400).json({
+        success: false,
+        error: errors.join(', '),
+      });
+    }
+    
+    // 일반 에러 처리
+    if (error.message) {
+      return res.status(400).json({
+        success: false,
+        error: error.message,
+      });
+    }
+
+    // 중복 키 오류 처리 (SKU)
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        error: '이미 사용 중인 SKU입니다',
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: '강좌 생성 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
+// 강좌 정보 수정
+exports.updateCourse = async (req, res) => {
+  try {
+    const {
+      sku,
+      courseName,
+      instructorId,
+      instructorName,
+      grade,
+      courseCount,
+      textbook,
+      textbookType,
+      courseStatus,
+      courseType,
+      courseRange,
+      courseDescription,
+      lectures,
+    } = req.body;
+
+    // 필수 필드 검증 (강좌명, 강사, 학년, 강의수, SKU, 교재만 필수)
+    console.log('=== 강좌 수정 요청 ===');
+    console.log('요청 본문:', JSON.stringify(req.body, null, 2));
+    
+    const validationErrors = [];
+    
+    if (!sku || !sku.trim()) {
+      validationErrors.push('SKU를 입력해주세요');
+    }
+    if (!courseName || !courseName.trim()) {
+      validationErrors.push('강좌명을 입력해주세요');
+    }
+    if (!instructorId) {
+      validationErrors.push('강사를 선택해주세요');
+    }
+    if (!instructorName || !instructorName.trim()) {
+      validationErrors.push('강사명을 확인해주세요');
+    }
+    if (!grade) {
+      validationErrors.push('학년을 선택해주세요');
+    }
+    
+    // courseCount 검증 (0 이상이면 허용)
+    console.log('courseCount 검증:', { courseCount, type: typeof courseCount });
+    let courseCountNum;
+    if (courseCount === undefined || courseCount === null || courseCount === '') {
+      validationErrors.push('강의 수를 입력해주세요 (0 이상)');
+    } else {
+      courseCountNum = Number(courseCount);
+      console.log('courseCountNum:', courseCountNum, 'isNaN:', isNaN(courseCountNum));
+      if (isNaN(courseCountNum) || courseCountNum < 0) {
+        validationErrors.push('강의 수는 0 이상의 숫자여야 합니다');
+      }
+    }
+    
+    if (!textbook || !textbook.trim()) {
+      validationErrors.push('교재를 입력해주세요');
+    }
+    
+    if (validationErrors.length > 0) {
+      console.log('검증 실패:', validationErrors);
+      return res.status(400).json({
+        success: false,
+        error: validationErrors.join(', '),
+      });
+    }
+
+    const updateData = {};
+
+    // SKU 변경이 있는 경우 중복 체크
+    const existingCourse = await Course.findOne({
+      sku: sku.trim(),
+      _id: { $ne: req.params.id },
+    });
+    if (existingCourse) {
+      return res.status(400).json({
+        success: false,
+        error: '이미 사용 중인 SKU입니다',
+      });
+    }
+    updateData.sku = sku.trim();
+
+    updateData.courseName = courseName.trim();
+    
+    // 강사 유효성 검증
+    const instructor = await User.findById(instructorId);
+    if (!instructor) {
+      return res.status(404).json({
+        success: false,
+        error: '강사를 찾을 수 없습니다',
+      });
+    }
+
+    if (instructor.userType !== '강사') {
+      return res.status(400).json({
+        success: false,
+        error: '강사 권한이 있는 사용자만 강좌를 수정할 수 있습니다',
+      });
+    }
+
+    updateData.instructorId = instructorId;
+    updateData.instructorName = instructorName.trim();
+    
+    const validGrades = ['중1', '중2', '중3', '고1', '고2', '고3/N수'];
+    if (!validGrades.includes(grade)) {
+      return res.status(400).json({
+        success: false,
+        error: '학년은 중1, 중2, 중3, 고1, 고2, 고3/N수 중 하나여야 합니다',
+      });
+    }
+    updateData.grade = grade;
+
+    updateData.courseCount = courseCountNum;
+    updateData.textbook = textbook.trim();
+    
+    if (courseRange !== undefined) updateData.courseRange = courseRange ? courseRange.trim() : '';
+    if (courseDescription !== undefined) updateData.courseDescription = courseDescription ? courseDescription.trim() : '';
+    
+    // enum 필드들은 빈 문자열이 아닌 경우에만 업데이트
+    if (textbookType !== undefined && textbookType !== '') {
+      const validTextbookTypes = ['자체교재', '시중교재'];
+      if (!validTextbookTypes.includes(textbookType)) {
+        return res.status(400).json({
+          success: false,
+          error: '교재 유형은 자체교재, 시중교재 중 하나여야 합니다',
+        });
+      }
+      updateData.textbookType = textbookType;
+    } else if (textbookType === '') {
+      // 빈 문자열이면 undefined로 설정 (필드 제거)
+      updateData.textbookType = undefined;
+    }
+    
+    if (courseStatus !== undefined && courseStatus !== '') {
+      const validCourseStatuses = ['완강', '진행중'];
+      if (!validCourseStatuses.includes(courseStatus)) {
+        return res.status(400).json({
+          success: false,
+          error: '강좌 상태는 완강, 진행중 중 하나여야 합니다',
+        });
+      }
+      updateData.courseStatus = courseStatus;
+    } else if (courseStatus === '') {
+      updateData.courseStatus = undefined;
+    }
+    
+    if (courseType !== undefined && courseType !== '') {
+      const validCourseTypes = ['정규', '특강'];
+      if (!validCourseTypes.includes(courseType)) {
+        return res.status(400).json({
+          success: false,
+          error: '강좌 유형은 정규, 특강 중 하나여야 합니다',
+        });
+      }
+      updateData.courseType = courseType;
+    } else if (courseType === '') {
+      updateData.courseType = undefined;
+    }
+    
+    // 강의 목록 업데이트
+    if (lectures !== undefined) {
+      if (!Array.isArray(lectures)) {
+        return res.status(400).json({
+          success: false,
+          error: '강의 목록은 배열이어야 합니다.',
+        });
+      }
+      
+      if (lectures.length === 0) {
+        updateData.lectures = [];
+      } else {
+        try {
+          console.log('강의 데이터 처리 시작, 총 개수:', lectures.length);
+          updateData.lectures = lectures.map((lecture, index) => {
+            // lectureNumber 검증 및 변환
+            let lectureNumber;
+            if (lecture.lectureNumber !== undefined && lecture.lectureNumber !== null && lecture.lectureNumber !== '') {
+              lectureNumber = Number(lecture.lectureNumber);
+              if (isNaN(lectureNumber) || lectureNumber < 1) {
+                lectureNumber = index + 1;
+              }
+            } else {
+              lectureNumber = index + 1;
+            }
+            
+            // 필수 필드 검증 및 안전한 변환
+            if (!lecture || typeof lecture !== 'object') {
+              throw new Error(`강의 ${index + 1}의 데이터 형식이 올바르지 않습니다.`);
+            }
+            
+            const lectureTitle = lecture.lectureTitle && typeof lecture.lectureTitle === 'string' ? lecture.lectureTitle.trim() : '';
+            if (!lectureTitle) {
+              throw new Error(`강의 ${index + 1}의 제목을 입력해주세요.`);
+            }
+            
+            const videoLink = lecture.videoLink && typeof lecture.videoLink === 'string' ? lecture.videoLink.trim() : '';
+            if (!videoLink) {
+              throw new Error(`강의 ${index + 1}의 영상 링크를 입력해주세요.`);
+            }
+            
+            const duration = lecture.duration && typeof lecture.duration === 'string' && lecture.duration.trim() ? lecture.duration.trim() : undefined;
+            
+            return {
+              lectureNumber: lectureNumber,
+              lectureTitle: lectureTitle,
+              duration: duration,
+              videoLink: videoLink,
+            };
+          });
+          console.log('모든 강의 데이터 처리 완료, 총 개수:', updateData.lectures.length);
+        } catch (lectureError) {
+          console.error('강의 데이터 처리 오류:', lectureError);
+          console.error('에러 메시지:', lectureError.message);
+          console.error('에러 스택:', lectureError.stack);
+          return res.status(400).json({
+            success: false,
+            error: lectureError.message || '강의 데이터 처리 중 오류가 발생했습니다.',
+          });
+        }
+      }
+    }
+
+    console.log('업데이트할 데이터 키:', Object.keys(updateData));
+    if (updateData.lectures) {
+      console.log('강의 데이터 개수:', updateData.lectures.length);
+      if (updateData.lectures.length > 0) {
+        console.log('첫 번째 강의 샘플:', JSON.stringify(updateData.lectures[0], null, 2));
+      }
+    }
+    
+    let course;
+    try {
+      console.log('MongoDB 업데이트 시작, 강좌 ID:', req.params.id);
+      course = await Course.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        {
+          new: true, // 업데이트된 문서 반환
+          runValidators: true, // 유효성 검증 실행
+        }
+      ).populate('instructorId', 'userId name email userType profileImage');
+      
+      if (!course) {
+        console.error('강좌를 찾을 수 없음, ID:', req.params.id);
+        return res.status(404).json({
+          success: false,
+          error: '강좌를 찾을 수 없습니다',
+        });
+      }
+      
+      console.log('강좌 업데이트 성공');
+    } catch (validationError) {
+      console.error('=== 강좌 업데이트 오류 발생 ===');
+      console.error('에러 타입:', validationError.name);
+      console.error('에러 메시지:', validationError.message);
+      console.error('에러 코드:', validationError.code);
+      if (validationError.errors) {
+        console.error('검증 오류 상세:', Object.keys(validationError.errors));
+        Object.keys(validationError.errors).forEach(key => {
+          console.error(`  ${key}:`, validationError.errors[key].message);
+        });
+      }
+      console.error('에러 스택:', validationError.stack);
+      console.error('==========================');
+      
+      if (validationError.name === 'ValidationError') {
+        const errors = Object.values(validationError.errors).map(err => err.message);
+        return res.status(400).json({
+          success: false,
+          error: '강좌 정보 검증 실패',
+          details: errors,
+        });
+      }
+      
+      if (validationError.name === 'CastError') {
+        return res.status(400).json({
+          success: false,
+          error: '유효하지 않은 데이터 형식입니다.',
+        });
+      }
+      
+      // 예상치 못한 에러인 경우
+      return res.status(500).json({
+        success: false,
+        error: '강좌 수정 중 오류가 발생했습니다',
+        message: validationError.message || '알 수 없는 오류',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: '강좌 정보가 성공적으로 수정되었습니다',
+      data: course,
+    });
+  } catch (error) {
+    console.error('강좌 수정 최상위 오류:', error);
+    console.error('에러 타입:', error.name);
+    console.error('에러 메시지:', error.message);
+    console.error('에러 스택:', error.stack);
+    
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        error: '유효하지 않은 강좌 ID입니다',
+      });
+    }
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        error: errors.join(', '),
+      });
+    }
+    if (error.message) {
+      return res.status(400).json({
+        success: false,
+        error: error.message,
+      });
+    }
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        error: '이미 사용 중인 SKU입니다',
+      });
+    }
+    res.status(500).json({
+      success: false,
+      error: '강좌 수정 중 오류가 발생했습니다',
+      message: error.message || '알 수 없는 오류가 발생했습니다',
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    });
+  }
+};
+
+// 내강좌 조회 (학생: 반 기반, 관리자: 전체)
+exports.getMyCourses = async (req, res) => {
+  try {
+    const userId = req.user.id; // 인증 미들웨어에서 설정된 사용자 ID
+    const userType = req.user.userType;
+    const isAdmin = req.user.isAdmin;
+
+    // 사용자 정보 가져오기
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: '사용자를 찾을 수 없습니다',
+      });
+    }
+
+    let courses = [];
+
+    // 관리자 권한이 있는 강사인 경우: 모든 강좌 조회
+    if (isAdmin && userType === '강사') {
+      courses = await Course.find()
+        .populate('instructorId', 'userId name email userType profileImage')
+        .sort({ createdAt: -1 });
+    } 
+    // 학생인 경우: 자신이 속한 반의 강좌만 조회
+    else if (userType === '학생') {
+      // 사용자가 속한 반 찾기 (ObjectId로 변환하여 비교)
+      const userObjectId = mongoose.Types.ObjectId.isValid(userId) 
+        ? new mongoose.Types.ObjectId(userId) 
+        : userId;
+      
+      const userClasses = await Class.find({
+        students: userObjectId,
+      }).populate('courses');
+
+      // 모든 반의 강좌 ID 수집
+      const courseIds = [];
+      userClasses.forEach((classData) => {
+        if (classData.courses && Array.isArray(classData.courses)) {
+          classData.courses.forEach((course) => {
+            const courseId = course._id || course;
+            // ObjectId로 변환
+            const courseObjectId = mongoose.Types.ObjectId.isValid(courseId) 
+              ? new mongoose.Types.ObjectId(courseId) 
+              : courseId;
+            // 중복 체크를 위해 문자열로 변환
+            const courseIdString = courseObjectId.toString();
+            if (!courseIds.some(id => id.toString() === courseIdString)) {
+              courseIds.push(courseObjectId);
+            }
+          });
+        }
+      });
+
+      // 강좌 조회
+      if (courseIds.length > 0) {
+        courses = await Course.find({
+          _id: { $in: courseIds },
+        })
+          .populate('instructorId', 'userId name email userType profileImage')
+          .sort({ createdAt: -1 });
+      }
+    } 
+    // 학부모인 경우: 접근 불가
+    else {
+      return res.status(403).json({
+        success: false,
+        error: '접근 권한이 없습니다. 학생 또는 관리자 권한이 필요합니다',
+      });
+    }
+
+    res.json({
+      success: true,
+      count: courses.length,
+      data: courses,
+    });
+  } catch (error) {
+    console.error('내강좌 조회 오류:', error);
+    res.status(500).json({
+      success: false,
+      error: '내강좌를 가져오는 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
+// 강좌 삭제
+exports.deleteCourse = async (req, res) => {
+  try {
+    const course = await Course.findByIdAndDelete(req.params.id);
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        error: '강좌를 찾을 수 없습니다',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: '강좌가 성공적으로 삭제되었습니다',
+      data: course,
+    });
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        error: '유효하지 않은 강좌 ID입니다',
+      });
+    }
+    res.status(500).json({
+      success: false,
+      error: '강좌 삭제 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+

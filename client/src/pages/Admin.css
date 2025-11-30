@@ -1,0 +1,1423 @@
+.admin-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.admin-container {
+  flex: 1;
+  padding: 2rem;
+  padding-top: 120px; /* Header 높이만큼 패딩 추가 */
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 2rem 0;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* 카드 그리드 */
+.admin-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.admin-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.admin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-color: rgba(33, 150, 243, 0.3);
+}
+
+.admin-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2196F3;
+  margin: 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.admin-card-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+  width: 100%;
+}
+
+.admin-card-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+/* 페이지 헤더 */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.1);
+}
+
+.page-title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #2b2d42;
+  margin: 0;
+}
+
+.btn-back {
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #6c757d, #868e96);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.btn-back::before {
+  content: '←';
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-back:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.35);
+  background: linear-gradient(135deg, #5a6268, #6c757d);
+}
+
+.btn-back:hover::before {
+  transform: translateX(-3px);
+}
+
+.admin-description {
+  font-size: 1.1rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* 강좌 목록 섹션 */
+.courses-section,
+.users-section,
+.classes-section,
+.preview-courses-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.courses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.courses-header-actions,
+.users-header-actions,
+.classes-header-actions,
+.preview-courses-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.03), rgba(66, 165, 245, 0.03));
+  border-radius: 12px;
+  border: 1px solid rgba(33, 150, 243, 0.1);
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.85rem 2.5rem 0.85rem 1.2rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.12);
+  background: #fafafa;
+}
+
+.search-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  pointer-events: none;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+  font-style: italic;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pagination-number {
+  min-width: 36px;
+  height: 36px;
+  padding: 0.5rem;
+  background: white;
+  color: #2196F3;
+  border: 2px solid #2196F3;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-number:hover:not(.active) {
+  background: rgba(33, 150, 243, 0.1);
+  transform: translateY(-2px);
+}
+
+.pagination-number.active {
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border-color: #2196F3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.btn-toggle-courses {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-toggle-courses:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.courses-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2b2d42;
+  margin: 0;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-add-course,
+.btn-add-user,
+.btn-add-class,
+.btn-add-preview-course {
+  padding: 0.75rem 1.75rem;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 10px rgba(33, 150, 243, 0.25);
+  white-space: nowrap;
+}
+
+.btn-add-course:hover,
+.btn-add-user:hover,
+.btn-add-class:hover,
+.btn-add-preview-course:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(33, 150, 243, 0.35);
+  background: linear-gradient(135deg, #1976D2, #2196F3);
+}
+
+.courses-table-container {
+  overflow-x: auto;
+}
+
+.courses-table,
+.users-table,
+.classes-table,
+.preview-courses-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.95rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.courses-table thead,
+.users-table thead,
+.classes-table thead,
+.preview-courses-table thead {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.12), rgba(66, 165, 245, 0.08));
+}
+
+.courses-table th,
+.users-table th,
+.classes-table th,
+.preview-courses-table th {
+  padding: 1.25rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: #2b2d42;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.15);
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.courses-table td,
+.users-table td,
+.classes-table td,
+.preview-courses-table td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  color: #333;
+  vertical-align: middle;
+}
+
+.courses-table tbody tr:hover,
+.users-table tbody tr:hover,
+.classes-table tbody tr:hover,
+.preview-courses-table tbody tr:hover {
+  background-color: rgba(33, 150, 243, 0.04);
+  transition: background-color 0.2s ease;
+}
+
+.courses-table tbody tr:last-child td,
+.users-table tbody tr:last-child td,
+.classes-table tbody tr:last-child td,
+.preview-courses-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.completed {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+}
+
+.status-badge.in-progress {
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+}
+
+.preview-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.preview-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  color: #666;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.preview-btn:hover {
+  border-color: #2196F3;
+  color: #2196F3;
+}
+
+.preview-btn.active {
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border-color: #2196F3;
+}
+
+.management-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-edit-course {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+}
+
+.btn-edit-course:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+}
+
+.btn-delete-course {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #F44336, #E57373);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.btn-delete-course:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+  background: linear-gradient(135deg, #D32F2F, #EF5350);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* 사용자 관리 섹션 */
+.users-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 사용자 유형 필터 탭 */
+.user-type-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.user-type-tab {
+  padding: 0.6rem 1.5rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  color: #666;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.user-type-tab:hover {
+  border-color: #2196F3;
+  color: #2196F3;
+  background: rgba(33, 150, 243, 0.05);
+}
+
+.user-type-tab.active {
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border-color: #2196F3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.users-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2b2d42;
+  margin: 0;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-toggle-users {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-toggle-users:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.users-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-user {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.btn-add-user:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.users-table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* 가로 스크롤 및 드래그 지원 */
+  cursor: grab;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.users-table-container:active {
+  cursor: grabbing;
+}
+
+.users-table {
+  width: 100%;
+  min-width: 2000px; /* 표 최소 너비를 더 크게 설정 */
+  border-collapse: collapse;
+  font-size: 1rem;
+  table-layout: auto; /* 자동 레이아웃으로 내용에 맞게 조정 */
+}
+
+.users-table thead {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.12), rgba(66, 165, 245, 0.08));
+  /* sticky 제거하여 위아래 스크롤 없이 전체 표 표시 */
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.users-table th {
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  font-weight: 700;
+  color: #2b2d42;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  /* 각 컬럼 최소 너비 설정 - 충분히 넓게 */
+}
+
+.users-table th:nth-child(1) { min-width: 180px; } /* 아이디 */
+.users-table th:nth-child(2) { min-width: 150px; } /* 이름 */
+.users-table th:nth-child(3) { min-width: 140px; } /* 사용자 유형 */
+.users-table th:nth-child(4) { min-width: 180px; } /* 학교명 */
+.users-table th:nth-child(5) { min-width: 140px; } /* 생성일 */
+.users-table th:nth-child(6) { min-width: 200px; } /* 관리 */
+.users-table th:nth-child(7) { min-width: 350px; } /* 연동 정보 - 넓게 */
+.users-table th:nth-child(8) { min-width: 400px; } /* 반 - 넓게 */
+.users-table th:nth-child(9) { min-width: 120px; } /* 관리자 */
+
+.users-table td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  color: #333;
+  vertical-align: middle;
+  white-space: nowrap; /* 한 줄로 표시 */
+  overflow: visible; /* 내용이 잘리지 않도록 */
+}
+
+.users-table td:nth-child(1) { min-width: 180px; } /* 아이디 */
+.users-table td:nth-child(2) { min-width: 150px; } /* 이름 */
+.users-table td:nth-child(3) { min-width: 140px; } /* 사용자 유형 */
+.users-table td:nth-child(4) { min-width: 180px; } /* 학교명 */
+.users-table td:nth-child(5) { min-width: 140px; } /* 생성일 */
+.users-table td:nth-child(6) { min-width: 200px; } /* 관리 */
+.users-table td:nth-child(7) { min-width: 350px; } /* 연동 정보 - 넓게 */
+.users-table td:nth-child(8) { min-width: 400px; } /* 반 - 넓게 */
+.users-table td:nth-child(9) { min-width: 120px; } /* 관리자 */
+
+.users-table tbody tr:hover {
+  background-color: rgba(33, 150, 243, 0.04);
+  transition: background-color 0.2s ease;
+}
+
+.users-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.user-type-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.user-type-badge.student {
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+}
+
+.user-type-badge.parent {
+  background: linear-gradient(135deg, #9C27B0, #BA68C8);
+  color: white;
+}
+
+.user-type-badge.instructor {
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+}
+
+.admin-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.admin-badge.yes {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+}
+
+.admin-badge.no {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.user-classes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding: 0.25rem 0;
+}
+
+.class-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.linked-user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.linked-user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #e8eaf6, #f3e5f5);
+  color: #5c6bc0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #c5cae9;
+  font-size: 0.875rem;
+}
+
+.linked-user-badge:hover {
+  background: linear-gradient(135deg, #5c6bc0, #7e57c2);
+  color: white;
+  border-color: #5c6bc0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(92, 107, 192, 0.3);
+}
+
+.linked-user-badge i {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.linked-user-text {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.no-linked-user {
+  color: #999;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.no-class {
+  color: #999;
+  font-style: italic;
+}
+
+.btn-edit-user {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+}
+
+.btn-edit-user:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+}
+
+.btn-delete-user {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #F44336, #E57373);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.btn-delete-user:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+  background: linear-gradient(135deg, #D32F2F, #EF5350);
+}
+
+/* 반 관리 섹션 */
+.classes-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.classes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.classes-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2b2d42;
+  margin: 0;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-toggle-classes {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-toggle-classes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.classes-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-class {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.btn-add-class:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.classes-table-container {
+  overflow-x: auto;
+}
+
+.classes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.classes-table thead {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(66, 165, 245, 0.1));
+}
+
+.classes-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2b2d42;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.classes-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.classes-table tbody tr:hover {
+  background-color: rgba(33, 150, 243, 0.03);
+}
+
+/* 맛보기강좌 관리 섹션 */
+.preview-courses-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preview-courses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.preview-courses-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2b2d42;
+  margin: 0;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-toggle-preview-courses {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-toggle-preview-courses:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.preview-courses-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-preview-course {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.btn-add-preview-course:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.preview-courses-table-container {
+  overflow-x: auto;
+}
+
+.preview-courses-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.preview-courses-table thead {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(66, 165, 245, 0.1));
+}
+
+.preview-courses-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2b2d42;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+}
+
+.preview-courses-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  color: #555;
+}
+
+.preview-courses-table tbody tr:hover {
+  background: rgba(33, 150, 243, 0.05);
+}
+
+.video-link {
+  color: #2196F3;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.video-link:hover {
+  color: #1976D2;
+  text-decoration: underline;
+}
+
+.btn-edit-preview-course {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+  margin-right: 0.5rem;
+}
+
+.btn-edit-preview-course:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+}
+
+.btn-delete-preview-course {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #F44336, #E57373);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.btn-delete-preview-course:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+  background: linear-gradient(135deg, #D32F2F, #EF5350);
+}
+
+.grade-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  background: linear-gradient(135deg, #9C27B0, #BA68C8);
+  color: white;
+}
+
+.btn-classroom-manage,
+.btn-manage-class {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #9C27B0, #BA68C8);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(156, 39, 176, 0.3);
+}
+
+.btn-classroom-manage:hover,
+.btn-manage-class:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(156, 39, 176, 0.4);
+  background: linear-gradient(135deg, #7B1FA2, #9C27B0);
+}
+
+.btn-edit-class {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+}
+
+.btn-edit-class:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+}
+
+.btn-delete-class {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #F44336, #E57373);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.btn-delete-class:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+  background: linear-gradient(135deg, #D32F2F, #EF5350);
+}
+
+/* 기타 관리 섹션 */
+.admin-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e0e0e0;
+}
+
+.admin-section h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2b2d42;
+  margin: 0 0 0.5rem 0;
+}
+
+.admin-section p {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0 0 1rem 0;
+}
+
+.admin-btn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.admin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1rem;
+    padding-top: 100px;
+  }
+
+  .admin-title {
+    font-size: 2rem;
+  }
+
+  .courses-section {
+    padding: 1.5rem;
+  }
+
+  .courses-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .courses-title {
+    font-size: 1.3rem;
+  }
+
+  .btn-toggle-courses,
+  .btn-add-course {
+    width: 100%;
+  }
+
+  .courses-table {
+    font-size: 0.85rem;
+  }
+
+  .courses-table th,
+  .courses-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .admin-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .users-section {
+    padding: 1.5rem;
+  }
+
+  .users-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .users-title {
+    font-size: 1.3rem;
+  }
+
+  .btn-toggle-users {
+    width: 100%;
+  }
+
+  .users-table-container {
+    overflow-x: auto;
+    overflow-y: visible;
+    min-width: 100%;
+  }
+
+  .users-table {
+    font-size: 0.9rem;
+    min-width: 1800px;
+  }
+
+  .users-table th,
+  .users-table td {
+    padding: 1rem 0.75rem;
+    white-space: nowrap; /* 한 줄로 표시 */
+  }
+
+  .users-table th:nth-child(1) { min-width: 160px; }
+  .users-table th:nth-child(2) { min-width: 130px; }
+  .users-table th:nth-child(3) { min-width: 120px; }
+  .users-table th:nth-child(4) { min-width: 160px; }
+  .users-table th:nth-child(5) { min-width: 120px; }
+  .users-table th:nth-child(6) { min-width: 180px; }
+  .users-table th:nth-child(7) { min-width: 300px; }
+  .users-table th:nth-child(8) { min-width: 350px; }
+  .users-table th:nth-child(9) { min-width: 100px; }
+
+  .users-table td:nth-child(1) { min-width: 160px; }
+  .users-table td:nth-child(2) { min-width: 130px; }
+  .users-table td:nth-child(3) { min-width: 120px; }
+  .users-table td:nth-child(4) { min-width: 160px; }
+  .users-table td:nth-child(5) { min-width: 120px; }
+  .users-table td:nth-child(6) { min-width: 180px; }
+  .users-table td:nth-child(7) { min-width: 300px; }
+  .users-table td:nth-child(8) { min-width: 350px; }
+  .users-table td:nth-child(9) { min-width: 100px; }
+
+  .user-type-tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .user-type-tab {
+    flex: 1;
+    min-width: calc(50% - 0.25rem);
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .classes-section {
+    padding: 1.5rem;
+  }
+
+  .classes-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .classes-title {
+    font-size: 1.3rem;
+  }
+
+  .btn-toggle-classes,
+  .btn-add-class {
+    width: 100%;
+  }
+
+  .classes-table {
+    font-size: 0.85rem;
+  }
+
+  .classes-table th,
+  .classes-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pagination-numbers {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .pagination-number {
+    min-width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+    padding: 0.4rem;
+  }
+
+  /* 페이지 헤더 모바일 */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    width: 100%;
+  }
+
+  .btn-back {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 카드 그리드 모바일 */
+  .admin-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* 헤더 액션 모바일 */
+  .courses-header-actions,
+  .users-header-actions,
+  .classes-header-actions,
+  .preview-courses-header-actions {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .btn-add-course,
+  .btn-add-user,
+  .btn-add-class,
+  .btn-add-preview-course {
+    width: 100%;
+  }
+}
