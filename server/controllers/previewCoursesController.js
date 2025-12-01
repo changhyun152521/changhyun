@@ -11,6 +11,12 @@ exports.getAllPreviewCourses = async (req, res) => {
     const mongoose = require('mongoose');
     if (!mongoose.connection.readyState) {
       console.error('MongoDB 연결이 끊어졌습니다');
+      // CORS 헤더 설정
+      const origin = req.headers.origin;
+      if (origin) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+      }
       return res.status(500).json({
         success: false,
         error: '데이터베이스 연결 오류가 발생했습니다',
@@ -42,6 +48,13 @@ exports.getAllPreviewCourses = async (req, res) => {
     console.error('오류 메시지:', error.message);
     console.error('오류 스택:', error.stack);
     console.error('===============================\n');
+    
+    // CORS 헤더 설정
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
     
     res.status(500).json({
       success: false,

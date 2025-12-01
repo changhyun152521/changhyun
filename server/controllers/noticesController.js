@@ -12,6 +12,12 @@ exports.getAllNotices = async (req, res) => {
     // MongoDB 연결 확인
     if (!mongoose.connection.readyState) {
       console.error('MongoDB 연결이 끊어졌습니다');
+      // CORS 헤더 설정
+      const origin = req.headers.origin;
+      if (origin) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+      }
       return res.status(500).json({
         success: false,
         error: '데이터베이스 연결 오류가 발생했습니다',
@@ -25,7 +31,7 @@ exports.getAllNotices = async (req, res) => {
       .populate({
         path: 'author',
         select: 'name userId',
-        options: { lean: true } // populate 실패 시에도 에러가 발생하지 않도록
+        strictPopulate: false // 참조가 없어도 에러 발생하지 않도록
       })
       .sort({ createdAt: -1 }) // 최신순 정렬
       .skip(skip)
@@ -43,6 +49,12 @@ exports.getAllNotices = async (req, res) => {
   } catch (error) {
     console.error('공지사항 조회 오류:', error);
     console.error('에러 스택:', error.stack);
+    // CORS 헤더 설정
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
     res.status(500).json({
       success: false,
       error: '공지사항을 가져오는 중 오류가 발생했습니다',
