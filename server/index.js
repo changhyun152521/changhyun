@@ -14,14 +14,29 @@ const allowedOrigins = [
   process.env.CLIENT_URL, // Vercel 배포 URL
 ].filter(Boolean); // undefined 제거
 
+// CORS 설정 로깅 (디버깅용)
+console.log('=== CORS 설정 ===');
+console.log('허용된 Origins:', allowedOrigins);
+console.log('CLIENT_URL:', process.env.CLIENT_URL);
+
 app.use(cors({
   origin: (origin, callback) => {
     // origin이 없으면 (같은 도메인 요청 등) 허용
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS 정책에 의해 차단되었습니다'));
+    if (!origin) {
+      console.log('CORS: origin이 없음 (같은 도메인 요청)');
+      return callback(null, true);
     }
+    
+    // 허용된 origin인지 확인
+    if (allowedOrigins.includes(origin)) {
+      console.log('CORS: 허용된 origin:', origin);
+      return callback(null, true);
+    }
+    
+    // 디버깅: 차단된 origin 로깅
+    console.log('CORS: 차단된 origin:', origin);
+    console.log('CORS: 허용된 origins:', allowedOrigins);
+    callback(new Error('CORS 정책에 의해 차단되었습니다'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
