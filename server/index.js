@@ -20,13 +20,26 @@ console.log('허용된 Origins:', allowedOrigins);
 console.log('CLIENT_URL:', process.env.CLIENT_URL);
 
 // CORS 헤더를 모든 응답에 추가하는 미들웨어 (에러 응답 포함)
+// 이 미들웨어는 모든 요청에 대해 먼저 실행되어 CORS 헤더를 설정
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  console.log('CORS 미들웨어 - Origin:', origin);
+  console.log('CORS 미들웨어 - 허용된 Origins:', allowedOrigins);
+  
+  if (origin) {
+    // 허용된 origin이거나, 디버깅을 위해 일단 설정
+    if (allowedOrigins.includes(origin)) {
+      console.log('CORS 미들웨어 - 허용된 origin에 CORS 헤더 설정');
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    } else {
+      // 허용되지 않았지만 디버깅을 위해 설정
+      console.log('CORS 미들웨어 - 허용 목록에 없지만 CORS 헤더 설정 (디버깅)');
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
   }
   next();
 });
