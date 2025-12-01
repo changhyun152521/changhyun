@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const api = axios.create({
-  baseURL: '/api', // Vite proxy를 통해 서버로 전달
+  baseURL: import.meta.env.VITE_API_URL || '/api', // 프로덕션: Vercel 환경변수, 개발: proxy
   headers: {
     'Content-Type': 'application/json',
   },
