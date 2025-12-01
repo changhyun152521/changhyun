@@ -590,7 +590,7 @@ function AdminClassMonthlyStatisticsDetail() {
           ) && (
             <div 
               className="monthly-table-container admin-table-wrapper" 
-              style={{ marginTop: '2rem' }}
+              style={{ marginTop: '2rem', cursor: isSummaryDragging ? 'grabbing' : 'grab' }}
               ref={summaryTableWrapperRef}
               onMouseDown={(e) => {
                 if (summaryTableWrapperRef.current && e.button === 0) {
@@ -628,7 +628,6 @@ function AdminClassMonthlyStatisticsDetail() {
                 setIsSummaryDragging(false);
                 setActiveTableRef(null);
               }}
-              style={{ cursor: isSummaryDragging ? 'grabbing' : 'grab' }}
             >
               <h2 className="section-title">월말평가</h2>
               <table className="monthly-table admin-monthly-table">
