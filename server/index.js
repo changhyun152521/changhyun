@@ -58,10 +58,12 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // 디버깅: 차단된 origin 로깅
-    console.log('CORS: 차단된 origin:', origin);
+    // 허용 목록에 없어도 일단 허용 (환경변수 설정 문제 해결 전까지)
+    // TODO: 환경변수 CLIENT_URL 설정 후 이 부분 제거
+    console.log('CORS: 허용 목록에 없지만 임시로 허용:', origin);
     console.log('CORS: 허용된 origins:', allowedOrigins);
-    callback(new Error('CORS 정책에 의해 차단되었습니다'));
+    console.log('CORS: CLIENT_URL 환경변수:', process.env.CLIENT_URL);
+    return callback(null, true); // 에러를 던지지 않고 허용
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
