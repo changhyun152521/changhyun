@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Notice = require('../models/Notice');
 const User = require('../models/User');
 
@@ -8,14 +9,28 @@ exports.getAllNotices = async (req, res) => {
     const limit = parseInt(req.query.limit) || 8;
     const skip = (page - 1) * limit;
 
+    // MongoDB 연결 확인
+    if (!mongoose.connection.readyState) {
+      console.error('MongoDB 연결이 끊어졌습니다');
+      return res.status(500).json({
+        success: false,
+        error: '데이터베이스 연결 오류가 발생했습니다',
+      });
+    }
+
     const totalNotices = await Notice.countDocuments();
     const totalPages = Math.ceil(totalNotices / limit);
 
     const notices = await Notice.find()
-      .populate('author', 'name userId')
+      .populate({
+        path: 'author',
+        select: 'name userId',
+        options: { lean: true } // populate 실패 시에도 에러가 발생하지 않도록
+      })
       .sort({ createdAt: -1 }) // 최신순 정렬
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean(); // 성능 향상 및 에러 방지
 
     res.json({
       success: true,
@@ -27,10 +42,11 @@ exports.getAllNotices = async (req, res) => {
     });
   } catch (error) {
     console.error('공지사항 조회 오류:', error);
+    console.error('에러 스택:', error.stack);
     res.status(500).json({
       success: false,
       error: '공지사항을 가져오는 중 오류가 발생했습니다',
-      message: error.message,
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 };
