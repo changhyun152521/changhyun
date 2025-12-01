@@ -7,9 +7,24 @@ exports.getAllPreviewCourses = async (req, res) => {
     console.log('요청 URL:', req.url);
     console.log('요청 메서드:', req.method);
     
+    // MongoDB 연결 확인
+    const mongoose = require('mongoose');
+    if (!mongoose.connection.readyState) {
+      console.error('MongoDB 연결이 끊어졌습니다');
+      return res.status(500).json({
+        success: false,
+        error: '데이터베이스 연결 오류가 발생했습니다',
+      });
+    }
+    
     const previewCourses = await PreviewCourse.find()
-      .populate('createdBy', 'userId name email userType')
-      .sort({ createdAt: -1 });
+      .populate({
+        path: 'createdBy',
+        select: 'userId name email userType',
+        options: { lean: true } // populate 실패 시에도 에러가 발생하지 않도록
+      })
+      .sort({ createdAt: -1 })
+      .lean(); // 성능 향상 및 에러 방지
     
     console.log('맛보기강좌 개수:', previewCourses.length);
     console.log('맛보기강좌 데이터:', previewCourses.map(c => ({ id: c._id, title: c.title })));
@@ -31,7 +46,7 @@ exports.getAllPreviewCourses = async (req, res) => {
     res.status(500).json({
       success: false,
       error: '맛보기강좌 목록을 가져오는 중 오류가 발생했습니다',
-      message: error.message,
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 };
