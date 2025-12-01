@@ -21,7 +21,7 @@ exports.getAllPreviewCourses = async (req, res) => {
       .populate({
         path: 'createdBy',
         select: 'userId name email userType',
-        options: { lean: true } // populate 실패 시에도 에러가 발생하지 않도록
+        strictPopulate: false // 참조가 없어도 에러 발생하지 않도록
       })
       .sort({ createdAt: -1 })
       .lean(); // 성능 향상 및 에러 방지

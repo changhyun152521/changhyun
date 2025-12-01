@@ -19,6 +19,18 @@ console.log('=== CORS 설정 ===');
 console.log('허용된 Origins:', allowedOrigins);
 console.log('CLIENT_URL:', process.env.CLIENT_URL);
 
+// CORS 헤더를 모든 응답에 추가하는 미들웨어 (에러 응답 포함)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  }
+  next();
+});
+
 app.use(cors({
   origin: (origin, callback) => {
     // origin이 없으면 (같은 도메인 요청 등) 허용
@@ -170,6 +182,8 @@ app.use((err, req, res, next) => {
   console.error('요청 경로:', req.path);
   console.error('요청 URL:', req.url);
   console.error('요청 메서드:', req.method);
+  console.error('요청 Origin:', req.headers.origin);
+  console.error('요청 Headers:', JSON.stringify(req.headers, null, 2));
   if (req.body && Object.keys(req.body).length > 0) {
     console.error('요청 body:', JSON.stringify(req.body, null, 2));
   }
