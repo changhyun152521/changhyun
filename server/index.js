@@ -207,11 +207,13 @@ app.use((err, req, res, next) => {
     return next(err);
   }
   
-  // CORS 헤더 설정 (에러 응답에도 필요)
+  // CORS 헤더 설정 (에러 응답에도 반드시 필요)
   const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   }
   
   // Content-Type을 명시적으로 설정하고 JSON 형식으로 응답
