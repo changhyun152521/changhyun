@@ -36,10 +36,9 @@ app.use(express.urlencoded({ extended: true }));
 // MongoDB 연결
 const connectDB = async () => {
   try {
-    // 기본적으로 Atlas 주소 사용
-    // MONGODB_ATLAS_URL 환경 변수가 없을 때만 로컬 주소 사용
-    const defaultAtlasUri = 'mongodb+srv://ckdgusrns:a5277949@changhyunlee.px06mux.mongodb.net/mathchang';
-    const mongoUri = process.env.MONGODB_ATLAS_URL || defaultAtlasUri || 'mongodb://localhost:27017/mathchang';
+    // 기본적으로 MONGODB_ATLAS_URL 환경 변수 사용
+    // MONGODB_ATLAS_URL이 없을 때만 로컬 주소 사용
+    const mongoUri = process.env.MONGODB_ATLAS_URL || 'mongodb://localhost:27017/mathchang';
     const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB 연결 성공: ${conn.connection.host}`);
   } catch (error) {
