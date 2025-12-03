@@ -183,6 +183,12 @@
   perspective: 1000px;
 }
 
+/* 첫 카드가 아닌 카드들은 초기 상태를 보이는 상태로 설정 */
+.testimonial-card.no-initial-animation {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotateX(0deg);
+}
+
 .testimonial-card.animate-in {
   opacity: 1;
   transform: translateY(0) scale(1) rotateX(0deg);

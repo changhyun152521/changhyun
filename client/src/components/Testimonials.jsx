@@ -174,7 +174,7 @@ function Testimonials() {
     };
   }, []); // 의존성 배열을 비워서 마운트 시 한 번만 등록
 
-  // IntersectionObserver를 사용한 스크롤 애니메이션
+  // IntersectionObserver를 사용한 스크롤 애니메이션 (첫 카드만)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -191,11 +191,15 @@ function Testimonials() {
       observer.observe(headerRef.current);
     }
 
+    // 첫 카드(index 0)만 관찰
+    if (cardsRef.current[0]) {
+      observer.observe(cardsRef.current[0]);
+    }
+
+    // 나머지 카드들은 초기 상태를 보이는 상태로 설정
     cardsRef.current.forEach((ref, index) => {
-      if (ref) {
-        setTimeout(() => {
-          observer.observe(ref);
-        }, index * 150);
+      if (ref && index > 0) {
+        ref.classList.add('no-initial-animation');
       }
     });
 
@@ -203,9 +207,9 @@ function Testimonials() {
       if (headerRef.current) {
         observer.unobserve(headerRef.current);
       }
-      cardsRef.current.forEach((ref) => {
-        if (ref) observer.unobserve(ref);
-      });
+      if (cardsRef.current[0]) {
+        observer.unobserve(cardsRef.current[0]);
+      }
     };
   }, []);
 

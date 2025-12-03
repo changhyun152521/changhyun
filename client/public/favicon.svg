@@ -8,10 +8,13 @@
     <filter id="shadow">
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
     </filter>
+    <filter id="textShadow">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
   </defs>
   <!-- 배경 원 -->
   <circle cx="50" cy="50" r="45" fill="url(#grad)" filter="url(#shadow)"/>
   <!-- CH 텍스트 - 잘 보이도록 크고 굵게 -->
-  <text x="50" y="62" font-family="Arial, sans-serif" font-size="36" font-weight="900" fill="white" text-anchor="middle" filter="url(#shadow)" letter-spacing="-2">CH</text>
+  <text x="50" y="67" font-family="Arial, sans-serif" font-size="46" font-weight="700" fill="white" text-anchor="middle" filter="url(#textShadow)" letter-spacing="-1.5" stroke="#ffffff" stroke-width="0.3">CH</text>
 </svg>
 

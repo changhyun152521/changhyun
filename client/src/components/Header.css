@@ -574,8 +574,9 @@
 
   /* 모바일에서 드롭다운이 활성화된 상위메뉴 스타일 */
   .nav.active .nav-item.dropdown.active .nav-link {
-    background: rgba(33, 150, 243, 0.08);
-    color: #2196F3;
+    background: rgba(33, 150, 243, 0.10);
+    color: #1976D2;
+    font-weight: 600;
   }
 
   /* 모바일에서 드롭다운 메뉴 */
@@ -587,11 +588,11 @@
     transform: none;
     box-shadow: none;
     border: none;
-    border-top: 1px solid rgba(33, 150, 243, 0.1);
+    border-top: 1px solid rgba(33, 150, 243, 0.15);
     border-radius: 0;
     margin-top: 0;
     padding: 0;
-    background: rgba(33, 150, 243, 0.03);
+    background: rgba(33, 150, 243, 0.06);
     overflow: hidden;
     transition: all 0.3s ease;
   }
@@ -601,21 +602,25 @@
     visibility: visible;
     max-height: 500px;
     padding: 0.5rem 0;
+    background: rgba(33, 150, 243, 0.05);
   }
 
   .nav.active .dropdown-link {
     padding: 0.75rem 20px 0.75rem 3rem;
     font-size: 0.9rem;
+    color: #2b2d42;
+    font-weight: 500;
   }
 
   /* 드롭다운 메뉴의 마지막 항목에만 border-bottom 추가 */
   .nav.active .dropdown-menu li:last-child .dropdown-link {
-    border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+    border-bottom: 1px solid rgba(33, 150, 243, 0.15);
   }
 
   .nav.active .dropdown-link:hover {
     padding-left: 3.5rem;
-    background: rgba(33, 150, 243, 0.08);
+    background: rgba(33, 150, 243, 0.12);
+    color: #1976D2;
   }
 
   .header-content {
