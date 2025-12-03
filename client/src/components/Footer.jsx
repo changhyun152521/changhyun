@@ -13,7 +13,7 @@ function Footer() {
             />
           </div>
           <div className="footer-info">
-            <p className="footer-text">&copy; 2025 이창현수학. All rights reserved.</p>
+            <p className="footer-text">&copy; 이창현수학. All rights reserved.</p>
             <p className="footer-contact">연락처 | 010-9903-7949</p>
           </div>
         </div>
