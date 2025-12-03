@@ -79,7 +79,7 @@ h2.page-title {
   flex: 1;
   padding: 2rem;
   padding-top: 65px;
-  background: #fafafa;
+  background: #fcfcfc;
   min-height: calc(100vh - 80px);
 }
 

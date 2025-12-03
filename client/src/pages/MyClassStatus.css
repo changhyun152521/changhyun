@@ -128,7 +128,10 @@
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   max-width: 600px;
-  margin: 0 auto;
+  margin-top: 2rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
 }
 
 .login-prompt-icon {
@@ -190,7 +193,10 @@
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   max-width: 600px;
-  margin: 0 auto;
+  margin-top: 2rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
 }
 
 .student-only-message-icon {
@@ -235,7 +241,10 @@
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   max-width: 600px;
-  margin: 0 auto;
+  margin-top: 2rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
 }
 
 .parent-only-message-icon {
@@ -279,7 +288,7 @@
   background: #ffffff;
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  max-width: 600px;
+  max-width: 550px;
   margin: 0 auto;
 }
 

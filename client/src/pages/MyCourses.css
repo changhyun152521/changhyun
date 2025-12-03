@@ -25,11 +25,10 @@
 .my-courses-section .page-header {
   text-align: center;
   margin-bottom: 30px;
+  padding-bottom: 0.75rem;
   position: relative;
   z-index: 1;
-  border: none !important;
-  border-bottom: none !important;
-  border-top: none !important;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
 }
 
 .my-courses-section .page-header::after,
@@ -97,7 +96,8 @@
   font-size: 1.1rem;
   color: #6c757d;
   max-width: 700px;
-  margin: 0 auto;
+  margin: 0.5rem auto 0;
+  margin-bottom: 0;
   line-height: 1.6;
   text-align: center;
   display: block;
@@ -189,7 +189,10 @@
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   max-width: 600px;
-  margin: 0 auto;
+  margin-top: 2rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
 }
 
 .no-courses-icon {
@@ -259,6 +262,8 @@
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
   gap: 0.8rem;
 }
 
@@ -672,14 +677,20 @@
 }
 
 /* 로그인 유도 화면 */
+.my-courses-section .login-prompt,
+.my-courses-container .login-prompt,
 .login-prompt {
   text-align: center;
   padding: 4rem 2rem;
   background: #ffffff;
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 450px !important;
+  width: 450px !important;
+  margin-top: 2rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 0 !important;
 }
 
 .login-prompt-icon {
@@ -740,8 +751,11 @@
   background: #ffffff;
   border-radius: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 550px;
+  margin-top: 2rem !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
 }
 
 .parent-message-icon {
@@ -839,32 +853,55 @@
 
   /* 모바일에서 메시지 아이콘 및 텍스트 크기 조정 */
   .login-prompt-icon,
-  .parent-message-icon,
-  .no-courses-icon {
+  .parent-message-icon {
     width: 60px;
     height: 60px;
     font-size: 2rem;
     margin-bottom: 1rem;
   }
 
+  .no-courses-icon {
+    width: 70px !important;
+    height: 70px !important;
+    font-size: 1.95rem !important;
+    margin-bottom: 1rem !important;
+  }
+
   .login-prompt h2,
-  .parent-message h2,
-  .no-courses-container h2 {
+  .parent-message h2 {
     font-size: 1.3rem;
     margin-bottom: 0.75rem;
   }
 
+  .no-courses-container h2 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
   .login-prompt p,
-  .parent-message p,
-  .no-courses-container p {
+  .parent-message p {
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
   }
 
+  .no-courses-container p {
+    font-size: 0.9rem !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .my-courses-section .login-prompt,
+  .my-courses-container .login-prompt,
   .login-prompt,
-  .parent-message,
-  .no-courses-container {
+  .parent-message {
     padding: 2rem 1.5rem;
+    max-width: 95% !important;
+    width: 95% !important;
+  }
+
+  .no-courses-container {
+    padding: 2rem 2rem !important;
+    max-width: 95% !important;
   }
 
   .btn-login-prompt {
