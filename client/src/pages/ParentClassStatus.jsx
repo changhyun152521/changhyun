@@ -87,9 +87,11 @@ function ParentClassStatus() {
           <div className="container">
             <div className="page-header">
               <div className="page-header-icon">
-                <i className="fas fa-chalkboard-teacher"></i>
+                <img src="/010.png" alt="이창현수학" className="page-header-icon-img" />
               </div>
-              <h1 className="page-title">수업현황</h1>
+              <div className="page-title">
+                <img src="/010 - 복사본.png" alt="수업현황" className="page-title-img" />
+              </div>
               <p className="page-description">
                 내 자녀의 수업 현황을 확인할 수 있습니다.
               </p>
@@ -123,9 +125,11 @@ function ParentClassStatus() {
           <div className="container">
             <div className="page-header">
               <div className="page-header-icon">
-                <i className="fas fa-chalkboard-teacher"></i>
+                <img src="/010.png" alt="이창현수학" className="page-header-icon-img" />
               </div>
-              <h1 className="page-title">수업현황</h1>
+              <div className="page-title">
+                <img src="/010 - 복사본.png" alt="수업현황" className="page-title-img" />
+              </div>
               <p className="page-description">
                 내 자녀의 수업 현황을 확인할 수 있습니다.
               </p>
@@ -177,9 +181,11 @@ function ParentClassStatus() {
         <div className="container">
           <div className="page-header">
             <div className="page-header-icon">
-              <i className="fas fa-chalkboard-teacher"></i>
+              <img src="/010.png" alt="이창현수학" className="page-header-icon-img" />
             </div>
-            <h1 className="page-title">수업현황</h1>
+            <div className="page-title">
+              <img src="/010 - 복사본.png" alt="수업현황" className="page-title-img" />
+            </div>
             <p className="page-description">
               내 자녀의 수업 현황을 확인할 수 있습니다.
             </p>

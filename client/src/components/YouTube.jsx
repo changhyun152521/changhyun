@@ -97,9 +97,11 @@ function YouTube() {
       <div className="container">
         <div className="youtube-header" ref={headerRef}>
           <div className="youtube-icon">
-            <i className="fab fa-youtube"></i>
+            <img src="/메인5.png" alt="이창현수학" className="youtube-icon-img" />
           </div>
-          <h2 className="section-title">맛보기 영상</h2>
+          <div className="section-title">
+            <img src="/메인5 - 복사본.png" alt="맛보기 강좌" className="section-title-img" />
+          </div>
           <p className="section-description">
             수학 강의 영상을 먼저 확인해보세요
           </p>

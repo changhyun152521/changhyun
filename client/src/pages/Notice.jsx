@@ -126,9 +126,13 @@ function Notice() {
       <div className="notice-container">
         <div className="notice-content">
           <div className="page-header-section">
-            <div className="title-section" style={{ marginBottom: '35px', marginTop: '20px' }}>
-              <i className="fas fa-bullhorn title-icon" style={{ marginBottom: '8px' }}></i>
-              <h1 className="page-title">공지사항</h1>
+            <div className="title-section" style={{ marginBottom: '25px', marginTop: '10px' }}>
+              <div className="title-icon">
+                <img src="/013.png" alt="공지사항 아이콘" className="title-icon-img" />
+              </div>
+              <div className="page-title">
+                <img src="/013 - 복사본.png" alt="공지사항" className="page-title-img" />
+              </div>
             </div>
           </div>
           <div className="header-actions">

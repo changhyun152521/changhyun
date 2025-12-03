@@ -46,7 +46,7 @@
 
 .steps-header {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 50px;
   position: relative;
   z-index: 1;
   opacity: 0;
@@ -69,28 +69,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #2196F3, #42A5F5);
-  border-radius: 50%;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
+  width: 100px;
+  height: 100px;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 0.75rem;
+  box-shadow: none;
   animation: pulse 2s ease-in-out infinite, float 3s ease-in-out infinite;
   position: relative;
 }
 
 .steps-header-icon::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2196F3, #42A5F5);
-  opacity: 0.3;
-  z-index: -1;
-  animation: ripple 2s ease-out infinite;
+  display: none;
 }
 
 @keyframes float {
@@ -103,19 +93,19 @@
   100% { transform: scale(1.5); opacity: 0; }
 }
 
-.steps-header-icon i {
-  font-size: 2.5rem;
-  color: #ffffff;
+.steps-header-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 12px 35px rgba(33, 150, 243, 0.4);
   }
 }
 
@@ -124,8 +114,6 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 700;
-  color: #2b2d42;
   margin: 0;
   position: relative;
   animation: fadeInUp 1s ease-out 0.5s both;
@@ -142,15 +130,11 @@
   }
 }
 
-.heading-main {
-  font-size: 2rem;
-  line-height: 1.3;
-}
-
-.heading-sub {
-  font-size: 1.5rem;
-  color: #2196F3;
-  font-weight: 600;
+.section-heading-img {
+  max-width: 360px;
+  width: auto;
+  height: auto;
+  display: block;
 }
 
 .steps-grid {
@@ -350,21 +334,26 @@
   }
 
   .steps-header-icon {
-    width: 50px;
-    height: 50px;
+    width: 85px;
+    height: 85px;
     margin-bottom: 1.2rem;
   }
 
-  .steps-header-icon i {
-    font-size: 1.5rem;
+  .steps-header-icon {
+    width: 75px;
+    height: 75px;
+    margin-bottom: 0.9rem;
   }
 
-  .heading-main {
-    font-size: 1.6rem;
+  .steps-header-icon-img {
+    width: 100%;
+    height: 100%;
   }
 
-  .heading-sub {
-    font-size: 1.3rem;
+  .section-heading-img {
+    max-width: 240px;
+    width: auto;
+    height: auto;
   }
 
   .steps-grid {

@@ -27,6 +27,10 @@ function MyMonthlyStatisticsDetail() {
 
   const checkAuthAndFetchData = async () => {
     try {
+      // 초기화
+      setMonthlyData([]);
+      setError('');
+      
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
       
@@ -52,18 +56,24 @@ function MyMonthlyStatisticsDetail() {
     } catch (error) {
       console.error('데이터 가져오기 오류:', error);
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
+      setMonthlyData([]);
       if (error.response?.status === 401) {
         alert('로그인이 필요합니다.');
         navigate('/login');
       }
     } finally {
-      setLoading(false);
+      // fetchMonthlyData가 실행될 때까지 loading을 유지하지 않음
+      // fetchMonthlyData에서 자체적으로 loading을 관리
     }
   };
 
   const fetchMonthlyData = async () => {
     try {
+      // 초기화
+      setMonthlyData([]);
+      setError('');
       setLoading(true);
+      
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
       const userData = JSON.parse(userStr);
@@ -119,6 +129,11 @@ function MyMonthlyStatisticsDetail() {
     } catch (error) {
       console.error('월별 데이터 가져오기 오류:', error);
       setError('월별 데이터를 불러오는 중 오류가 발생했습니다.');
+      setMonthlyData([]);
+      if (error.response?.status === 401) {
+        alert('로그인이 필요합니다.');
+        navigate('/login');
+      }
     } finally {
       setLoading(false);
     }

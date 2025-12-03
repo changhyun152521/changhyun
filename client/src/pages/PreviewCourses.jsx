@@ -107,9 +107,11 @@ function PreviewCourses() {
         <div className="container">
           <div className="page-header">
             <div className="page-header-icon">
-              <i className="fas fa-play-circle"></i>
+              <img src="/008.png" alt="이창현수학" className="page-header-icon-img" />
             </div>
-            <h1 className="page-title">맛보기강좌</h1>
+            <div className="page-title">
+              <img src="/008 - 복사본.png" alt="맛보기강좌" className="page-title-img" />
+            </div>
             <p className="page-description">이창현수학 강좌를 미리 확인해보세요</p>
           </div>
           
@@ -130,7 +132,10 @@ function PreviewCourses() {
           ) : (
             <>
               <div className="courses-header">
-                <p className="courses-count">총 {previewCourses.length}개의 맛보기강좌</p>
+                <p className="courses-count">
+                  <i className="fas fa-video"></i>
+                  <span>총 {previewCourses.length}개의 맛보기강좌</span>
+                </p>
               </div>
               <div className="courses-grid">
                 {previewCourses.map((course) => {

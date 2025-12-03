@@ -492,6 +492,10 @@ function ParentClassStatusDetail() {
                 </thead>
                 <tbody>
                   <tr>
+                    <td className="table-label">날짜</td>
+                    <td className="table-value">{selectedDate ? formatDateForDisplay(selectedDate) : '날짜 없음'}</td>
+                  </tr>
+                  <tr>
                     <td className="table-label">진도</td>
                     <td className="table-value">{classRecord?.progress || '기록 없음'}</td>
                   </tr>

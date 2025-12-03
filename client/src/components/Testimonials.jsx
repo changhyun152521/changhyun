@@ -214,9 +214,11 @@ function Testimonials() {
       <div className="container">
         <div className="testimonials-header" ref={headerRef}>
           <div className="testimonials-icon">
-            <i className="fas fa-star"></i>
+            <img src="/메인2.png" alt="이창현수학" className="testimonials-icon-img" />
           </div>
-          <h2 className="section-title">창현T 수강생의 수강후기</h2>
+          <div className="section-title">
+            <img src="/메인2 - 복사본.png" alt="창현T 수강생의 수강후기" className="section-title-img" />
+          </div>
         </div>
         <div className="testimonials-carousel-wrapper">
           <button 

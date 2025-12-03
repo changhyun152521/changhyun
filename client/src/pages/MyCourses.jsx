@@ -143,9 +143,11 @@ function MyCourses() {
           <div className="my-courses-container">
             <div className="page-header">
               <div className="page-header-icon">
-                <i className="fas fa-book-reader"></i>
+                <img src="/009.png" alt="이창현수학" className="page-header-icon-img" />
               </div>
-              <h1 className="page-title">내강좌</h1>
+              <div className="page-title">
+                <img src="/009 - 복사본.png" alt="내강좌" className="page-title-img" />
+              </div>
               <p className="page-description">등록된 강좌를 확인하고 학습을 시작하세요</p>
             </div>
             <div className="login-prompt">
@@ -177,9 +179,11 @@ function MyCourses() {
           <div className="my-courses-container">
             <div className="page-header">
               <div className="page-header-icon">
-                <i className="fas fa-book-reader"></i>
+                <img src="/009.png" alt="이창현수학" className="page-header-icon-img" />
               </div>
-              <h1 className="page-title">내강좌</h1>
+              <div className="page-title">
+                <img src="/009 - 복사본.png" alt="내강좌" className="page-title-img" />
+              </div>
               <p className="page-description">등록된 강좌를 확인하고 학습을 시작하세요</p>
             </div>
             <div className="parent-message">
@@ -204,9 +208,11 @@ function MyCourses() {
         <div className="my-courses-container">
           <div className="page-header">
             <div className="page-header-icon">
-              <i className="fas fa-book-reader"></i>
+              <img src="/009.png" alt="이창현수학" className="page-header-icon-img" />
             </div>
-            <h1 className="page-title">내강좌</h1>
+            <div className="page-title">
+              <img src="/009 - 복사본.png" alt="내강좌" className="page-title-img" />
+            </div>
             <p className="page-description">등록된 강좌를 확인하고 학습을 시작하세요</p>
           </div>
           
@@ -227,7 +233,10 @@ function MyCourses() {
           ) : (
             <>
               <div className="courses-header">
-                <p className="courses-count">총 {courses.length}개의 강좌</p>
+                <p className="courses-count">
+                  <i className="fas fa-book-open"></i>
+                  <span>총 {courses.length}개의 강좌</span>
+                </p>
               </div>
               <div className="courses-grid">
                 {courses.map((course) => (

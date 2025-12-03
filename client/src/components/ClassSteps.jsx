@@ -61,12 +61,11 @@ function ClassSteps() {
       <div className="container">
         <div className="steps-header">
           <div className="steps-header-icon">
-            <i className="fas fa-check-circle"></i>
+            <img src="/메인1.png" alt="이창현수학" className="steps-header-icon-img" />
           </div>
-          <h2 className="section-heading">
-            <span className="heading-main">수업 완성도 100%</span>
-            <span className="heading-sub">안정감 있게!</span>
-          </h2>
+          <div className="section-heading">
+            <img src="/메인1 - 복사본.png" alt="수업 완성도 100% 안정감 있게!" className="section-heading-img" />
+          </div>
         </div>
         <div className="steps-grid">
           {steps.map((step, index) => (

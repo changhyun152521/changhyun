@@ -18,26 +18,33 @@ function MyMonthlyStatistics() {
 
   const checkAuthAndFetchData = async () => {
     try {
+      // 초기화
+      setClasses([]);
+      setError('');
+      
       // 로그인 상태 확인
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
       
       if (!token || !userStr) {
         // 비회원인 경우 로그인 유도
+        setUser(null);
         setLoading(false);
         return;
       }
 
       const userData = JSON.parse(userStr);
-      setUser(userData);
 
       // 학생회원이 아닌 경우는 메시지만 표시
       if (userData.userType !== '학생') {
+        setUser(userData);
         setLoading(false);
         return;
       }
 
-      // 학생회원인 경우에만 데이터 로드
+      // 학생회원인 경우에만 사용자 정보 설정 및 데이터 로드
+      setUser(userData);
+      
       // 사용자 정보 가져오기 (반 정보 포함)
       const response = await api.get(`/users/${userData._id}`);
       if (response.data.success) {
@@ -55,11 +62,15 @@ function MyMonthlyStatistics() {
             .map(res => res.data.data);
           
           setClasses(classesData);
+        } else {
+          // 반 정보가 없는 경우 빈 배열로 설정
+          setClasses([]);
         }
       }
     } catch (error) {
       console.error('데이터 가져오기 오류:', error);
       setError('데이터를 불러오는 중 오류가 발생했습니다.');
+      setClasses([]);
       if (error.response?.status === 401) {
         // 로그인 만료 시 사용자 정보 초기화
         localStorage.removeItem('token');
@@ -87,9 +98,11 @@ function MyMonthlyStatistics() {
           <div className="container">
             <div className="page-header">
               <div className="page-header-icon">
-                <i className="fas fa-chart-bar"></i>
+                <img src="/011.png" alt="이창현수학" className="page-header-icon-img" />
               </div>
-              <h1 className="page-title">월별통계</h1>
+              <div className="page-title">
+                <img src="/011 - 복사본.png" alt="월별통계" className="page-title-img" />
+              </div>
               <p className="page-description">
                 등록된 반의 월별 통계를 확인할 수 있습니다.
               </p>
@@ -123,9 +136,11 @@ function MyMonthlyStatistics() {
           <div className="container">
             <div className="page-header">
               <div className="page-header-icon">
-                <i className="fas fa-chart-bar"></i>
+                <img src="/011.png" alt="이창현수학" className="page-header-icon-img" />
               </div>
-              <h1 className="page-title">월별통계</h1>
+              <div className="page-title">
+                <img src="/011 - 복사본.png" alt="월별통계" className="page-title-img" />
+              </div>
               <p className="page-description">
                 등록된 반의 월별 통계를 확인할 수 있습니다.
               </p>
@@ -177,9 +192,11 @@ function MyMonthlyStatistics() {
         <div className="container">
           <div className="page-header">
             <div className="page-header-icon">
-              <i className="fas fa-chart-bar"></i>
+              <img src="/011.png" alt="이창현수학" className="page-header-icon-img" />
             </div>
-            <h1 className="page-title">월별통계</h1>
+            <div className="page-title">
+              <img src="/011 - 복사본.png" alt="월별통계" className="page-title-img" />
+            </div>
             <p className="page-description">
               등록된 반의 월별 통계를 확인할 수 있습니다.
             </p>

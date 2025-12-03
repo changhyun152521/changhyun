@@ -68,10 +68,12 @@ function Services() {
       <div className="container">
         <div className="services-header" ref={headerRef}>
           <div className="services-header-icon">
-            <i className="fas fa-chalkboard-teacher"></i>
+            <img src="/메인3.png" alt="이창현수학" className="services-header-icon-img" />
           </div>
           <div className="services-text">
-            <h2 className="section-title">제 수업</h2>
+            <div className="section-title">
+              <img src="/메인3 - 복사본.png" alt="제 수업" className="section-title-img" />
+            </div>
             <p className="section-description">
               체계적인 커리큘럼과 문제 해결 중심의 수업으로 학생들의 수학적 사고력을 향상시킵니다.
             </p>

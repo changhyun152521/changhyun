@@ -37,6 +37,8 @@ function Attendance() {
   });
   const [showFormForm, setShowFormForm] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showCommentDetailModal, setShowCommentDetailModal] = useState(false);
+  const [selectedCommentForModal, setSelectedCommentForModal] = useState(null);
   const [replyingToId, setReplyingToId] = useState(null);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
@@ -157,13 +159,21 @@ function Attendance() {
   };
 
   const toggleExpand = (commentId) => {
-    if (expandedId === commentId) {
-      setExpandedId(null);
-      setEditingId(null);
-    } else {
-      setExpandedId(commentId);
-      setEditingId(null);
-    }
+    // 더 이상 사용하지 않음 - 모달로 대체
+  };
+
+  const openCommentDetailModal = (comment) => {
+    setSelectedCommentForModal(comment);
+    setShowCommentDetailModal(true);
+    setReplyingToId(null);
+    setEditingReplyId(null);
+  };
+
+  const closeCommentDetailModal = () => {
+    setShowCommentDetailModal(false);
+    setSelectedCommentForModal(null);
+    setReplyingToId(null);
+    setEditingReplyId(null);
   };
 
   const handleCourseChange = (e) => {
@@ -595,8 +605,12 @@ function Attendance() {
             {/* Comments List Section */}
             <section className="comments-section">
               <div className="title-section">
-                <i className="fas fa-comments title-icon"></i>
-                <h2 className="page-title">수강문의</h2>
+                <div className="title-icon">
+                  <img src="/012.png" alt="수강문의 아이콘" className="title-icon-img" />
+                </div>
+                <div className="page-title">
+                  <img src="/012 - 복사본.png" alt="수강문의" className="page-title-img" />
+                </div>
               </div>
               
               {error ? (
@@ -608,15 +622,13 @@ function Attendance() {
                   <p>아직 수강 댓글이 없습니다.<br />첫 번째 댓글을 작성해보세요! ✨</p>
                 </div>
               ) : (
-                <div className="comments-table-wrapper">
-                  <table className="comments-table">
+                <table className="comments-table">
                     <thead>
                       <tr>
                         <th>작성자</th>
                         <th>아이디</th>
-                        <th className="date-header"></th>
-                        <th className="reply-status-header"></th>
-                        <th className="arrow-header"></th>
+                        <th>작성일시</th>
+                        <th>답변상태</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -624,8 +636,9 @@ function Attendance() {
                         <React.Fragment key={comment._id}>
                           <tr 
                             key={comment._id} 
-                            className={`comment-row ${!comment.isPublic ? 'private-row' : ''} ${expandedId === comment._id ? 'expanded' : ''}`}
-                            onClick={() => toggleExpand(comment._id)}
+                            className={`comment-row ${!comment.isPublic ? 'private-row' : ''}`}
+                            onClick={() => openCommentDetailModal(comment)}
+                            style={{ cursor: 'pointer' }}
                           >
                             <td className="author-cell-td">
                               <div className="author-cell">
@@ -635,7 +648,9 @@ function Attendance() {
                                     : '*****'}
                                 </span>
                                 {!comment.isPublic && (
-                                  <span className="private-badge">🔒</span>
+                                  <span className="private-badge">
+                                    <i className="fas fa-lock"></i>
+                                  </span>
                                 )}
                               </div>
                             </td>
@@ -647,34 +662,19 @@ function Attendance() {
                             <td className="date-cell">{formatDate(comment.createdAt)}</td>
                             <td className="reply-status-cell">
                               {comment.reply && comment.reply.content ? (
-                                <span className="reply-status-badge">
+                                <span className="reply-status-badge reply-completed">
                                   <i className="fas fa-check-circle"></i>
                                   답변완료
                                 </span>
                               ) : (
-                                <span className="reply-status-empty">-</span>
+                                <span className="reply-status-badge reply-pending">
+                                  <i className="fas fa-clock"></i>
+                                  답변대기
+                                </span>
                               )}
                             </td>
-                            <td className="arrow-cell">
-                              <span className={`expand-icon ${expandedId === comment._id ? 'expanded' : ''}`}>
-                                ▼
-                              </span>
-                            </td>
                           </tr>
-                          {/* 모바일용 답변완료 행 */}
-                          {comment.reply && comment.reply.content && (
-                            <tr className="reply-status-row-mobile">
-                              <td colSpan="4" className="reply-status-cell-mobile">
-                                <div className="reply-status-container-mobile">
-                                  <span className="reply-status-badge-mobile">
-                                    <i className="fas fa-check-circle"></i>
-                                    답변완료
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          )}
-                          {expandedId === comment._id && (
+                          {false && (
                             <tr key={`${comment._id}-detail`} className="comment-detail-row">
                               <td colSpan="4" className="detail-cell">
                                 <div className="comment-detail-content">
@@ -829,7 +829,6 @@ function Attendance() {
                       ))}
                     </tbody>
                   </table>
-                </div>
               )}
 
               {/* 페이지네이션 */}
@@ -1153,6 +1152,223 @@ function Attendance() {
                         </tbody>
                       </table>
                     </form>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Modal for Comment Detail */}
+            {showCommentDetailModal && selectedCommentForModal && (
+              <div className="modal-overlay" onClick={closeCommentDetailModal}>
+                <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h2 className="modal-title">
+                      <i className="fas fa-comment-dots"></i>
+                      수강 문의 상세
+                    </h2>
+                    <button 
+                      type="button"
+                      className="modal-close-button"
+                      onClick={closeCommentDetailModal}
+                    >
+                      <i className="fas fa-times"></i>
+                    </button>
+                  </div>
+                  
+                  <div className="modal-body">
+                    <div className="comment-detail-content">
+                      <div className="detail-info-grid">
+                        <div className="detail-info-item">
+                          <span className="detail-label">작성자</span>
+                          <span className="detail-value">
+                            {canViewCommentContent(selectedCommentForModal) 
+                              ? (selectedCommentForModal.authorName || selectedCommentForModal.author?.name || '익명')
+                              : '*****'}
+                            {!selectedCommentForModal.isPublic && (
+                              <span className="private-badge">
+                                <i className="fas fa-lock"></i>
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                        <div className="detail-info-item">
+                          <span className="detail-label">아이디</span>
+                          <span className="detail-value">
+                            {canViewCommentContent(selectedCommentForModal) 
+                              ? (selectedCommentForModal.author?.userId || '-')
+                              : '********'}
+                          </span>
+                        </div>
+                        <div className="detail-info-item">
+                          <span className="detail-label">강좌명</span>
+                          <span className="detail-value">{selectedCommentForModal.courseName || '-'}</span>
+                        </div>
+                        <div className="detail-info-item">
+                          <span className="detail-label">강의명</span>
+                          <span className="detail-value">{selectedCommentForModal.className || '-'}</span>
+                        </div>
+                        <div className="detail-info-item">
+                          <span className="detail-label">공개</span>
+                          <span className={`detail-value ${!selectedCommentForModal.isPublic ? 'private-value' : ''}`}>
+                            {selectedCommentForModal.isPublic ? '공개' : '비공개'}
+                          </span>
+                        </div>
+                        <div className="detail-info-item">
+                          <span className="detail-label">작성일시</span>
+                          <span className="detail-value">{formatFullDate(selectedCommentForModal.createdAt)}</span>
+                        </div>
+                      </div>
+                      {canViewCommentContent(selectedCommentForModal) ? (
+                        <>
+                          <div className="detail-content-box">
+                            <p>{selectedCommentForModal.content}</p>
+                          </div>
+                          <div className="detail-actions">
+                            {isCommentOwner(selectedCommentForModal) && (
+                              <>
+                                <button onClick={(e) => { 
+                                  e.stopPropagation(); 
+                                  closeCommentDetailModal();
+                                  handleEdit(selectedCommentForModal); 
+                                }} className="btn-edit">수정</button>
+                                <button onClick={(e) => { 
+                                  e.stopPropagation(); 
+                                  closeCommentDetailModal();
+                                  handleDelete(selectedCommentForModal._id); 
+                                }} className="btn-delete">삭제</button>
+                              </>
+                            )}
+                            {isAdmin && !isCommentOwner(selectedCommentForModal) && (
+                              <button onClick={(e) => { 
+                                e.stopPropagation(); 
+                                closeCommentDetailModal();
+                                handleDelete(selectedCommentForModal._id); 
+                              }} className="btn-delete">삭제</button>
+                            )}
+                            {isAdmin && (
+                              <button 
+                                onClick={(e) => { 
+                                  e.stopPropagation(); 
+                                  if (replyingToId === selectedCommentForModal._id) {
+                                    setReplyingToId(null);
+                                    setReplyContent('');
+                                  } else {
+                                    setReplyingToId(selectedCommentForModal._id);
+                                    setReplyContent('');
+                                  }
+                                }} 
+                                className="btn-reply"
+                              >
+                                {selectedCommentForModal.reply && selectedCommentForModal.reply.content ? '답글 수정' : '답글 작성'}
+                              </button>
+                            )}
+                          </div>
+                          {/* 답글 표시 */}
+                          {selectedCommentForModal.reply && selectedCommentForModal.reply.content && (
+                            <div className="reply-section">
+                              <div className="reply-header">
+                                <span className="reply-label">관리자 답변</span>
+                                <span className="reply-date">{formatFullDate(selectedCommentForModal.reply.createdAt)}</span>
+                              </div>
+                              {editingReplyId === selectedCommentForModal._id ? (
+                                <div className="reply-edit-form">
+                                  <textarea
+                                    value={editReplyContent}
+                                    onChange={(e) => setEditReplyContent(e.target.value)}
+                                    placeholder="답글 내용을 입력하세요"
+                                    rows="3"
+                                  />
+                                  <div className="reply-edit-actions">
+                                    <button onClick={() => {
+                                      handleReplyEdit(selectedCommentForModal._id);
+                                    }} className="btn-edit">수정 완료</button>
+                                    <button onClick={() => { 
+                                      setEditingReplyId(null); 
+                                      setEditReplyContent(''); 
+                                    }} className="btn-cancel">취소</button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <>
+                                  <div className="reply-content">
+                                    <p>{selectedCommentForModal.reply.content}</p>
+                                  </div>
+                                  {isAdmin && (
+                                    <div className="reply-actions">
+                                      <button onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        setEditingReplyId(selectedCommentForModal._id);
+                                        setEditReplyContent(selectedCommentForModal.reply.content);
+                                      }} className="btn-edit-small">수정</button>
+                                      <button onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        handleReplyDelete(selectedCommentForModal._id); 
+                                      }} className="btn-delete-small">삭제</button>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+                          {/* 답글 작성 폼 */}
+                          {isAdmin && replyingToId === selectedCommentForModal._id && (
+                            <div className="reply-form-section">
+                              <div className="reply-form-header">
+                                <span className="reply-label">답글 작성</span>
+                              </div>
+                              <div className="reply-form">
+                                <textarea
+                                  value={replyContent}
+                                  onChange={(e) => setReplyContent(e.target.value)}
+                                  placeholder="답글 내용을 입력하세요"
+                                  rows="4"
+                                />
+                                <div className="reply-form-actions">
+                                  <button 
+                                    onClick={(e) => { 
+                                      e.stopPropagation(); 
+                                      handleReplySubmit(selectedCommentForModal._id);
+                                    }} 
+                                    className="btn-submit-reply"
+                                    disabled={!replyContent.trim() || isSubmittingReply}
+                                  >
+                                    {isSubmittingReply ? '작성 중...' : '답글 작성'}
+                                  </button>
+                                  <button 
+                                    onClick={(e) => { 
+                                      e.stopPropagation(); 
+                                      setReplyingToId(null);
+                                      setReplyContent('');
+                                    }} 
+                                    className="btn-cancel-reply"
+                                  >
+                                    취소
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <div className="detail-content-box restricted-content">
+                            <p className="restricted-message">
+                              🔒 이 댓글은 비공개로 설정되어 있습니다.<br />
+                              작성자와 관리자만 내용을 확인할 수 있습니다.
+                            </p>
+                          </div>
+                          {isAdmin && (
+                            <div className="detail-actions">
+                              <button onClick={(e) => { 
+                                e.stopPropagation(); 
+                                closeCommentDetailModal();
+                                handleDelete(selectedCommentForModal._id); 
+                              }} className="btn-delete">삭제</button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

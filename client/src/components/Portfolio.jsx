@@ -68,9 +68,11 @@ function Portfolio() {
       <div className="container">
         <div className="portfolio-header" ref={headerRef}>
           <div className="portfolio-icon">
-            <i className="fas fa-graduation-cap"></i>
+            <img src="/메인4.png" alt="이창현수학" className="portfolio-icon-img" />
           </div>
-          <h2 className="section-title">시그니쳐 강좌</h2>
+          <div className="section-title">
+            <img src="/메인4 - 복사본.png" alt="시그니쳐 강좌" className="section-title-img" />
+          </div>
           <p className="section-description">
             다양한 수학 주제와 문제 해결을 통해 학생들이 수학의 즐거움을 발견할 수 있도록 합니다.
           </p>
