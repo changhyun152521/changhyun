@@ -458,6 +458,10 @@ function Attendance() {
       if (response.data.success) {
         setReplyContent('');
         setReplyingToId(null);
+        // 모달이 열려있으면 선택된 댓글 업데이트
+        if (showCommentDetailModal && selectedCommentForModal && selectedCommentForModal._id === commentId) {
+          setSelectedCommentForModal(response.data.data);
+        }
         checkAdminAndFetchComments();
       } else {
         alert(response.data.error || '답글 작성 중 오류가 발생했습니다.');
@@ -483,6 +487,10 @@ function Attendance() {
       if (response.data.success) {
         setEditReplyContent('');
         setEditingReplyId(null);
+        // 모달이 열려있으면 선택된 댓글 업데이트
+        if (showCommentDetailModal && selectedCommentForModal && selectedCommentForModal._id === commentId) {
+          setSelectedCommentForModal(response.data.data);
+        }
         checkAdminAndFetchComments();
       } else {
         alert(response.data.error || '답글 수정 중 오류가 발생했습니다.');
@@ -501,6 +509,12 @@ function Attendance() {
     try {
       const response = await api.delete(`/attendance-comments/${commentId}/reply`);
       if (response.data.success) {
+        // 모달이 열려있으면 선택된 댓글 업데이트
+        if (showCommentDetailModal && selectedCommentForModal && selectedCommentForModal._id === commentId) {
+          const updatedComment = { ...selectedCommentForModal };
+          updatedComment.reply = undefined;
+          setSelectedCommentForModal(updatedComment);
+        }
         checkAdminAndFetchComments();
       } else {
         alert(response.data.error || '답글 삭제 중 오류가 발생했습니다.');
@@ -1245,21 +1259,16 @@ function Attendance() {
                                 handleDelete(selectedCommentForModal._id); 
                               }} className="btn-delete">삭제</button>
                             )}
-                            {isAdmin && (
+                            {isAdmin && !selectedCommentForModal.reply?.content && (
                               <button 
                                 onClick={(e) => { 
                                   e.stopPropagation(); 
-                                  if (replyingToId === selectedCommentForModal._id) {
-                                    setReplyingToId(null);
-                                    setReplyContent('');
-                                  } else {
-                                    setReplyingToId(selectedCommentForModal._id);
-                                    setReplyContent('');
-                                  }
+                                  setReplyingToId(selectedCommentForModal._id);
+                                  setReplyContent('');
                                 }} 
                                 className="btn-reply"
                               >
-                                {selectedCommentForModal.reply && selectedCommentForModal.reply.content ? '답글 수정' : '답글 작성'}
+                                답글 작성
                               </button>
                             )}
                           </div>

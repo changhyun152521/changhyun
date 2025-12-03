@@ -1,7 +1,34 @@
 const User = require('../models/User');
 const Class = require('../models/Class');
+const PrivacyLog = require('../models/PrivacyLog');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+// 개인정보 처리 로그 기록 헬퍼 함수
+const logPrivacyAction = async (userId, action, accessedBy, req, details = '') => {
+  try {
+    // IP 주소 추출 (프록시 환경 고려)
+    let ipAddress = req.ip;
+    if (!ipAddress || ipAddress === '::1' || ipAddress === '127.0.0.1') {
+      ipAddress = req.headers['x-forwarded-for']?.split(',')[0]?.trim() 
+        || req.headers['x-real-ip'] 
+        || req.connection?.remoteAddress 
+        || 'unknown';
+    }
+
+    await PrivacyLog.create({
+      userId,
+      action,
+      accessedBy: accessedBy || userId,
+      ipAddress,
+      userAgent: req.headers['user-agent'] || '',
+      details: details || '',
+    });
+  } catch (error) {
+    console.error('개인정보 처리 로그 기록 오류:', error);
+    // 로그 기록 실패해도 메인 작업은 계속 진행
+  }
+};
 
 // 모든 유저 조회
 exports.getAllUsers = async (req, res) => {
@@ -240,10 +267,17 @@ exports.createUserByAdmin = async (req, res) => {
       studentContact,
       parentContact,
       userType, // 사용자 유형 (학생, 학부모, 강사)
+      privacyAgreement: req.body.privacyAgreement || false,
+      privacyAgreementDate: req.body.privacyAgreement ? new Date() : null,
+      termsAgreement: req.body.termsAgreement || false,
+      termsAgreementDate: req.body.termsAgreement ? new Date() : null,
       // isAdmin은 pre-save hook에서 자동으로 설정됨 (강사일 때 true)
     });
 
     const savedUser = await user.save();
+    
+    // 개인정보 처리 로그 기록 (관리자에 의한 회원 생성)
+    await logPrivacyAction(savedUser._id, '생성', req.user?.id || savedUser._id, req, '관리자에 의한 회원 생성');
     
     // 학생인 경우 연동된 학부모 계정 자동 생성
     let parentUser = null;
@@ -277,10 +311,17 @@ exports.createUserByAdmin = async (req, res) => {
             parentContact: parentContact,
             userType: '학부모',
             isAdmin: false,
+            privacyAgreement: req.body.privacyAgreement || false,
+            privacyAgreementDate: req.body.privacyAgreement ? new Date() : null,
+            termsAgreement: req.body.termsAgreement || false,
+            termsAgreementDate: req.body.termsAgreement ? new Date() : null,
           });
 
           parentUser = await parentUserData.save();
           console.log('학부모 계정 자동 생성 완료:', parentUser.userId);
+          
+          // 학부모 계정 생성 로그 기록
+          await logPrivacyAction(parentUser._id, '생성', req.user?.id || parentUser._id, req, '관리자에 의한 학부모 계정 자동 생성');
         } else {
           parentUser = existingParent;
           console.log('학부모 계정이 이미 존재합니다:', existingParent.userId);
@@ -378,6 +419,7 @@ exports.createUser = async (req, res) => {
       studentContact,
       parentContact,
       userType,
+      privacyAgreement,
     } = req.body;
 
     // 필수 필드 검증
@@ -385,6 +427,22 @@ exports.createUser = async (req, res) => {
       return res.status(400).json({
         success: false,
         error: '모든 필수 필드를 입력해주세요',
+      });
+    }
+
+    // 개인정보 수집 및 이용 동의 확인
+    if (!privacyAgreement) {
+      return res.status(400).json({
+        success: false,
+        error: '개인정보 수집 및 이용에 동의해주세요',
+      });
+    }
+
+    // 서비스 이용 약관 동의 확인
+    if (!req.body.termsAgreement) {
+      return res.status(400).json({
+        success: false,
+        error: '서비스 이용 약관에 동의해주세요',
       });
     }
 
@@ -453,12 +511,19 @@ exports.createUser = async (req, res) => {
       studentContact,
       parentContact,
       userType, // 사용자 유형 (학생, 학부모, 강사)
+      privacyAgreement: privacyAgreement || false,
+      privacyAgreementDate: privacyAgreement ? new Date() : null,
+      termsAgreement: req.body.termsAgreement || false,
+      termsAgreementDate: req.body.termsAgreement ? new Date() : null,
       // isAdmin은 pre-save hook에서 자동으로 설정됨 (강사일 때 true)
     });
 
     console.log('회원가입 - User 객체 생성:', { userId: user.userId, userType: user.userType, isAdmin: user.isAdmin });
 
     const savedUser = await user.save();
+    
+    // 개인정보 처리 로그 기록 (회원가입)
+    await logPrivacyAction(savedUser._id, '생성', savedUser._id, req, '회원가입을 통한 개인정보 수집');
     
     // 학생인 경우 연동된 학부모 계정 자동 생성
     let parentUser = null;
@@ -492,10 +557,17 @@ exports.createUser = async (req, res) => {
             parentContact: parentContact,
             userType: '학부모',
             isAdmin: false,
+            privacyAgreement: privacyAgreement || false,
+            privacyAgreementDate: privacyAgreement ? new Date() : null,
+            termsAgreement: req.body.termsAgreement || false,
+            termsAgreementDate: req.body.termsAgreement ? new Date() : null,
           });
 
           parentUser = await parentUserData.save();
           console.log('회원가입 - 학부모 계정 자동 생성 완료:', parentUser.userId);
+          
+          // 학부모 계정 생성 로그 기록
+          await logPrivacyAction(parentUser._id, '생성', parentUser._id, req, '학생 계정 연동을 통한 학부모 계정 자동 생성');
         } else {
           parentUser = existingParent;
           console.log('회원가입 - 학부모 계정이 이미 존재합니다:', existingParent.userId);
@@ -727,6 +799,23 @@ exports.updateUser = async (req, res) => {
       });
     }
 
+    // 개인정보 처리 로그 기록 (수정) - 개인정보 관련 필드만 기록
+    const privacyFields = ['name', 'email', 'phone', 'schoolName', 'studentContact', 'parentContact'];
+    const updatedPrivacyFields = Object.keys(updateData).filter(key => 
+      privacyFields.includes(key) && key !== 'password'
+    );
+    
+    if (updatedPrivacyFields.length > 0) {
+      const currentUser = req.user ? req.user.id : null;
+      await logPrivacyAction(
+        user._id,
+        '수정',
+        currentUser || user._id,
+        req,
+        `개인정보 수정: ${updatedPrivacyFields.join(', ')}`
+      );
+    }
+
     // 학생 또는 학부모인 경우 반 정보 업데이트
     if ((user.userType === '학생' || user.userType === '학부모') && classIds !== undefined) {
       // 기존 반에서 사용자 제거
@@ -874,6 +963,17 @@ exports.deleteUser = async (req, res) => {
         console.error('연동된 학생 확인 중 오류:', studentError);
       }
     }
+
+    // 개인정보 처리 로그 기록 (삭제 전)
+    const currentUser = req.user ? req.user.id : null;
+    const withdrawReason = req.body?.reason || '사유 미입력';
+    await logPrivacyAction(
+      user._id,
+      '삭제',
+      currentUser || user._id,
+      req,
+      `회원 탈퇴: ${user.userType} 계정 삭제 (사유: ${withdrawReason})`
+    );
 
     // 사용자 삭제
     await User.findByIdAndDelete(req.params.id);

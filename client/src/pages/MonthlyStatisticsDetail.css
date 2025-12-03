@@ -137,19 +137,25 @@
 .month-selector-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.month-selector-hint {
+  display: none;
 }
 
 .month-selector {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   justify-content: center;
+  flex-wrap: nowrap;
 }
 
 /* 학생 검색 컨테이너 */
@@ -241,27 +247,32 @@
 }
 
 .month-select {
-  padding: 0.75rem 1.25rem;
-  border: 2px solid #e0e7ff;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(102, 126, 234, 0.3);
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
-  color: #2b2d42;
-  background: white;
+  font-weight: 700;
+  color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: none;
   min-width: 120px;
+  max-width: 150px;
+  flex: 0 1 auto;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .month-select:hover {
   border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
 }
 
 .month-select:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), 0 4px 12px rgba(102, 126, 234, 0.25);
 }
 
 /* Monthly Table */
@@ -556,6 +567,10 @@
   border-bottom: 2px solid #e0e7ff;
 }
 
+.chart-hint {
+  display: none;
+}
+
 .chart-wrapper {
   overflow-x: auto;
   overflow-y: hidden;
@@ -747,23 +762,51 @@
   }
 
   .month-selector-container {
-    padding: 1rem;
+    padding: 0;
+    gap: 0.75rem;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 1.25rem;
+    margin-bottom: 2.75rem;
   }
 
   .month-selector {
     flex-direction: row;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.625rem;
     flex-wrap: wrap;
   }
 
   .month-selector label {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
   }
 
   .month-select {
-    flex: 1;
+    flex: 0 1 auto;
     min-width: 100px;
+    max-width: 130px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    transition: none;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+  }
+
+  .month-select:hover {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+  }
+
+  .month-select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), 0 4px 12px rgba(102, 126, 234, 0.25);
   }
 
   .student-search-container {
@@ -830,8 +873,65 @@
   }
 
   .month-selector-container {
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0;
+    gap: 0.75rem;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .month-selector-hint {
+    display: block;
+    font-size: 0.7rem;
+    color: #6c757d;
+    text-align: center;
+    margin: 0;
+    padding: 0.25rem 0;
+    line-height: 1.3;
+  }
+
+  .month-selector {
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
+  .month-selector label {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2b2d42;
+    white-space: nowrap;
+  }
+
+  .month-select {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    min-width: 70px;
+    max-width: 90px;
+    flex: 0 1 auto;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    transition: none;
+  }
+
+  .month-select:hover {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+  }
+
+  .month-select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), 0 4px 12px rgba(102, 126, 234, 0.25);
   }
 
   .student-search-container {
@@ -854,19 +954,139 @@
   }
 
   .monthly-table {
-    min-width: 700px;
+    min-width: 480px;
+  }
+
+  .monthly-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .monthly-table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    border: none !important;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    table-layout: fixed;
+  }
+
+  .monthly-table * {
+    border-spacing: 0 !important;
+  }
+
+  .monthly-table thead {
+    border: none;
+  }
+
+  .monthly-table thead tr {
+    border: none;
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
   }
 
   .monthly-table th,
-  .monthly-table td {
-    padding: 0.6rem 0.4rem;
-    font-size: 0.8rem;
+  .monthly-table thead th,
+  .monthly-table thead tr th {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.2px;
+    position: relative;
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    outline: none !important;
+    margin: 0 !important;
+    border-spacing: 0 !important;
   }
 
-  .status-badge {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-    min-width: 45px;
+  .monthly-table th:first-child,
+  .monthly-table thead th:first-child,
+  .monthly-table thead tr th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 0.75rem 0.35rem;
+    min-width: 60px;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    outline: none !important;
+    font-size: 0.75rem;
+  }
+
+  .monthly-table tbody {
+    border: none;
+  }
+
+  .monthly-table tbody tr {
+    border: none;
+    border-bottom: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .monthly-table td {
+    padding: 0.7rem 0.25rem;
+    font-size: 0.8rem;
+    position: relative;
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    margin: 0 !important;
+    border-spacing: 0 !important;
+  }
+
+  .monthly-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 9;
+    background: white;
+    padding: 0.7rem 0.35rem;
+    font-size: 0.8rem;
+    min-width: 60px;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    font-weight: 700;
+    color: #667eea;
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .monthly-table tbody tr:hover td:first-child {
+    background: rgba(102, 126, 234, 0.05);
+  }
+
+  .monthly-table .status-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.38rem 0.665rem !important;
+    font-size: 0.715rem !important;
+    min-width: 52px !important;
+    line-height: 1 !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+
+  .monthly-table .score-cell {
+    font-size: 0.8rem !important;
   }
 
   .trend-chart-container {
@@ -878,9 +1098,28 @@
 
   .chart-title {
     font-size: 1.1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     padding-bottom: 0.75rem;
     text-align: center;
+  }
+
+  .chart-hint {
+    display: block;
+    font-size: 0.7rem;
+    color: #6c757d;
+    text-align: center;
+    margin: 0 0 1rem 0;
+    padding: 0.25rem 0;
+    line-height: 1.6;
+  }
+
+  .chart-hint span {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .chart-hint span:last-child {
+    margin-bottom: 0;
   }
 
   .chart-legend {

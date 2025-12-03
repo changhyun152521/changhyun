@@ -68,6 +68,24 @@ const userSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    // 개인정보 수집 및 이용 동의
+    privacyAgreement: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    privacyAgreementDate: {
+      type: Date,
+    },
+    // 서비스 이용 약관 동의
+    termsAgreement: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    termsAgreementDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true, // createdAt과 updatedAt 자동 생성

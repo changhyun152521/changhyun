@@ -227,10 +227,10 @@ function ParentMonthlyStatisticsDetail() {
     );
   }
 
-  // 연도 선택 옵션 (최근 3년)
+  // 연도 선택 옵션 (최근 5년)
   const currentYear = new Date().getFullYear();
   const yearOptions = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     yearOptions.push(currentYear - i);
   }
 
@@ -299,6 +299,7 @@ function ParentMonthlyStatisticsDetail() {
                 ))}
               </select>
             </div>
+            <p className="month-selector-hint">표를 좌우로 스와이프하여 모든 정보를 확인하세요</p>
           </div>
 
           {/* 월별 통계 테이블 */}
@@ -368,6 +369,10 @@ function ParentMonthlyStatisticsDetail() {
           {getChartData().length > 0 && (
             <div className="trend-chart-container">
               <h2 className="chart-title">일일테스트 점수 추이</h2>
+              <p className="chart-hint">
+                <span>좌우 스와이프로 전체 정보 확인</span>
+                <span>점수 터치 시 상세 정보 표시</span>
+              </p>
               <div className="chart-wrapper">
                 <ChartComponent data={getChartData()} />
               </div>
@@ -430,6 +435,8 @@ function ChartComponent({ data }) {
   const [dragStart, setDragStart] = useState({ x: 0, scrollLeft: 0 });
   const [touchStartPos, setTouchStartPos] = useState({ x: 0, y: 0, time: 0 });
   const [isTouchTooltip, setIsTouchTooltip] = useState(false);
+  const [touchStartIndex, setTouchStartIndex] = useState(null); // 터치 시작한 데이터 포인트 인덱스
+  const [dragDirection, setDragDirection] = useState(null); // 'horizontal' 또는 'vertical'
 
   if (!data || data.length === 0) return null;
 
@@ -530,12 +537,14 @@ function ChartComponent({ data }) {
   };
 
   const handleTouchStart = (e) => {
-    // 데이터 포인트(circle)에서 발생한 터치는 무시 (각 포인트의 onTouchStart에서 처리)
+    // hover-area나 circle에서 발생한 터치는 각각의 onTouchStart에서 처리
     const target = e.target;
-    if (target.tagName === 'circle' || target.closest('circle') || target.closest('.hover-area-pc')) {
+    if (target.closest('.hover-area-mobile') || target.closest('.hover-area-pc') || 
+        target.tagName === 'circle' || target.closest('circle')) {
       return;
     }
     
+    // 차트 영역 내 다른 곳을 터치하면 툴팁 사라지기
     if (chartWrapperRef.current && e.touches.length === 1) {
       const touch = e.touches[0];
       const startX = touch.pageX;
@@ -546,11 +555,19 @@ function ChartComponent({ data }) {
       setIsDragging(false);
       setIsTouchTooltip(false);
       setHoveredIndex(null); // 기존 툴팁 숨기기
+      setTouchStartIndex(null);
+      setDragDirection(null); // 드래그 방향 초기화
+      // 위아래 드래그를 위해 기본 동작을 방해하지 않음 (e.preventDefault() 호출 안 함)
     }
   };
 
   const handleTouchMove = (e) => {
     if (!chartWrapperRef.current || e.touches.length !== 1) return;
+    
+    // 이미 위아래 드래그로 판단되었으면 아무것도 하지 않고 기본 스크롤 허용
+    if (dragDirection === 'vertical') {
+      return;
+    }
     
     const touch = e.touches[0];
     const deltaX = Math.abs(touch.pageX - touchStartPos.x);
@@ -559,34 +576,76 @@ function ChartComponent({ data }) {
     
     // 10px 이상 움직이면 드래그로 간주
     if (moveDistance > 10) {
-      setIsDragging(true);
-      setHoveredIndex(null); // 툴팁 숨기기
-      setIsTouchTooltip(false);
-      e.preventDefault(); // 기본 스크롤 방지
+      // 드래그 방향이 아직 결정되지 않았으면 방향 판단
+      if (!dragDirection) {
+        // 위아래 드래그가 좌우 드래그보다 더 크면 세로 드래그
+        if (deltaY > deltaX) {
+          setDragDirection('vertical');
+          // 위아래 드래그로 판단되면 여기서 종료하여 기본 스크롤이 동작하도록 함
+          setHoveredIndex(null);
+          setIsTouchTooltip(false);
+          return;
+        } else {
+          setDragDirection('horizontal');
+        }
+      }
       
-      const x = touch.pageX - chartWrapperRef.current.offsetLeft;
-      const walk = (x - touchStartPos.x) * 2;
-      chartWrapperRef.current.scrollLeft = chartWrapperRef.current.scrollLeft - walk;
+      if (dragDirection === 'horizontal') {
+        // 좌우 드래그: 차트 스크롤
+        setIsDragging(true);
+        setHoveredIndex(null); // 툴팁 숨기기
+        setIsTouchTooltip(false);
+        e.preventDefault(); // 기본 스크롤 방지
+        const x = touch.pageX - chartWrapperRef.current.offsetLeft;
+        const walk = (x - touchStartPos.x) * 2;
+        chartWrapperRef.current.scrollLeft = chartWrapperRef.current.scrollLeft - walk;
+      }
     }
   };
 
   const handleTouchEnd = (e) => {
-    // 데이터 포인트(circle)에서 발생한 터치는 무시
+    // hover-area나 circle에서 발생한 터치는 각각의 onTouchEnd에서 처리
     const target = e.target;
-    if (target.tagName === 'circle' || target.closest('circle') || target.closest('.hover-area-pc')) {
+    if (target.tagName === 'circle' || target.closest('circle') || target.closest('.hover-area-pc') || target.closest('.hover-area-mobile')) {
       return;
+    }
+    
+    // 드래그가 아니었으면 툴팁 사라지기
+    if (!isDragging && touchStartIndex === null) {
+      setHoveredIndex(null);
+      setIsTouchTooltip(false);
     }
     
     setIsDragging(false);
     setTouchStartPos({ x: 0, y: 0, time: 0 });
+    setTouchStartIndex(null);
+    setDragDirection(null);
   };
 
-  // 화면 밖 터치 시 툴팁 사라지기 (모바일 전용)
+  // 화면 밖 또는 차트 내 다른 영역 터치 시 툴팁 사라지기 (모바일 전용)
   useEffect(() => {
     if (!isTouchTooltip) return;
     
     const handleOutsideTouch = (e) => {
-      if (chartWrapperRef.current && !chartWrapperRef.current.contains(e.target)) {
+      if (!chartWrapperRef.current) return;
+      
+      const target = e.target;
+      // 차트 영역 밖을 터치한 경우
+      const isOutsideChart = !chartWrapperRef.current.contains(target);
+      
+      // 다른 hover-area를 터치한 경우
+      const touchedHoverArea = target.closest('.hover-area-mobile');
+      const currentHoverArea = hoveredIndex !== null ? 
+        document.querySelector(`.hover-area-mobile[data-index="${hoveredIndex}"]`) : null;
+      const isOtherHoverArea = touchedHoverArea && touchedHoverArea !== currentHoverArea;
+      
+      // 차트 내 다른 영역(rect, line, path 등)을 터치한 경우
+      const isOtherChartElement = chartWrapperRef.current.contains(target) && 
+                                  !touchedHoverArea && 
+                                  target.tagName !== 'circle' &&
+                                  !target.closest('circle');
+      
+      if (isOutsideChart || isOtherHoverArea || isOtherChartElement) {
         setHoveredIndex(null);
         setIsTouchTooltip(false);
       }
@@ -597,8 +656,8 @@ function ChartComponent({ data }) {
     
     return () => {
       document.removeEventListener('touchstart', handleOutsideTouch);
-  };
-  }, [isTouchTooltip]);
+    };
+  }, [isTouchTooltip, hoveredIndex]);
 
   const handleMouseLeaveWrapper = () => {
     if (isDragging && chartWrapperRef.current) {
@@ -675,7 +734,7 @@ function ChartComponent({ data }) {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'pan-x pan-y' }}
       >
         {hoveredIndex !== null && sortedData[hoveredIndex] && !isDragging && (
           <div
@@ -779,17 +838,42 @@ function ChartComponent({ data }) {
 
             return (
               <g key={i}>
-                {/* 호버 영역 (보이지 않지만 클릭 가능) - PC용 */}
+                {/* 호버 영역 (보이지 않지만 클릭 가능) - PC 및 모바일용 */}
                 <rect
-                  x={x - 20}
+                  x={x - 40}
                   y={topPadding}
-                  width="40"
+                  width="80"
                   height={chartHeight - topPadding}
                   fill="transparent"
+                  data-index={i}
                   onMouseEnter={(e) => !isDragging && handleMouseEnter(i, e)}
                   onMouseLeave={handleMouseLeave}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                    if (chartWrapperRef.current && e.touches.length === 1) {
+                      const touch = e.touches[0];
+                      setTouchStartPos({ x: touch.pageX, y: touch.pageY, time: Date.now() });
+                      setTouchStartIndex(i);
+                      setIsDragging(false);
+                    }
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    // 드래그가 아니었으면 정보 표시
+                    if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
+                      const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                      const touch = e.changedTouches[0];
+                      const xPos = touch.clientX - wrapperRect.left;
+                      const yPos = touch.clientY - wrapperRect.top;
+                      setHoveredIndex(i);
+                      setIsTouchTooltip(true);
+                      setTooltipPosition({ x: xPos, y: yPos });
+                    }
+                    setTouchStartIndex(null);
+                  }}
                   style={{ cursor: 'pointer', pointerEvents: 'auto' }}
-                  className="hover-area-pc"
+                  className="hover-area-pc hover-area-mobile"
                 />
 
                 {myY !== null && (
@@ -804,18 +888,27 @@ function ChartComponent({ data }) {
                     onMouseLeave={handleMouseLeave}
                     onTouchStart={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
-                      if (chartWrapperRef.current && svgRef.current) {
-                        const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                      if (chartWrapperRef.current && e.touches.length === 1) {
                         const touch = e.touches[0];
+                        setTouchStartPos({ x: touch.pageX, y: touch.pageY, time: Date.now() });
+                        setTouchStartIndex(i);
+                        setIsDragging(false);
+                      }
+                    }}
+                    onTouchEnd={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      // 드래그가 아니었으면 정보 표시
+                      if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
+                        const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                        const touch = e.changedTouches[0];
                         const xPos = touch.clientX - wrapperRect.left;
                         const yPos = touch.clientY - wrapperRect.top;
                         setHoveredIndex(i);
                         setIsTouchTooltip(true);
                         setTooltipPosition({ x: xPos, y: yPos });
-                        setIsDragging(false);
-                        setTouchStartPos({ x: 0, y: 0, time: 0 });
                       }
+                      setTouchStartIndex(null);
                     }}
                     style={{ cursor: isDragging ? 'grabbing' : 'pointer', pointerEvents: isDragging ? 'none' : 'auto' }}
                   />
@@ -833,18 +926,27 @@ function ChartComponent({ data }) {
                     onMouseLeave={handleMouseLeave}
                     onTouchStart={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
-                      if (chartWrapperRef.current && svgRef.current) {
-                        const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                      if (chartWrapperRef.current && e.touches.length === 1) {
                         const touch = e.touches[0];
+                        setTouchStartPos({ x: touch.pageX, y: touch.pageY, time: Date.now() });
+                        setTouchStartIndex(i);
+                        setIsDragging(false);
+                      }
+                    }}
+                    onTouchEnd={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      // 드래그가 아니었으면 정보 표시
+                      if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
+                        const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                        const touch = e.changedTouches[0];
                         const xPos = touch.clientX - wrapperRect.left;
                         const yPos = touch.clientY - wrapperRect.top;
                         setHoveredIndex(i);
                         setIsTouchTooltip(true);
                         setTooltipPosition({ x: xPos, y: yPos });
-                        setIsDragging(false);
-                        setTouchStartPos({ x: 0, y: 0, time: 0 });
                       }
+                      setTouchStartIndex(null);
                     }}
                     style={{ cursor: isDragging ? 'grabbing' : 'pointer', pointerEvents: isDragging ? 'none' : 'auto' }}
                   />
@@ -862,18 +964,27 @@ function ChartComponent({ data }) {
                     onMouseLeave={handleMouseLeave}
                     onTouchStart={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
-                      if (chartWrapperRef.current && svgRef.current) {
-                        const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                      if (chartWrapperRef.current && e.touches.length === 1) {
                         const touch = e.touches[0];
+                        setTouchStartPos({ x: touch.pageX, y: touch.pageY, time: Date.now() });
+                        setTouchStartIndex(i);
+                        setIsDragging(false);
+                      }
+                    }}
+                    onTouchEnd={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      // 드래그가 아니었으면 정보 표시
+                      if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
+                        const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
+                        const touch = e.changedTouches[0];
                         const xPos = touch.clientX - wrapperRect.left;
                         const yPos = touch.clientY - wrapperRect.top;
                         setHoveredIndex(i);
                         setIsTouchTooltip(true);
                         setTooltipPosition({ x: xPos, y: yPos });
-                        setIsDragging(false);
-                        setTouchStartPos({ x: 0, y: 0, time: 0 });
                       }
+                      setTouchStartIndex(null);
                     }}
                     style={{ cursor: isDragging ? 'grabbing' : 'pointer', pointerEvents: isDragging ? 'none' : 'auto' }}
                   />

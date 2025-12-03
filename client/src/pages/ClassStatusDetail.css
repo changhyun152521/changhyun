@@ -95,75 +95,102 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e0e7ff;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
   position: relative;
 }
 
 .date-nav-btn {
   padding: 0.75rem 1.25rem;
-  border: 2px solid #e0e7ff;
-  border-radius: 10px;
+  border: none;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  background: white;
-  color: #495057;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .date-nav-btn:hover:not(:disabled) {
-  border-color: #667eea;
-  background: #f0f4ff;
-  color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5568d3 0%, #6a3d8f 100%);
+}
+
+.date-nav-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .date-nav-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.6;
   cursor: not-allowed;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.2);
 }
 
 .date-arrow-btn {
-  padding: 0.75rem;
-  min-width: 45px;
+  padding: 0;
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+  max-width: 48px;
+  max-height: 48px;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
 }
 
 .date-arrow-btn i {
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .date-display-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: #f8f9fa;
-  border-radius: 10px;
-  border: 2px solid #e0e7ff;
-  min-width: 180px;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 14px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  min-width: 200px;
+  max-width: 300px;
+  width: auto;
+  flex: 0 1 auto;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
 }
 
 .date-display-wrapper:hover {
   border-color: #667eea;
-  background: white;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.date-display-wrapper:active {
+  transform: translateY(0);
 }
 
 .date-display {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: #2b2d42;
+  color: #667eea;
+  letter-spacing: 0.3px;
 }
 
 .date-input-hidden {
@@ -179,13 +206,20 @@
 .date-dropdown-btn {
   background: none;
   border: none;
-  color: #6c757d;
+  color: #667eea;
   cursor: pointer;
   padding: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.date-dropdown-btn:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #5568d3;
+  transform: rotate(180deg);
 }
 
 .date-dropdown-btn:hover:not(:disabled) {
@@ -469,14 +503,38 @@
   }
 
   .date-selector-container {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.75rem;
+    padding: 0;
+    background: transparent;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.25rem;
+    margin-bottom: 2.75rem;
   }
 
   .date-display-wrapper {
-    min-width: 150px;
-    order: 3;
-    width: 100%;
+    min-width: 180px;
+    max-width: 250px;
+    flex: 0 1 auto;
+    order: 0;
+    width: auto;
+  }
+
+  .date-arrow-btn {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .date-arrow-btn i {
+    font-size: 0.95rem;
   }
 
   .date-nav-btn {
@@ -584,32 +642,39 @@
   }
 
   .date-selector-container {
-    padding: 0.75rem 0.5rem;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    padding: 0;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 2.5rem;
     width: 100%;
     max-width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     position: relative;
+    background: transparent;
+    display: flex;
   }
 
   .date-nav-btn.date-arrow-btn:first-child {
-    order: 1;
-    margin-right: auto;
+    order: 0;
+    margin-right: 0;
   }
 
   .date-display-wrapper {
-    flex: 1;
-    min-width: 0;
-    order: 2;
-    margin: 0 auto;
+    flex: 0 1 auto;
+    min-width: 160px;
+    max-width: 240px;
+    width: auto;
+    order: 0;
+    margin: 0;
     height: auto;
     min-height: auto;
+    padding: 0.75rem 1.25rem;
   }
 
   .date-display {
-    font-size: 0.85rem;
-    padding: 0.35rem 0.6rem;
+    font-size: 0.9rem;
+    padding: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -617,19 +682,33 @@
   }
 
   .date-dropdown-btn {
-    padding: 0.35rem 0.4rem;
+    padding: 0.25rem;
+    flex-shrink: 0;
   }
 
   .date-nav-btn.date-arrow-btn:last-child {
-    order: 3;
-    margin-left: auto;
+    order: 0;
+    margin-left: 0;
+  }
+
+  .date-arrow-btn {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .date-arrow-btn i {
+    font-size: 0.95rem;
   }
 
   .date-nav-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 0.75rem;
-    flex-shrink: 0;
+    font-size: 0.85rem;
   }
 
   .records-tables-container {
@@ -745,6 +824,10 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #e0e7ff;
+}
+
+.chart-hint {
+  display: none;
 }
 
 .chart-wrapper {
@@ -928,9 +1011,28 @@
 
   .chart-title {
     font-size: 1.1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     padding-bottom: 0.75rem;
     text-align: center;
+  }
+
+  .chart-hint {
+    display: block;
+    font-size: 0.7rem;
+    color: #6c757d;
+    text-align: center;
+    margin: 0 0 1rem 0;
+    padding: 0.25rem 0;
+    line-height: 1.6;
+  }
+
+  .chart-hint span {
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .chart-hint span:last-child {
+    margin-bottom: 0;
   }
 
   .chart-legend {

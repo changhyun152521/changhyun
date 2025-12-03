@@ -37,29 +37,46 @@ exports.getAllComments = async (req, res) => {
     const totalCount = await AttendanceComment.countDocuments({});
 
     // 모든 댓글 조회 (공개/비공개 모두) - 페이지네이션 적용
-    const comments = await AttendanceComment.find({})
+    let comments = await AttendanceComment.find({})
       .populate('author', 'name userId')
-      .populate('reply.author', 'name userId')
       .sort({ createdAt: -1 }) // 최신순 정렬
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean(); // lean()을 사용하여 일반 객체로 변환
+
+    // reply.author를 안전하게 populate
+    comments = await Promise.all(
+      comments.map(async (comment) => {
+        if (comment.reply && comment.reply.author) {
+          const User = require('../models/User');
+          const replyAuthor = await User.findById(comment.reply.author)
+            .select('name userId')
+            .lean();
+          if (replyAuthor) {
+            comment.reply.author = replyAuthor;
+          }
+        }
+        return comment;
+      })
+    );
 
     // 클라이언트에서 처리할 수 있도록 모든 댓글 반환
     // 비공개 댓글의 경우 작성자 ID 정보도 함께 전달
     const commentsWithAccess = comments.map(comment => {
-      const commentObj = comment.toObject();
+      // lean()을 사용했으므로 이미 일반 객체이므로 toObject() 불필요
+      const commentObj = comment;
       
       if (!comment.isPublic) {
         // 비공개 댓글인 경우
-        const isOwner = userId && comment.author && (
-          comment.author._id.toString() === userId.toString() || 
-          comment.author.toString() === userId.toString()
+        const authorId = comment.author?._id || comment.author;
+        const isOwner = userId && authorId && (
+          authorId.toString() === userId.toString()
         );
         
         // 작성자/관리자가 아니면 작성자 정보 숨김
         if (!isOwner && !isAdmin) {
           commentObj.author = {
-            _id: comment.author._id,
+            _id: authorId,
             name: '***',
             userId: '***'
           };

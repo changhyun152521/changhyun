@@ -27,6 +27,14 @@ function Profile() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [changePassword, setChangePassword] = useState(false); // 비밀번호 변경 체크박스
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false); // 회원 탈퇴 모달
+  const [withdrawData, setWithdrawData] = useState({
+    reason: '', // 탈퇴 사유
+    password: '', // 비밀번호 확인
+    confirmText: '', // 최종 확인 텍스트
+  });
+  const [withdrawErrors, setWithdrawErrors] = useState({});
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   useEffect(() => {
     // 로그인 상태 확인
@@ -251,6 +259,86 @@ function Profile() {
     setIsEditing(false);
   };
 
+  // 회원 탈퇴 처리
+  const handleWithdraw = async () => {
+    const newErrors = {};
+
+    // 비밀번호 확인
+    if (!withdrawData.password) {
+      newErrors.password = '비밀번호를 입력해주세요';
+    }
+
+    // 최종 확인 텍스트
+    if (withdrawData.confirmText !== '탈퇴하겠습니다') {
+      newErrors.confirmText = '정확히 입력해주세요';
+    }
+
+    setWithdrawErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    // 비밀번호 확인
+    try {
+      const verifyResponse = await api.post('/users/login', {
+        userId: user.userId,
+        password: withdrawData.password,
+      });
+
+      if (!verifyResponse.data.success) {
+        setWithdrawErrors({ password: '비밀번호가 올바르지 않습니다' });
+        return;
+      }
+    } catch (error) {
+      setWithdrawErrors({ password: '비밀번호 확인 중 오류가 발생했습니다' });
+      return;
+    }
+
+    // 최종 확인
+    const finalConfirm = window.confirm(
+      '정말로 회원 탈퇴를 하시겠습니까?\n\n' +
+      '탈퇴 시 모든 개인정보와 데이터가 영구적으로 삭제되며 복구할 수 없습니다.'
+    );
+
+    if (!finalConfirm) {
+      return;
+    }
+
+    setIsWithdrawing(true);
+
+    try {
+      // 회원 탈퇴 API 호출
+      const response = await api.delete(`/users/${user._id}`, {
+        data: {
+          reason: withdrawData.reason || '사유 미입력',
+        },
+      });
+
+      if (response.data.success) {
+        // 로그아웃 처리
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+
+        alert('회원 탈퇴가 완료되었습니다.\n이용해주셔서 감사합니다.');
+        navigate('/');
+      } else {
+        alert(response.data.error || '회원 탈퇴 중 오류가 발생했습니다');
+      }
+    } catch (error) {
+      console.error('회원 탈퇴 오류:', error);
+      let errorMessage = '회원 탈퇴 중 오류가 발생했습니다';
+      if (error.response) {
+        errorMessage = error.response.data?.error || error.response.data?.message || errorMessage;
+      }
+      alert(errorMessage);
+    } finally {
+      setIsWithdrawing(false);
+    }
+  };
+
   // Cloudinary 위젯 열기
   const openCloudinaryWidget = () => {
     // Cloudinary 설정
@@ -414,6 +502,19 @@ function Profile() {
                   onClick={() => navigate('/')}
                 >
                   홈으로
+                </button>
+              </div>
+
+              <div className="profile-danger-zone">
+                <h3 className="danger-zone-title">위험 구역</h3>
+                <p className="danger-zone-description">
+                  계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+                </p>
+                <button 
+                  className="btn-withdraw"
+                  onClick={() => setShowWithdrawModal(true)}
+                >
+                  <i className="fas fa-exclamation-triangle"></i> 회원 탈퇴
                 </button>
               </div>
             </>
@@ -661,6 +762,144 @@ function Profile() {
           )}
         </div>
       </div>
+
+      {/* 회원 탈퇴 모달 */}
+      {showWithdrawModal && (
+        <div className="withdraw-modal-overlay" onClick={() => setShowWithdrawModal(false)}>
+          <div className="withdraw-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="withdraw-modal-header">
+              <h2>회원 탈퇴</h2>
+              <button
+                type="button"
+                className="withdraw-modal-close"
+                onClick={() => {
+                  setShowWithdrawModal(false);
+                  setWithdrawData({ reason: '', password: '', confirmText: '' });
+                  setWithdrawErrors({});
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="withdraw-modal-body">
+              {/* 개인정보 삭제 안내 */}
+              <div className="withdraw-warning-box">
+                <h3>
+                  <i className="fas fa-exclamation-triangle"></i> 주의사항
+                </h3>
+                <ul>
+                  <li>회원 탈퇴 시 모든 개인정보가 즉시 삭제됩니다.</li>
+                  <li>삭제된 정보는 복구할 수 없습니다.</li>
+                  <li>수강 중인 강의 정보, 학습 기록 등 모든 데이터가 삭제됩니다.</li>
+                  <li>관련 법령에 따라 일정 기간 보관이 필요한 정보는 해당 기간 동안 보관 후 삭제됩니다.</li>
+                </ul>
+              </div>
+
+              {/* 탈퇴 사유 선택 */}
+              <div className="form-group">
+                <label className="form-label">
+                  탈퇴 사유 <span className="required-mark">(선택)</span>
+                </label>
+                <select
+                  name="reason"
+                  value={withdrawData.reason}
+                  onChange={(e) => {
+                    setWithdrawData((prev) => ({ ...prev, reason: e.target.value }));
+                    if (withdrawErrors.reason) {
+                      setWithdrawErrors((prev) => ({ ...prev, reason: '' }));
+                    }
+                  }}
+                  className="form-input"
+                >
+                  <option value="">선택해주세요</option>
+                  <option value="서비스 불만">서비스 불만</option>
+                  <option value="다른 서비스 이용">다른 서비스 이용</option>
+                  <option value="개인정보 보호 우려">개인정보 보호 우려</option>
+                  <option value="사용 빈도 낮음">사용 빈도 낮음</option>
+                  <option value="기타">기타</option>
+                </select>
+                {withdrawErrors.reason && (
+                  <span className="error-message">{withdrawErrors.reason}</span>
+                )}
+              </div>
+
+              {/* 비밀번호 확인 */}
+              <div className="form-group">
+                <label className="form-label">
+                  비밀번호 확인 <span className="required-mark">(필수)</span>
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={withdrawData.password}
+                  onChange={(e) => {
+                    setWithdrawData((prev) => ({ ...prev, password: e.target.value }));
+                    if (withdrawErrors.password) {
+                      setWithdrawErrors((prev) => ({ ...prev, password: '' }));
+                    }
+                  }}
+                  placeholder="비밀번호를 입력하세요"
+                  className={`form-input ${withdrawErrors.password ? 'input-error' : ''}`}
+                />
+                {withdrawErrors.password && (
+                  <span className="error-message">{withdrawErrors.password}</span>
+                )}
+              </div>
+
+              {/* 최종 확인 */}
+              <div className="form-group">
+                <label className="form-label">
+                  최종 확인 <span className="required-mark">(필수)</span>
+                </label>
+                <p className="confirm-instruction">
+                  아래 문구를 정확히 입력해주세요: <strong>"탈퇴하겠습니다"</strong>
+                </p>
+                <input
+                  type="text"
+                  name="confirmText"
+                  value={withdrawData.confirmText}
+                  onChange={(e) => {
+                    setWithdrawData((prev) => ({ ...prev, confirmText: e.target.value }));
+                    if (withdrawErrors.confirmText) {
+                      setWithdrawErrors((prev) => ({ ...prev, confirmText: '' }));
+                    }
+                  }}
+                  placeholder="탈퇴하겠습니다"
+                  className={`form-input ${withdrawErrors.confirmText ? 'input-error' : ''}`}
+                />
+                {withdrawErrors.confirmText && (
+                  <span className="error-message">{withdrawErrors.confirmText}</span>
+                )}
+              </div>
+            </div>
+
+            <div className="withdraw-modal-footer">
+              <button
+                type="button"
+                className="btn-withdraw-cancel"
+                onClick={() => {
+                  setShowWithdrawModal(false);
+                  setWithdrawData({ reason: '', password: '', confirmText: '' });
+                  setWithdrawErrors({});
+                }}
+                disabled={isWithdrawing}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="btn-withdraw-confirm"
+                onClick={handleWithdraw}
+                disabled={isWithdrawing}
+              >
+                {isWithdrawing ? '처리 중...' : '탈퇴하기'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
