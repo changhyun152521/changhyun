@@ -31,6 +31,11 @@
   border-bottom: 2px solid rgba(33, 150, 243, 0.2);
 }
 
+/* 강좌 목록이 있는 회원이 로그인 했을 때만 파란선 제거 */
+.my-courses-section .page-header.has-courses {
+  border-bottom: none;
+}
+
 .my-courses-section .page-header::after,
 .my-courses-section .page-header::before {
   display: none !important;

@@ -206,7 +206,7 @@ function MyCourses() {
       <Header />
       <div className="my-courses-section">
         <div className="my-courses-container">
-          <div className="page-header">
+          <div className={`page-header ${courses.length > 0 ? 'has-courses' : ''}`}>
             <div className="page-header-icon">
               <img src="/009.png" alt="이창현수학" className="page-header-icon-img" />
             </div>
