@@ -35,6 +35,7 @@ import NoticeCreate from './pages/NoticeCreate';
 import NoticeDetail from './pages/NoticeDetail';
 import NoticeEdit from './pages/NoticeEdit';
 import Attendance from './pages/Attendance';
+import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
         v7_relativeSplatPath: true,
       }}
     >
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
