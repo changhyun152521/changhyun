@@ -99,6 +99,11 @@
   gap: 0.4rem;
   white-space: nowrap;
   flex-shrink: 0;
+  /* 카카오톡 인앱 브라우저 터치 이벤트 제어 */
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .nav-link:hover,
@@ -151,6 +156,11 @@
   font-weight: 500;
   transition: all 0.2s ease;
   border-radius: 0;
+  /* 카카오톡 인앱 브라우저 터치 이벤트 제어 */
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .dropdown-link:hover {

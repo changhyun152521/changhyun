@@ -170,7 +170,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="#" 
+                  href="javascript:void(0)" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -178,6 +178,10 @@ function Header() {
                     if (window.innerWidth <= 968) {
                       setActiveDropdown(activeDropdown === 'myClassroom' ? null : 'myClassroom');
                     }
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }}
                   onTouchEnd={(e) => {
                     e.preventDefault();
@@ -193,12 +197,16 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/preview-courses');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       맛보기강좌
@@ -206,12 +214,16 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/my-classroom/courses');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       내강좌
@@ -235,7 +247,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="#" 
+                  href="javascript:void(0)" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -243,6 +255,10 @@ function Header() {
                     if (window.innerWidth <= 968) {
                       setActiveDropdown(activeDropdown === 'myClass' ? null : 'myClass');
                     }
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }}
                   onTouchEnd={(e) => {
                     e.preventDefault();
@@ -258,12 +274,16 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/my-class/status');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       수업현황
@@ -271,12 +291,16 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/my-class/statistics');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       월별통계
@@ -300,7 +324,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="#" 
+                  href="javascript:void(0)" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -308,6 +332,10 @@ function Header() {
                     if (window.innerWidth <= 968) {
                       setActiveDropdown(activeDropdown === 'parentClass' ? null : 'parentClass');
                     }
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }}
                   onTouchEnd={(e) => {
                     e.preventDefault();
@@ -323,12 +351,16 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/parent-class/status');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       수업현황
@@ -336,12 +368,16 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/parent-class/statistics');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       월별통계
@@ -365,7 +401,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="#" 
+                  href="javascript:void(0)" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -373,6 +409,10 @@ function Header() {
                     if (window.innerWidth <= 968) {
                       setActiveDropdown(activeDropdown === 'community' ? null : 'community');
                     }
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }}
                   onTouchEnd={(e) => {
                     e.preventDefault();
@@ -388,12 +428,16 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/community/notice');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       공지사항
@@ -401,12 +445,16 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="#" 
+                      href="javascript:void(0)" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate('/community/attendance');
                         setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                       }}
                     >
                       수강문의
