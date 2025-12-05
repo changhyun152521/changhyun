@@ -109,6 +109,47 @@
   display: block;
 }
 
+.selected-student-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(52, 152, 219, 0.2);
+}
+
+.selected-student-info i {
+  color: #3498db;
+  font-size: 18px;
+}
+
+.selected-student-info span {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.btn-change-student {
+  padding: 6px 16px;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-change-student:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
 .my-class-status-section .page-description {
   font-size: 1.1rem;
   color: #6c757d;

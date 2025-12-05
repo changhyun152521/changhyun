@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import api from '../api/axiosConfig';
@@ -8,12 +8,15 @@ import './MonthlyStatisticsDetail.css';
 function ParentMonthlyStatisticsDetail() {
   const navigate = useNavigate();
   const { classId } = useParams();
+  const [searchParams] = useSearchParams();
+  const studentId = searchParams.get('studentId');
   const [loading, setLoading] = useState(true);
   const [classData, setClassData] = useState(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [monthlyData, setMonthlyData] = useState([]);
   const [error, setError] = useState('');
+  const [studentName, setStudentName] = useState('');
 
   useEffect(() => {
     checkAuthAndFetchData();
@@ -46,6 +49,24 @@ function ParentMonthlyStatisticsDetail() {
         alert('학부모회원만 접근할 수 있는 페이지입니다.');
         navigate('/');
         return;
+      }
+
+      // studentId가 없으면 이전 페이지로 리다이렉트
+      if (!studentId) {
+        alert('학생을 선택해주세요.');
+        navigate('/parent-monthly-statistics');
+        return;
+      }
+
+      // 학생 정보 가져오기 (이름 표시용)
+      try {
+        const studentResponse = await api.get(`/users/${studentId}`);
+        if (studentResponse.data.success) {
+          setStudentName(studentResponse.data.data.name || '학생');
+        }
+      } catch (studentError) {
+        console.error('학생 정보 가져오기 오류:', studentError);
+        setStudentName('학생');
       }
 
       // 반 정보 가져오기
@@ -92,7 +113,7 @@ function ParentMonthlyStatisticsDetail() {
         const dayStr = String(day).padStart(2, '0');
         const dateStr = `${year}-${month}-${dayStr}`;
         datePromises.push(
-          api.get(`/student-records/my-records?classId=${classId}&date=${dateStr}`)
+          api.get(`/student-records/my-records?classId=${classId}&date=${dateStr}&studentId=${studentId}`)
             .then(response => {
               if (response.data.success) {
                 return {
@@ -168,7 +189,7 @@ function ParentMonthlyStatisticsDetail() {
     return days[date.getDay()];
   };
 
-  // 일일테스트 점수를 백분율로 변환
+  // 리뷰TEST 점수를 백분율로 변환
   const convertDailyTestScoreToPercentage = (scoreStr) => {
     if (!scoreStr || scoreStr === '') return null;
     if (typeof scoreStr === 'string' && scoreStr.includes('/')) {
@@ -183,7 +204,7 @@ function ParentMonthlyStatisticsDetail() {
   // 월별 데이터를 그래프 형식으로 변환
   const getChartData = () => {
     const chartData = monthlyData
-      .filter(item => item.data?.studentRecord?.dailyTestScore) // 일일테스트 데이터가 있는 날짜만
+      .filter(item => item.data?.studentRecord?.dailyTestScore) // 리뷰TEST 데이터가 있는 날짜만
       .map(item => {
         const record = item.data?.studentRecord;
         const myScore = convertDailyTestScoreToPercentage(record?.dailyTestScore);
@@ -255,20 +276,7 @@ function ParentMonthlyStatisticsDetail() {
               </div>
               <h1 className="page-title">{classData?.className || '월별통계'}</h1>
               <p className="page-description">
-                {(() => {
-                  try {
-                    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-                    if (userStr) {
-                      const userData = JSON.parse(userStr);
-                      // 학부모 이름에서 "부모님"을 제거하여 자녀 이름 추출
-                      const studentName = userData.name ? userData.name.replace('부모님', '') : '학생';
-                      return `${studentName}학생의 월별 통계를 확인할 수 있습니다.`;
-                    }
-                  } catch (e) {
-                    console.error('사용자 정보 파싱 오류:', e);
-                  }
-                  return '월별 통계를 확인할 수 있습니다.';
-                })()}
+                {studentName ? `${studentName}학생의 월별 통계를 확인할 수 있습니다.` : '월별 통계를 확인할 수 있습니다.'}
               </p>
             </div>
           </div>
@@ -310,7 +318,7 @@ function ParentMonthlyStatisticsDetail() {
                   <th>날짜</th>
                   <th>출결</th>
                   <th>과제</th>
-                  <th>일일테스트</th>
+                  <th>리뷰TEST</th>
                   <th>반평균</th>
                   <th>최고점</th>
                 </tr>
@@ -323,7 +331,7 @@ function ParentMonthlyStatisticsDetail() {
                     const classStats = item.data?.classAverage;
                     const classMaxScore = item.data?.classMaxScore;
                     
-                    // 일일테스트 점수 포맷팅 (항상 "점" 포함)
+                    // 리뷰TEST 점수 포맷팅 (항상 "점" 포함)
                     const dailyScore = record?.dailyTestScore ? formatScore(record.dailyTestScore) : '-';
                     
                     // 반평균: null/undefined가 아니고 유효한 숫자인 경우만 표시
@@ -365,10 +373,10 @@ function ParentMonthlyStatisticsDetail() {
             </table>
           </div>
 
-          {/* 일일테스트 점수 추이 그래프 */}
+          {/* 리뷰TEST 점수 추이 그래프 */}
           {getChartData().length > 0 && (
             <div className="trend-chart-container">
-              <h2 className="chart-title">일일테스트 점수 추이</h2>
+              <h2 className="chart-title">리뷰TEST 점수 추이</h2>
               <p className="chart-hint">
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>
@@ -379,10 +387,10 @@ function ParentMonthlyStatisticsDetail() {
             </div>
           )}
 
-          {/* 월말평가 별도 섹션 */}
+          {/* 실전TEST 별도 섹션 */}
           {monthlyData.some(item => item.data?.studentRecord?.monthlyEvaluationScore) && (
             <div className="monthly-evaluation-section">
-              <h2 className="section-title">월말평가</h2>
+              <h2 className="section-title">실전TEST</h2>
               <div className="monthly-table-container">
                 <table className="monthly-table">
                   <thead>
@@ -395,7 +403,7 @@ function ParentMonthlyStatisticsDetail() {
                   </thead>
                   <tbody>
                     {monthlyData
-                      .filter(item => item.data?.studentRecord?.monthlyEvaluationScore) // 월말평가 데이터가 있는 날짜만 필터링
+                      .filter(item => item.data?.studentRecord?.monthlyEvaluationScore) // 실전TEST 데이터가 있는 날짜만 필터링
                       .map((item) => {
                         const record = item.data?.studentRecord;
                         const monthlyScore = record?.monthlyEvaluationScore ? formatScore(record.monthlyEvaluationScore) : '-';

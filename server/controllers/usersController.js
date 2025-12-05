@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Class = require('../models/Class');
 const PrivacyLog = require('../models/PrivacyLog');
+const ParentStudentLink = require('../models/ParentStudentLink');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -51,50 +52,54 @@ exports.getAllUsers = async (req, res) => {
           userObj.classes = [];
         }
         
-        // 연동 정보 조회 (실제 존재하는 사용자만 표시)
+        // 연동 정보 조회 (n:m 구조 - ParentStudentLink 사용)
         if (user.userType === '학생') {
-          // 학생인 경우: 연동된 학부모 찾기
-          // 방법 1: 새로운 형식 (학생userId_parent)
-          let linkedParent = await User.findOne({ 
-            userId: `${user.userId}_parent`, 
-            userType: '학부모' 
-          }).select('userId name').lean();
+          // 학생인 경우: 연동된 모든 학부모 찾기
+          const parentLinks = await ParentStudentLink.find({ studentId: user._id })
+            .populate('parentId', 'userId name email phone')
+            .lean();
           
-          // 방법 2: 기존 형식 (parentContact를 userId로 사용)
-          if (!linkedParent && user.parentContact) {
-            linkedParent = await User.findOne({ 
-              userId: user.parentContact, 
-              userType: '학부모' 
-            }).select('userId name').lean();
-          }
+          userObj.linkedUsers = parentLinks.map(link => ({
+            _id: link.parentId._id,
+            userId: link.parentId.userId,
+            name: link.parentId.name,
+            email: link.parentId.email,
+            phone: link.parentId.phone,
+            userType: '학부모',
+            linkId: link._id,
+          }));
           
-          // 연동된 학부모가 실제로 존재하는지 확인
-          userObj.linkedUser = linkedParent ? {
-            userId: linkedParent.userId,
-            name: linkedParent.name,
+          // 하위 호환성을 위해 첫 번째 연동 정보를 linkedUser에도 저장
+          userObj.linkedUser = userObj.linkedUsers.length > 0 ? {
+            userId: userObj.linkedUsers[0].userId,
+            name: userObj.linkedUsers[0].name,
             userType: '학부모'
           } : null;
         } else if (user.userType === '학부모') {
-          // 학부모인 경우: 연동된 학생 찾기
-          // 학부모의 userId(부모님 연락처)와 parentContact가 일치하는 학생 찾기
-          let linkedStudent = null;
-          if (user.userId && user.studentContact) {
-            linkedStudent = await User.findOne({ 
-              $or: [
-                { phone: user.studentContact.trim(), userType: '학생' },
-                { studentContact: user.studentContact.trim(), userType: '학생' },
-                { parentContact: user.userId.trim(), userType: '학생' }
-              ]
-            }).select('userId name').lean();
-          }
+          // 학부모인 경우: 연동된 모든 학생 찾기
+          const studentLinks = await ParentStudentLink.find({ parentId: user._id })
+            .populate('studentId', 'userId name email phone schoolName')
+            .lean();
           
-          // 연동된 학생이 실제로 존재하는지 확인
-          userObj.linkedUser = linkedStudent ? {
-            userId: linkedStudent.userId,
-            name: linkedStudent.name,
+          userObj.linkedUsers = studentLinks.map(link => ({
+            _id: link.studentId._id,
+            userId: link.studentId.userId,
+            name: link.studentId.name,
+            email: link.studentId.email,
+            phone: link.studentId.phone,
+            schoolName: link.studentId.schoolName,
+            userType: '학생',
+            linkId: link._id,
+          }));
+          
+          // 하위 호환성을 위해 첫 번째 연동 정보를 linkedUser에도 저장
+          userObj.linkedUser = userObj.linkedUsers.length > 0 ? {
+            userId: userObj.linkedUsers[0].userId,
+            name: userObj.linkedUsers[0].name,
             userType: '학생'
           } : null;
         } else {
+          userObj.linkedUsers = [];
           userObj.linkedUser = null;
         }
         
@@ -325,6 +330,35 @@ exports.createUserByAdmin = async (req, res) => {
         } else {
           parentUser = existingParent;
           console.log('학부모 계정이 이미 존재합니다:', existingParent.userId);
+        }
+
+        // 학부모 계정이 있으면 n:m 연동 관계 생성
+        if (parentUser) {
+          try {
+            // 이미 연동되어 있는지 확인
+            const existingLink = await ParentStudentLink.findOne({
+              parentId: parentUser._id,
+              studentId: savedUser._id,
+            });
+
+            if (!existingLink) {
+              // 새로운 연동 관계 생성
+              const link = new ParentStudentLink({
+                parentId: parentUser._id,
+                studentId: savedUser._id,
+              });
+              await link.save();
+              console.log('관리자 - 연동 관계 생성 완료:', {
+                parentId: parentUser._id,
+                studentId: savedUser._id,
+              });
+            } else {
+              console.log('관리자 - 연동 관계가 이미 존재합니다');
+            }
+          } catch (linkError) {
+            console.error('관리자 - 연동 관계 생성 오류:', linkError);
+            // 연동 관계 생성 실패해도 학생 계정은 생성됨
+          }
         }
       } catch (parentError) {
         console.error('학부모 계정 생성 오류:', parentError);
@@ -571,6 +605,35 @@ exports.createUser = async (req, res) => {
         } else {
           parentUser = existingParent;
           console.log('회원가입 - 학부모 계정이 이미 존재합니다:', existingParent.userId);
+        }
+
+        // 학부모 계정이 있으면 n:m 연동 관계 생성
+        if (parentUser) {
+          try {
+            // 이미 연동되어 있는지 확인
+            const existingLink = await ParentStudentLink.findOne({
+              parentId: parentUser._id,
+              studentId: savedUser._id,
+            });
+
+            if (!existingLink) {
+              // 새로운 연동 관계 생성
+              const link = new ParentStudentLink({
+                parentId: parentUser._id,
+                studentId: savedUser._id,
+              });
+              await link.save();
+              console.log('회원가입 - 연동 관계 생성 완료:', {
+                parentId: parentUser._id,
+                studentId: savedUser._id,
+              });
+            } else {
+              console.log('회원가입 - 연동 관계가 이미 존재합니다');
+            }
+          } catch (linkError) {
+            console.error('회원가입 - 연동 관계 생성 오류:', linkError);
+            // 연동 관계 생성 실패해도 학생 계정은 생성됨
+          }
         }
       } catch (parentError) {
         console.error('회원가입 - 학부모 계정 생성 오류:', parentError);
@@ -920,30 +983,39 @@ exports.deleteUser = async (req, res) => {
 
     let unlinkedUser = null;
 
-    // 학생을 삭제하는 경우: 연동된 학부모 확인
+    // 학생을 삭제하는 경우: 연동된 학부모 확인 및 연동 정보 정리
     if (user.userType === '학생') {
       try {
         // 연동된 학부모 계정 찾기 (부모님 연락처를 userId로 사용)
         if (user.parentContact) {
-        const linkedParent = await User.findOne({
+          const linkedParent = await User.findOne({
             userId: user.parentContact.trim(),
-          userType: '학부모',
-        });
+            userType: '학부모',
+          });
 
-        if (linkedParent) {
+          if (linkedParent) {
             unlinkedUser = {
-            type: '학부모',
-            userId: linkedParent.userId,
-            name: linkedParent.name,
-          };
+              type: '학부모',
+              userId: linkedParent.userId,
+              name: linkedParent.name,
+            };
+
+            // 학부모 계정의 연동 정보 정리 (studentContact 초기화)
+            // studentContact가 삭제되는 학생의 연락처와 일치하는 경우에만 정리
+            if (linkedParent.studentContact === user.phone || 
+                linkedParent.studentContact === user.studentContact) {
+              linkedParent.studentContact = '000-0000-0000'; // 기본값으로 설정
+              await linkedParent.save();
+              console.log(`학부모 계정(${linkedParent.userId})의 연동 정보가 정리되었습니다.`);
+            }
           }
         }
       } catch (parentError) {
-        console.error('연동된 학부모 확인 중 오류:', parentError);
+        console.error('연동된 학부모 확인 및 연동 정보 정리 중 오류:', parentError);
       }
     }
 
-    // 학부모를 삭제하는 경우: 연동된 학생 확인
+    // 학부모를 삭제하는 경우: 연동된 학생 확인 및 연동 정보 정리
     if (user.userType === '학부모') {
       try {
         // 연동된 학생 계정 찾기 (학부모의 userId가 부모님 연락처이므로, parentContact가 학부모 userId와 일치하는 학생 찾기)
@@ -958,9 +1030,16 @@ exports.deleteUser = async (req, res) => {
             userId: linkedStudent.userId,
             name: linkedStudent.name,
           };
+
+          // 학생 계정의 연동 정보 정리 (parentContact 초기화)
+          if (linkedStudent.parentContact === user.userId.trim()) {
+            linkedStudent.parentContact = '000-0000-0000'; // 기본값으로 설정
+            await linkedStudent.save();
+            console.log(`학생 계정(${linkedStudent.userId})의 연동 정보가 정리되었습니다.`);
+          }
         }
       } catch (studentError) {
-        console.error('연동된 학생 확인 중 오류:', studentError);
+        console.error('연동된 학생 확인 및 연동 정보 정리 중 오류:', studentError);
       }
     }
 

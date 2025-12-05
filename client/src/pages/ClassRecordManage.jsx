@@ -29,8 +29,8 @@ function ClassRecordManage() {
   const [studentRecordsLoading, setStudentRecordsLoading] = useState(false);
   const [studentFormData, setStudentFormData] = useState({}); // { userId: { attendance, assignment, dailyTestScore, monthlyEvaluationScore, hasClinic } }
   const [savingUsers, setSavingUsers] = useState({}); // { userId: boolean }
-  const [dailyTestTotal, setDailyTestTotal] = useState(''); // 일일테스트 총 문제수
-  const [monthlyEvalTotal, setMonthlyEvalTotal] = useState(''); // 월말평가 총 문제수
+  const [dailyTestTotal, setDailyTestTotal] = useState(''); // 리뷰TEST 총 문제수
+  const [monthlyEvalTotal, setMonthlyEvalTotal] = useState(''); // 실전TEST 총 문제수
 
   useEffect(() => {
     const checkAdminStatus = () => {
@@ -182,7 +182,7 @@ function ClassRecordManage() {
           const studentId = record.studentId._id || record.studentId;
           recordsMap[studentId] = record;
           
-          // 일일테스트 점수 처리 (맞은개수/총문항수 형식에서 맞은 개수만 추출)
+          // 리뷰TEST 점수 처리 (맞은개수/총문항수 형식에서 맞은 개수만 추출)
           let dailyTestCorrect = '';
           if (record.dailyTestScore !== null && record.dailyTestScore !== undefined) {
             const dailyTestStr = String(record.dailyTestScore);
@@ -197,7 +197,7 @@ function ClassRecordManage() {
             }
           }
           
-          // 월말평가 점수 처리 (맞은개수/총문항수 형식에서 맞은 개수만 추출)
+          // 실전TEST 점수 처리 (맞은개수/총문항수 형식에서 맞은 개수만 추출)
           let monthlyEvalCorrect = '';
           if (record.monthlyEvaluationScore !== null && record.monthlyEvaluationScore !== undefined) {
             const monthlyEvalStr = String(record.monthlyEvaluationScore);
@@ -366,7 +366,7 @@ function ClassRecordManage() {
 
     try {
       const record = studentRecords[userId];
-      // 일일테스트 점수 처리 (맞은 개수 + 총 문제수)
+      // 리뷰TEST 점수 처리 (맞은 개수 + 총 문제수)
       let dailyTestScoreValue = null;
       if (formData.dailyTestScore && formData.dailyTestScore.trim() !== '' && dailyTestTotal && dailyTestTotal.trim() !== '') {
         dailyTestScoreValue = `${formData.dailyTestScore.trim()}/${dailyTestTotal.trim()}`;
@@ -375,7 +375,7 @@ function ClassRecordManage() {
         dailyTestScoreValue = formData.dailyTestScore.trim();
       }
       
-      // 월말평가 점수 처리 (맞은 개수 + 총 문제수)
+      // 실전TEST 점수 처리 (맞은 개수 + 총 문제수)
       let monthlyEvalScoreValue = null;
       if (formData.monthlyEvaluationScore && formData.monthlyEvaluationScore.trim() !== '' && monthlyEvalTotal && monthlyEvalTotal.trim() !== '') {
         monthlyEvalScoreValue = `${formData.monthlyEvaluationScore.trim()}/${monthlyEvalTotal.trim()}`;
@@ -571,7 +571,7 @@ function ClassRecordManage() {
                   ? parentRecordResponse.data.data[0] 
                   : null;
                 
-                // 일일테스트 점수 처리 (맞은 개수 + 총 문제수)
+                // 리뷰TEST 점수 처리 (맞은 개수 + 총 문제수)
                 let parentDailyTestScoreValue = null;
                 if (studentFormDataCopy.dailyTestScore && studentFormDataCopy.dailyTestScore.trim() !== '' && dailyTestTotal && dailyTestTotal.trim() !== '') {
                   parentDailyTestScoreValue = `${studentFormDataCopy.dailyTestScore.trim()}/${dailyTestTotal.trim()}`;
@@ -579,7 +579,7 @@ function ClassRecordManage() {
                   parentDailyTestScoreValue = studentFormDataCopy.dailyTestScore.trim();
                 }
                 
-                // 월말평가 점수 처리 (맞은 개수 + 총 문제수)
+                // 실전TEST 점수 처리 (맞은 개수 + 총 문제수)
                 let parentMonthlyEvalScoreValue = null;
                 if (studentFormDataCopy.monthlyEvaluationScore && studentFormDataCopy.monthlyEvaluationScore.trim() !== '' && monthlyEvalTotal && monthlyEvalTotal.trim() !== '') {
                   parentMonthlyEvalScoreValue = `${studentFormDataCopy.monthlyEvaluationScore.trim()}/${monthlyEvalTotal.trim()}`;
@@ -759,7 +759,7 @@ function ClassRecordManage() {
                 </div>
               </th>
               <th>
-                일일TEST
+                리뷰TEST
                 <div className="total-questions-input-group">
                   <label className="total-questions-label">총 문제수:</label>
                   <input
@@ -773,7 +773,7 @@ function ClassRecordManage() {
                 </div>
               </th>
               <th>
-                월말평가
+                실전TEST
                 <div className="total-questions-input-group">
                   <label className="total-questions-label">총 문제수:</label>
                   <input

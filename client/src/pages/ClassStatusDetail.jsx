@@ -302,7 +302,7 @@ function ClassStatusDetail() {
     }
   };
 
-  // 일일테스트 점수를 백분율로 변환
+  // 리뷰TEST 점수를 백분율로 변환
   const convertDailyTestScoreToPercentage = (score) => {
     if (!score) return null;
     if (typeof score === 'string' && score.includes('/')) {
@@ -314,7 +314,7 @@ function ClassStatusDetail() {
     return null;
   };
 
-  // 월말평가 점수 변환 (맞은개수/총문항수 형식을 백분율로 변환)
+  // 실전TEST 점수 변환 (맞은개수/총문항수 형식을 백분율로 변환)
   const getMonthlyEvaluationScore = () => {
     if (studentRecord?.monthlyEvaluationScore !== null && studentRecord?.monthlyEvaluationScore !== undefined) {
       // 문자열 형식인 경우 (맞은개수/총문항수)
@@ -543,7 +543,7 @@ function ClassStatusDetail() {
                     </td>
                   </tr>
                   <tr>
-                    <td className="table-label">일일테스트점수</td>
+                    <td className="table-label">리뷰TEST점수</td>
                     <td className="table-value">
                       {(() => {
                         const percentage = convertDailyTestScoreToPercentage(studentRecord?.dailyTestScore);
@@ -570,7 +570,7 @@ function ClassStatusDetail() {
                     const monthlyScore = getMonthlyEvaluationScore();
                     return monthlyScore !== null ? (
                       <tr>
-                        <td className="table-label">월말평가점수</td>
+                        <td className="table-label">실전TEST점수</td>
                         <td className="table-value">
                           <div className="test-score-detail">
                             <span className="my-score">{monthlyScore}점</span>
@@ -607,7 +607,7 @@ function ClassStatusDetail() {
 
           {trendData.length > 0 && (
             <div className="trend-chart-container">
-              <h2 className="chart-title">일일테스트 점수 추이</h2>
+              <h2 className="chart-title">리뷰TEST 점수 추이</h2>
               <p className="chart-hint">
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>

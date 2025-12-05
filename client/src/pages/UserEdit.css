@@ -499,6 +499,12 @@
   }
 
 /* 연동 정보 섹션 */
+.linked-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .link-user-section {
   display: flex;
   flex-direction: column;

@@ -391,7 +391,7 @@
   min-width: 110px;
 }
 
-/* 일일TEST와 월말평가 칸 너비 조정 */
+/* 리뷰TEST와 실전TEST 칸 너비 조정 */
 .students-records-table th:nth-child(8),
 .students-records-table td:nth-child(8),
 .students-records-table th:nth-child(9),

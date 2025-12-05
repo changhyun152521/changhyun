@@ -671,7 +671,7 @@
 .users-table th:nth-child(4) { min-width: 180px; } /* 학교명 */
 .users-table th:nth-child(5) { min-width: 140px; } /* 생성일 */
 .users-table th:nth-child(6) { min-width: 200px; } /* 관리 */
-.users-table th:nth-child(7) { min-width: 350px; } /* 연동 정보 - 넓게 */
+.users-table th:nth-child(7) { min-width: 500px; } /* 연동 정보 - 넓게 */
 .users-table th:nth-child(8) { min-width: 400px; } /* 반 - 넓게 */
 .users-table th:nth-child(9) { min-width: 120px; } /* 관리자 */
 
@@ -690,7 +690,7 @@
 .users-table td:nth-child(4) { min-width: 180px; } /* 학교명 */
 .users-table td:nth-child(5) { min-width: 140px; } /* 생성일 */
 .users-table td:nth-child(6) { min-width: 200px; } /* 관리 */
-.users-table td:nth-child(7) { min-width: 350px; } /* 연동 정보 - 넓게 */
+.users-table td:nth-child(7) { min-width: 500px; } /* 연동 정보 - 넓게 */
 .users-table td:nth-child(8) { min-width: 400px; } /* 반 - 넓게 */
 .users-table td:nth-child(9) { min-width: 120px; } /* 관리자 */
 
@@ -809,6 +809,184 @@
   color: #999;
   font-size: 0.85rem;
   text-align: center;
+}
+
+/* n:m 연동 정보 스타일 */
+.linked-users-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 300px;
+}
+
+.linked-user-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.btn-add-link,
+.btn-remove-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-add-link {
+  background: #3498db;
+  color: white;
+  margin-top: 0.25rem;
+}
+
+.btn-add-link:hover {
+  background: #2980b9;
+}
+
+.btn-remove-link {
+  background: #e74c3c;
+  color: white;
+  padding: 0.2rem 0.4rem;
+}
+
+.btn-remove-link:hover {
+  background: #c0392b;
+}
+
+/* 연동 추가 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-description {
+  margin-bottom: 1.5rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.available-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.available-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.available-user-item:hover {
+  border-color: #3498db;
+  background: #f8f9fa;
+}
+
+.available-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.available-user-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.available-user-id {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.available-user-school {
+  color: #95a5a6;
+  font-size: 0.85rem;
+}
+
+.btn-select-link {
+  padding: 0.5rem 1rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-select-link:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #7f8c8d;
 }
 
 .no-class {
@@ -1304,7 +1482,7 @@
   .users-table th:nth-child(4) { min-width: 160px; }
   .users-table th:nth-child(5) { min-width: 120px; }
   .users-table th:nth-child(6) { min-width: 180px; }
-  .users-table th:nth-child(7) { min-width: 300px; }
+  .users-table th:nth-child(7) { min-width: 450px; }
   .users-table th:nth-child(8) { min-width: 350px; }
   .users-table th:nth-child(9) { min-width: 100px; }
 
@@ -1314,7 +1492,7 @@
   .users-table td:nth-child(4) { min-width: 160px; }
   .users-table td:nth-child(5) { min-width: 120px; }
   .users-table td:nth-child(6) { min-width: 180px; }
-  .users-table td:nth-child(7) { min-width: 300px; }
+  .users-table td:nth-child(7) { min-width: 450px; }
   .users-table td:nth-child(8) { min-width: 350px; }
   .users-table td:nth-child(9) { min-width: 100px; }
 

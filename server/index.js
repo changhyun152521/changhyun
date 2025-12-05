@@ -169,6 +169,11 @@ const attendanceCommentsRouter = require('./routes/attendanceComments');
 app.use('/api/attendance-comments', attendanceCommentsRouter);
 console.log('=== 라우터 등록 완료: /api/attendance-comments ===');
 
+const parentStudentLinksRouter = require('./routes/parentStudentLinks');
+app.use('/api/parent-student-links', parentStudentLinksRouter);
+console.log('=== 라우터 등록 완료: /api/parent-student-links ===');
+console.log('=== 라우터 등록 완료: /api/attendance-comments ===');
+
 // 404 핸들러
 app.use((req, res) => {
   console.log(`[404] 라우트를 찾을 수 없음: ${req.method} ${req.path}`);

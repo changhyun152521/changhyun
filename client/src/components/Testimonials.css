@@ -68,6 +68,7 @@
 
   .testimonials-header.animate-in {
     animation: fadeInDown 1s ease-out forwards;
+    margin-bottom: 3rem;
   }
 }
 
@@ -85,6 +86,7 @@
 
   .testimonials-header.animate-in {
     animation: fadeInDown 1s ease-out forwards;
+    margin-bottom: 0;
   }
 }
 
@@ -182,6 +184,7 @@
   padding: 1rem 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  background: linear-gradient(135deg, rgba(248, 248, 252, 1) 0%, rgba(245, 250, 255, 0.8) 100%);
 }
 
 .testimonials-carousel::-webkit-scrollbar {
@@ -211,6 +214,14 @@
 
 /* PC에서만 애니메이션 적용 */
 @media (min-width: 641px) {
+  .testimonials-section {
+    padding-bottom: 75px;
+  }
+
+  .testimonials-carousel {
+    gap: 1rem;
+  }
+
   .testimonial-card {
     opacity: 0;
     transform: translateY(50px) scale(0.95) rotateX(10deg);
@@ -225,6 +236,24 @@
     opacity: 1;
     transform: translateY(0) scale(1) rotateX(0deg);
     animation: testimonialSlideIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(0) scale(1) rotateX(0deg) !important;
+    box-shadow: 0 10px 40px rgba(33, 150, 243, 0.1) !important;
+    border-color: transparent !important;
+  }
+
+  .testimonial-card:hover::before {
+    opacity: 0 !important;
+  }
+
+  .testimonial-card:hover .testimonial-header::before {
+    left: -100% !important;
+  }
+
+  .testimonial-card:hover .testimonial-content {
+    background: #ffffff !important;
   }
 }
 
@@ -452,10 +481,15 @@
 @media (max-width: 640px) {
   .testimonials-section {
     padding: 50px 0;
+    padding-bottom: 33px;
   }
 
   .testimonials-header {
     margin-bottom: 2.5rem;
+  }
+
+  .testimonials-header.animate-in {
+    margin-bottom: 0;
   }
 
   .testimonials-icon {
@@ -491,6 +525,9 @@
     max-width: 100%;
     box-sizing: border-box;
     margin: 0;
+    overflow: visible;
+    padding-top: 40px;
+    padding-bottom: 20px;
   }
 
   .testimonials-carousel {
@@ -500,6 +537,7 @@
     padding: 0;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    overflow-y: visible;
   }
 
   .testimonial-card {
@@ -511,6 +549,14 @@
     margin: 0;
     scroll-snap-align: center;
     scroll-snap-stop: always;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  .testimonial-card:active {
+    transform: none !important;
+    box-shadow: 0 10px 40px rgba(33, 150, 243, 0.1) !important;
   }
 
   .testimonial-content {

@@ -36,6 +36,10 @@ api.interceptors.response.use(
       status: response.status,
       statusText: response.statusText,
     });
+    // API 요청 성공 시 사용자 활동으로 간주하여 이벤트 발생
+    if (localStorage.getItem('token') || sessionStorage.getItem('token')) {
+      window.dispatchEvent(new Event('userActivity'));
+    }
     return response;
   },
   (error) => {
@@ -52,6 +56,16 @@ api.interceptors.response.use(
     
     if (error.response) {
       // 서버에서 응답이 온 경우
+      // 401 에러 시 자동 로그아웃
+      if (error.response.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('rememberMe');
+        localStorage.removeItem('rememberedUserId');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        window.location.href = '/';
+      }
       return Promise.reject(error);
     } else if (error.request) {
       // 요청은 보냈지만 응답을 받지 못한 경우

@@ -28,10 +28,11 @@ function UserEdit() {
   const [classesLoading, setClassesLoading] = useState(false);
   const [showClassModal, setShowClassModal] = useState(false);
   const [classSearchTerm, setClassSearchTerm] = useState('');
-  const [linkedUser, setLinkedUser] = useState(null); // 현재 연동된 사용자 정보
+  const [linkedUsers, setLinkedUsers] = useState([]); // 현재 연동된 사용자 정보 배열 (n:m)
   const [showLinkModal, setShowLinkModal] = useState(false); // 연동 모달 표시 여부
   const [linkSearchTerm, setLinkSearchTerm] = useState(''); // 연동 검색어
   const [availableUsers, setAvailableUsers] = useState([]); // 연동 가능한 사용자 목록
+  const [linkLoading, setLinkLoading] = useState(false);
 
   useEffect(() => {
     // 관리자 권한 확인
@@ -124,7 +125,7 @@ function UserEdit() {
         });
         
         // 연동 정보 가져오기
-        await fetchLinkedUser(user);
+        await fetchLinkedUsers(user);
       } else {
         alert('사용자 정보를 불러올 수 없습니다.');
         navigate('/admin');
@@ -138,32 +139,34 @@ function UserEdit() {
     }
   };
 
-  // 연동 정보 가져오기
-  const fetchLinkedUser = async (user) => {
+  // 연동 정보 가져오기 (n:m 구조)
+  const fetchLinkedUsers = async (user) => {
     try {
       // 전체 사용자 목록에서 연동 정보 확인
-      const response = await api.get('/users');
-      if (response.data.success) {
-        const currentUser = response.data.data.find(u => u._id === userId);
-        if (currentUser && currentUser.linkedUser && currentUser.linkedUser.userId) {
-          setLinkedUser(currentUser.linkedUser);
+      const allUsersResponse = await api.get('/users');
+      if (allUsersResponse.data.success) {
+        const currentUser = allUsersResponse.data.data.find(u => u._id === userId);
+        if (currentUser && currentUser.linkedUsers && currentUser.linkedUsers.length > 0) {
+          setLinkedUsers(currentUser.linkedUsers);
         } else {
-          setLinkedUser(null);
+          setLinkedUsers([]);
         }
       }
     } catch (error) {
       console.error('연동 정보 가져오기 오류:', error);
-      setLinkedUser(null);
+      setLinkedUsers([]);
     }
   };
 
-  // 연동 가능한 사용자 목록 가져오기
+  // 연동 가능한 사용자 목록 가져오기 (n:m 구조)
   const fetchAvailableUsers = async () => {
     try {
+      setLinkLoading(true);
       const response = await api.get('/users');
       if (response.data.success) {
         const currentUser = response.data.data.find(u => u._id === userId);
         const currentUserType = currentUser?.userType;
+        const currentLinkedUserIds = linkedUsers.map(lu => lu._id);
         
         // 현재 사용자와 반대 타입의 사용자만 필터링 (이미 연동되지 않은 사용자)
         const available = response.data.data.filter(u => {
@@ -175,7 +178,7 @@ function UserEdit() {
           if (currentUserType === '학부모' && u.userType !== '학생') return false;
           
           // 이미 연동된 사용자 제외
-          if (u.linkedUser && u.linkedUser.userId) return false;
+          if (currentLinkedUserIds.includes(u._id)) return false;
           
           return true;
         });
@@ -185,25 +188,28 @@ function UserEdit() {
     } catch (error) {
       console.error('연동 가능한 사용자 목록 가져오기 오류:', error);
       alert('연동 가능한 사용자 목록을 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setLinkLoading(false);
     }
   };
 
   // 연동 모달 열기
   const handleOpenLinkModal = () => {
-    if (linkedUser) {
-      alert('이미 연동된 사용자가 있습니다. 먼저 연동을 해지해주세요.');
-      return;
-    }
     setLinkSearchTerm('');
     fetchAvailableUsers();
     setShowLinkModal(true);
   };
 
-  // 연동하기
+  // 연동하기 (n:m 구조)
   const handleLinkUser = async (targetUserId) => {
     try {
-      const response = await api.put(`/users/${userId}/link`, {
-        targetUserId: targetUserId
+      setLinkLoading(true);
+      const parentId = formData.userType === '학부모' ? userId : targetUserId;
+      const studentId = formData.userType === '학생' ? userId : targetUserId;
+      
+      const response = await api.post('/parent-student-links', {
+        parentId,
+        studentId,
       });
       
       if (response.data.success) {
@@ -215,26 +221,24 @@ function UserEdit() {
       }
     } catch (error) {
       console.error('연동 오류:', error);
-      if (error.response?.data?.error) {
-        alert(error.response.data.error);
-      } else {
-        alert('연동 중 오류가 발생했습니다.');
-      }
+      const errorMessage = error.response?.data?.error || '연동 중 오류가 발생했습니다.';
+      alert(errorMessage);
+    } finally {
+      setLinkLoading(false);
     }
   };
 
-  // 연동 해지
-  const handleUnlinkUser = async () => {
-    if (!window.confirm('연동을 해지하시겠습니까?')) {
+  // 연동 해지 (n:m 구조)
+  const handleUnlinkUser = async (linkId, linkedUserName) => {
+    if (!window.confirm(`"${linkedUserName}"와의 연동을 해지하시겠습니까?`)) {
       return;
     }
 
     try {
-      const response = await api.put(`/users/${userId}/unlink`);
+      const response = await api.delete(`/parent-student-links/${linkId}`);
       
       if (response.data.success) {
         alert('연동이 해지되었습니다.');
-        setLinkedUser(null);
         await fetchUserData(); // 연동 정보 다시 가져오기
       } else {
         alert(response.data.error || '연동 해지 중 오류가 발생했습니다.');
@@ -498,28 +502,40 @@ function UserEdit() {
                 </div>
               </div>
 
-              {/* 연동 정보 (학생 또는 학부모인 경우에만 표시) */}
+              {/* 연동 정보 (학생 또는 학부모인 경우에만 표시) - n:m 구조 */}
               {(formData.userType === '학생' || formData.userType === '학부모') && (
                 <div className="form-row">
                   <div className="form-group" style={{ width: '100%' }}>
                     <label className="form-label">연동 정보</label>
                     <div className="link-user-section">
-                      {linkedUser ? (
-                        <div className="linked-user-display">
-                          <div className="linked-user-info">
-                            <i className={`fas ${formData.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
-                            <span className="linked-user-name">
-                              {linkedUser.name} ({linkedUser.userId})
-                            </span>
-                            <span className="linked-user-type">{linkedUser.userType}</span>
-                          </div>
+                      {linkedUsers && linkedUsers.length > 0 ? (
+                        <div className="linked-users-list">
+                          {linkedUsers.map((linkedUser, idx) => (
+                            <div key={linkedUser._id || idx} className="linked-user-display">
+                              <div className="linked-user-info">
+                                <i className={`fas ${formData.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
+                                <span className="linked-user-name">
+                                  {linkedUser.name} ({linkedUser.userId})
+                                </span>
+                                <span className="linked-user-type">{linkedUser.userType}</span>
+                              </div>
+                              <button
+                                type="button"
+                                className="btn-unlink-user"
+                                onClick={() => handleUnlinkUser(linkedUser.linkId, linkedUser.name)}
+                              >
+                                <i className="fas fa-unlink"></i>
+                                연동 해지
+                              </button>
+                            </div>
+                          ))}
                           <button
                             type="button"
-                            className="btn-unlink-user"
-                            onClick={handleUnlinkUser}
+                            className="btn-link-user"
+                            onClick={handleOpenLinkModal}
                           >
-                            <i className="fas fa-unlink"></i>
-                            연동 해지
+                            <i className="fas fa-link"></i>
+                            연동 추가
                           </button>
                         </div>
                       ) : (
@@ -761,53 +777,62 @@ function UserEdit() {
 
               {/* 사용자 목록 */}
               <div className="modal-list">
-                {availableUsers
-                  .filter(user => {
-                    if (!linkSearchTerm) return true;
-                    const searchLower = linkSearchTerm.toLowerCase();
-                    return (
-                      user.name?.toLowerCase().includes(searchLower) ||
-                      user.userId?.toLowerCase().includes(searchLower)
-                    );
-                  })
-                  .map((user) => (
-                    <div
-                      key={user._id}
-                      className="modal-list-item"
-                      onClick={() => handleLinkUser(user._id)}
-                    >
-                      <div className="modal-item-info">
-                        <span className="modal-item-name">{user.name}</span>
-                        <span className="modal-item-id">({user.userId})</span>
-                        <span className="modal-item-type">{user.userType}</span>
-                        {user.schoolName && (
-                          <span className="modal-item-school">{user.schoolName}</span>
-                        )}
-                      </div>
-                      <button
-                        type="button"
-                        className="btn-link-item"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLinkUser(user._id);
-                        }}
-                      >
-                        <i className="fas fa-link"></i>
-                        연동
-                      </button>
-                    </div>
-                  ))}
-                {availableUsers.filter(user => {
-                  if (!linkSearchTerm) return true;
-                  const searchLower = linkSearchTerm.toLowerCase();
-                  return (
-                    user.name?.toLowerCase().includes(searchLower) ||
-                    user.userId?.toLowerCase().includes(searchLower)
-                  );
-                }).length === 0 && (
-                  <div className="modal-empty-message">
-                    {linkSearchTerm ? '검색 결과가 없습니다.' : '연동 가능한 사용자가 없습니다.'}
+                {linkLoading ? (
+                  <div className="loading" style={{ padding: '2rem', textAlign: 'center' }}>
+                    로딩 중...
                   </div>
+                ) : (
+                  <>
+                    {availableUsers
+                      .filter(user => {
+                        if (!linkSearchTerm) return true;
+                        const searchLower = linkSearchTerm.toLowerCase();
+                        return (
+                          user.name?.toLowerCase().includes(searchLower) ||
+                          user.userId?.toLowerCase().includes(searchLower)
+                        );
+                      })
+                      .map((user) => (
+                        <div
+                          key={user._id}
+                          className="modal-list-item"
+                          onClick={() => handleLinkUser(user._id)}
+                        >
+                          <div className="modal-item-info">
+                            <span className="modal-item-name">{user.name}</span>
+                            <span className="modal-item-id">({user.userId})</span>
+                            <span className="modal-item-type">{user.userType}</span>
+                            {user.schoolName && (
+                              <span className="modal-item-school">{user.schoolName}</span>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn-link-item"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLinkUser(user._id);
+                            }}
+                            disabled={linkLoading}
+                          >
+                            <i className="fas fa-link"></i>
+                            연동
+                          </button>
+                        </div>
+                      ))}
+                    {availableUsers.filter(user => {
+                      if (!linkSearchTerm) return true;
+                      const searchLower = linkSearchTerm.toLowerCase();
+                      return (
+                        user.name?.toLowerCase().includes(searchLower) ||
+                        user.userId?.toLowerCase().includes(searchLower)
+                      );
+                    }).length === 0 && !linkLoading && (
+                      <div className="modal-empty-message">
+                        {linkSearchTerm ? '검색 결과가 없습니다.' : '연동 가능한 사용자가 없습니다.'}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>

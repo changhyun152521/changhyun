@@ -2,6 +2,7 @@ const StudentRecord = require('../models/StudentRecord');
 const Class = require('../models/Class');
 const User = require('../models/User');
 const ClassRecord = require('../models/ClassRecord');
+const ParentStudentLink = require('../models/ParentStudentLink');
 const mongoose = require('mongoose');
 
 // 모든 학생 기록 조회
@@ -506,9 +507,9 @@ exports.getMyStudentRecords = async (req, res) => {
     }
 
     const userId = req.user.id; // protect 미들웨어에서 설정된 user ID
-    const { classId, date } = req.query;
+    const { classId, date, studentId } = req.query;
 
-    console.log('[getMyStudentRecords] 요청 파라미터:', { userId, classId, date });
+    console.log('[getMyStudentRecords] 요청 파라미터:', { userId, classId, date, studentId });
 
     // 사용자 확인
     const user = await User.findById(userId);
@@ -586,48 +587,95 @@ exports.getMyStudentRecords = async (req, res) => {
 
     // 학부모인 경우 자녀 학생 찾기
     if (user.userType === '학부모') {
-      // 학부모가 해당 반에 속해있는지 확인
-      const isParentInClass = classData.students.some(
-        (id) => id.toString() === userId.toString()
-      );
-      if (!isParentInClass) {
-        return res.status(403).json({
-          success: false,
-          error: '해당 반에 속해있지 않습니다.',
+      // studentId가 제공된 경우 (n:m 연동 관계 사용)
+      if (studentId) {
+        // studentId가 유효한 ObjectId 형식인지 확인
+        if (!mongoose.Types.ObjectId.isValid(studentId)) {
+          return res.status(400).json({
+            success: false,
+            error: '유효하지 않은 학생 ID입니다.',
+          });
+        }
+
+        // 학부모와 학생이 연동되어 있는지 확인
+        const link = await ParentStudentLink.findOne({
+          parentId: userId,
+          studentId: studentId,
         });
-      }
 
-      // 학부모의 name에서 "부모님"을 제거하여 학생 이름 추출
-      const studentName = user.name.replace('부모님', '');
-      
-      // 학부모의 studentContact로 연결된 학생 찾기
-      const linkedStudent = await User.findOne({
-        userType: '학생',
-        $or: [
-          { name: studentName },
-          { studentContact: user.studentContact }
-        ]
-      });
+        if (!link) {
+          return res.status(403).json({
+            success: false,
+            error: '연동된 학생이 아닙니다.',
+          });
+        }
 
-      if (!linkedStudent) {
-        return res.status(404).json({
-          success: false,
-          error: '연동된 학생을 찾을 수 없습니다.',
+        // 학생 정보 확인
+        const linkedStudent = await User.findById(studentId);
+        if (!linkedStudent || linkedStudent.userType !== '학생') {
+          return res.status(404).json({
+            success: false,
+            error: '학생을 찾을 수 없습니다.',
+          });
+        }
+
+        // 학생이 해당 반에 속해있는지 확인
+        const isStudentInClass = classData.students.some(
+          (id) => id.toString() === studentId.toString()
+        );
+        if (!isStudentInClass) {
+          return res.status(403).json({
+            success: false,
+            error: '연동된 학생이 해당 반에 속해있지 않습니다.',
+          });
+        }
+
+        targetStudentId = studentId;
+      } else {
+        // 기존 방식 (하위 호환성 유지)
+        // 학부모가 해당 반에 속해있는지 확인
+        const isParentInClass = classData.students.some(
+          (id) => id.toString() === userId.toString()
+        );
+        if (!isParentInClass) {
+          return res.status(403).json({
+            success: false,
+            error: '해당 반에 속해있지 않습니다.',
+          });
+        }
+
+        // 학부모의 name에서 "부모님"을 제거하여 학생 이름 추출
+        const studentName = user.name.replace('부모님', '');
+        
+        // 학부모의 studentContact로 연결된 학생 찾기
+        const linkedStudent = await User.findOne({
+          userType: '학생',
+          $or: [
+            { name: studentName },
+            { studentContact: user.studentContact }
+          ]
         });
-      }
 
-      // 학생이 해당 반에 속해있는지 확인
-      const isStudentInClass = classData.students.some(
-        (id) => id.toString() === linkedStudent._id.toString()
-      );
-      if (!isStudentInClass) {
-        return res.status(403).json({
-          success: false,
-          error: '연동된 학생이 해당 반에 속해있지 않습니다.',
-        });
-      }
+        if (!linkedStudent) {
+          return res.status(404).json({
+            success: false,
+            error: '연동된 학생을 찾을 수 없습니다.',
+          });
+        }
 
-      targetStudentId = linkedStudent._id;
+        // 학생이 해당 반에 속해있는지 확인
+        const isStudentInClass = classData.students.some(
+          (id) => id.toString() === linkedStudent._id.toString()
+        );
+        if (!isStudentInClass) {
+          return res.status(403).json({
+            success: false,
+            error: '연동된 학생이 해당 반에 속해있지 않습니다.',
+          });
+        }
+
+        targetStudentId = linkedStudent._id;
+      }
     } else {
       // 학생인 경우 자신이 해당 반에 속해있는지 확인
       const isStudentInClass = classData.students.some(

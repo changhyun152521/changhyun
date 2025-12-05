@@ -152,7 +152,7 @@ function AdminClassStudentRecordsDetail() {
                 const dailyScores = [];
                 
                 allRecords.forEach(record => {
-                  // 일일테스트 점수 처리
+                  // 리뷰TEST 점수 처리
                   if (record.dailyTestScore && 
                       record.dailyTestScore !== null && 
                       record.dailyTestScore !== undefined && 
@@ -249,7 +249,7 @@ function AdminClassStudentRecordsDetail() {
     return days[date.getDay()];
   };
 
-  // 일일테스트 점수를 백분율로 변환
+  // 리뷰TEST 점수를 백분율로 변환
   const convertDailyTestScoreToPercentage = (scoreStr) => {
     if (!scoreStr || scoreStr === '') return null;
     if (typeof scoreStr === 'string' && scoreStr.includes('/')) {
@@ -522,7 +522,7 @@ function AdminClassStudentRecordsDetail() {
                               {assignment}
                             </div>
                             <div className="cell-item">
-                              <span className="cell-label">일일테스트:</span>
+                              <span className="cell-label">리뷰TEST:</span>
                               <span className="cell-value">{dailyScore}</span>
                             </div>
                           </td>
@@ -558,13 +558,13 @@ function AdminClassStudentRecordsDetail() {
             </table>
           </div>
 
-          {/* 월말평가 별도 섹션 */}
+          {/* 실전TEST 별도 섹션 */}
           {monthlyData.some(item => 
             item.allRecords && 
             item.allRecords.some(record => record.monthlyEvaluationScore)
           ) && (
             <div className="monthly-evaluation-section">
-              <h2 className="section-title">월말평가</h2>
+              <h2 className="section-title">실전TEST</h2>
               <div 
                 className="monthly-table-container admin-table-wrapper"
                 ref={monthlyTableWrapperRef}
@@ -681,7 +681,7 @@ function AdminClassStudentRecordsDetail() {
                           item.allRecords.some(record => record.monthlyEvaluationScore)
                         )
                         .map((item) => {
-                          // 월말평가 평균 및 최고점 계산
+                          // 실전TEST 평균 및 최고점 계산
                           const monthlyScores = [];
                           item.allRecords.forEach(record => {
                             if (record.monthlyEvaluationScore !== null && 

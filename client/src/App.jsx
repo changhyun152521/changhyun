@@ -36,9 +36,12 @@ import NoticeDetail from './pages/NoticeDetail';
 import NoticeEdit from './pages/NoticeEdit';
 import Attendance from './pages/Attendance';
 import ScrollToTop from './components/ScrollToTop';
+import { useAutoLogout } from './hooks/useAutoLogout';
 import './App.css';
 
 function App() {
+  useAutoLogout(); // 자동 로그아웃 훅 적용
+
   return (
     <Router
       future={{

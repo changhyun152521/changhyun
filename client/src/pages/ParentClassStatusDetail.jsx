@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import api from '../api/axiosConfig';
@@ -8,6 +8,8 @@ import './ClassStatusDetail.css';
 function ParentClassStatusDetail() {
   const navigate = useNavigate();
   const { classId } = useParams();
+  const [searchParams] = useSearchParams();
+  const studentId = searchParams.get('studentId');
   const [loading, setLoading] = useState(true);
   const [classData, setClassData] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
@@ -27,6 +29,7 @@ function ParentClassStatusDetail() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
   const [error, setError] = useState('');
+  const [studentName, setStudentName] = useState('');
 
   useEffect(() => {
     checkAuthAndFetchData();
@@ -82,9 +85,27 @@ function ParentClassStatusDetail() {
         setClassData(classResponse.data.data);
       }
 
-      // 최근 기록이 있는 날짜 가져오기
+      // studentId가 없으면 이전 페이지로 리다이렉트
+      if (!studentId) {
+        alert('학생을 선택해주세요.');
+        navigate('/parent-class-status');
+        return;
+      }
+
+      // 학생 정보 가져오기 (이름 표시용)
       try {
-        const recordsResponse = await api.get(`/student-records/my-records?classId=${classId}`);
+        const studentResponse = await api.get(`/users/${studentId}`);
+        if (studentResponse.data.success) {
+          setStudentName(studentResponse.data.data.name || '학생');
+        }
+      } catch (studentError) {
+        console.error('학생 정보 가져오기 오류:', studentError);
+        setStudentName('학생');
+      }
+
+      // 최근 기록이 있는 날짜 가져오기 (선택된 학생의 기록)
+      try {
+        const recordsResponse = await api.get(`/student-records/my-records?classId=${classId}&studentId=${studentId}`);
         if (recordsResponse.data.success) {
           const { latestDate: latest, availableDates: dates } = recordsResponse.data.data;
           setAvailableDates(dates || []);
@@ -127,7 +148,7 @@ function ParentClassStatusDetail() {
     }
     
     try {
-      const response = await api.get(`/student-records/my-records?classId=${classId}&date=${selectedDate}`);
+      const response = await api.get(`/student-records/my-records?classId=${classId}&date=${selectedDate}&studentId=${studentId}`);
       if (response.data.success) {
         setClassRecord(response.data.data.classRecord);
         setStudentRecord(response.data.data.studentRecord);
@@ -298,7 +319,7 @@ function ParentClassStatusDetail() {
     }
   };
 
-  // 일일테스트 점수를 백분율로 변환
+  // 리뷰TEST 점수를 백분율로 변환
   const convertDailyTestScoreToPercentage = (score) => {
     if (!score) return null;
     if (typeof score === 'string' && score.includes('/')) {
@@ -310,7 +331,7 @@ function ParentClassStatusDetail() {
     return null;
   };
 
-  // 월말평가 점수 변환 (맞은개수/총문항수 형식을 백분율로 변환)
+  // 실전TEST 점수 변환 (맞은개수/총문항수 형식을 백분율로 변환)
   const getMonthlyEvaluationScore = () => {
     if (studentRecord?.monthlyEvaluationScore !== null && studentRecord?.monthlyEvaluationScore !== undefined) {
       // 문자열 형식인 경우 (맞은개수/총문항수)
@@ -378,20 +399,7 @@ function ParentClassStatusDetail() {
                 {classData?.className || '수업 현황'}
               </h1>
               <p className="page-description">
-                {(() => {
-                  try {
-                    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-                    if (userStr) {
-                      const userData = JSON.parse(userStr);
-                      // 학부모 이름에서 "부모님"을 제거하여 자녀 이름 추출
-                      const studentName = userData.name ? userData.name.replace('부모님', '') : '학생';
-                      return `${studentName}학생의 수업 현황을 확인할 수 있습니다.`;
-                    }
-                  } catch (e) {
-                    console.error('사용자 정보 파싱 오류:', e);
-                  }
-                  return '수업 현황을 확인할 수 있습니다.';
-                })()}
+                {studentName ? `${studentName}학생의 수업 현황을 확인할 수 있습니다.` : '수업 현황을 확인할 수 있습니다.'}
               </p>
             </div>
           </div>
@@ -540,7 +548,7 @@ function ParentClassStatusDetail() {
                     </td>
                   </tr>
                   <tr>
-                    <td className="table-label">일일테스트점수</td>
+                    <td className="table-label">리뷰TEST점수</td>
                     <td className="table-value">
                       {(() => {
                         const percentage = convertDailyTestScoreToPercentage(studentRecord?.dailyTestScore);
@@ -567,7 +575,7 @@ function ParentClassStatusDetail() {
                     const monthlyScore = getMonthlyEvaluationScore();
                     return monthlyScore !== null ? (
                       <tr>
-                        <td className="table-label">월말평가점수</td>
+                        <td className="table-label">실전TEST점수</td>
                         <td className="table-value">
                           <div className="test-score-detail">
                             <span className="my-score">{monthlyScore}점</span>
@@ -604,7 +612,7 @@ function ParentClassStatusDetail() {
 
           {trendData.length > 0 && (
             <div className="trend-chart-container">
-              <h2 className="chart-title">일일테스트 점수 추이</h2>
+              <h2 className="chart-title">리뷰TEST 점수 추이</h2>
               <p className="chart-hint">
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>

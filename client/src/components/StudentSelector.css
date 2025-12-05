@@ -1,0 +1,232 @@
+.student-selector-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.student-selector-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.student-selector-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.student-selector-close-btn:hover {
+  background-color: #f0f0f0;
+  color: #2c3e50;
+}
+
+.student-selector-close-btn:active {
+  background-color: #e0e0e0;
+}
+
+.student-selector-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.students-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.student-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  position: relative;
+}
+
+.student-card:hover {
+  border-color: #3498db;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+  transform: translateY(-2px);
+}
+
+.student-card.selected {
+  border-color: #3498db;
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(52, 152, 219, 0.1) 100%);
+}
+
+.student-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.student-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+}
+
+.student-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.student-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.student-info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.student-info-item i {
+  color: #7f8c8d;
+  width: 16px;
+}
+
+.student-info-label {
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.student-info-value {
+  color: #2c3e50;
+}
+
+.student-card-selected {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #27ae60;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.student-card-selected i {
+  font-size: 18px;
+}
+
+.no-students-message {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.no-students-message i {
+  font-size: 48px;
+  color: #95a5a6;
+  margin-bottom: 16px;
+}
+
+.no-students-message p {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 8px 0;
+}
+
+.no-students-sub {
+  font-size: 14px;
+  color: #95a5a6;
+}
+
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 모바일 반응형 */
+@media (max-width: 640px) {
+  .student-selector-content {
+    padding: 20px;
+    max-width: 100%;
+    margin: 10px;
+  }
+
+  .student-selector-close-btn {
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .student-selector-content h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .student-card {
+    padding: 16px;
+  }
+
+  .student-name {
+    font-size: 18px;
+  }
+}
+

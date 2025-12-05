@@ -151,7 +151,7 @@ function AdminClassMonthlyStatisticsDetail() {
                 const monthlyScores = [];
                 
                 allRecords.forEach(record => {
-                  // 일일테스트 점수 처리
+                  // 리뷰TEST 점수 처리
                   if (record.dailyTestScore && 
                       record.dailyTestScore !== null && 
                       record.dailyTestScore !== undefined && 
@@ -168,7 +168,7 @@ function AdminClassMonthlyStatisticsDetail() {
                     }
                   }
                   
-                  // 월말평가 점수 처리
+                  // 실전TEST 점수 처리
                   if (record.monthlyEvaluationScore !== null && 
                       record.monthlyEvaluationScore !== undefined &&
                       String(record.monthlyEvaluationScore).trim() !== '') {
@@ -545,7 +545,7 @@ function AdminClassMonthlyStatisticsDetail() {
                               {assignment}
                             </div>
                             <div className="cell-item">
-                              <span className="cell-label">일일테스트:</span>
+                              <span className="cell-label">리뷰TEST:</span>
                               <span className="cell-value">{dailyScore}</span>
                             </div>
                           </td>
@@ -583,7 +583,7 @@ function AdminClassMonthlyStatisticsDetail() {
             </table>
           </div>
 
-          {/* 월말평가 별도 섹션 */}
+          {/* 실전TEST 별도 섹션 */}
           {monthlyData.some(item => 
             item.allRecords && 
             item.allRecords.some(record => record.monthlyEvaluationScore)
@@ -629,7 +629,7 @@ function AdminClassMonthlyStatisticsDetail() {
                 setActiveTableRef(null);
               }}
             >
-              <h2 className="section-title">월말평가</h2>
+              <h2 className="section-title">실전TEST</h2>
               <table className="monthly-table admin-monthly-table">
                 <thead>
                   <tr>

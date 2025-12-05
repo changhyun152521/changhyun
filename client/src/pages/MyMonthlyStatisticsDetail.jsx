@@ -97,9 +97,9 @@ function MyMonthlyStatisticsDetail() {
               if (response.data.success) {
                 // 디버깅: 반평균과 최고점 데이터 확인
                 console.log(`[${dateStr}] 반평균:`, response.data.data.classAverage, '최고점:', response.data.data.classMaxScore);
-                // 디버깅: 월말평가 등수 데이터 확인
+                // 디버깅: 실전TEST 등수 데이터 확인
                 if (response.data.data.studentRecord?.monthlyEvaluationScore) {
-                  console.log(`[${dateStr}] 월말평가 등수:`, response.data.data.monthlyRank, '전체인원수:', response.data.data.monthlyTotalCount);
+                  console.log(`[${dateStr}] 실전TEST 등수:`, response.data.data.monthlyRank, '전체인원수:', response.data.data.monthlyTotalCount);
                 }
                 return {
                   date: dateStr,
@@ -174,7 +174,7 @@ function MyMonthlyStatisticsDetail() {
     return days[date.getDay()];
   };
 
-  // 일일테스트 점수를 백분율로 변환
+  // 리뷰TEST 점수를 백분율로 변환
   const convertDailyTestScoreToPercentage = (scoreStr) => {
     if (!scoreStr || scoreStr === '') return null;
     if (typeof scoreStr === 'string' && scoreStr.includes('/')) {
@@ -189,7 +189,7 @@ function MyMonthlyStatisticsDetail() {
   // 월별 데이터를 그래프 형식으로 변환
   const getChartData = () => {
     const chartData = monthlyData
-      .filter(item => item.data?.studentRecord?.dailyTestScore) // 일일테스트 데이터가 있는 날짜만
+      .filter(item => item.data?.studentRecord?.dailyTestScore) // 리뷰TEST 데이터가 있는 날짜만
       .map(item => {
         const record = item.data?.studentRecord;
         const myScore = convertDailyTestScoreToPercentage(record?.dailyTestScore);
@@ -315,7 +315,7 @@ function MyMonthlyStatisticsDetail() {
                   <th>날짜</th>
                   <th>출결</th>
                   <th>과제</th>
-                  <th>일일테스트</th>
+                  <th>리뷰TEST</th>
                   <th>반평균</th>
                   <th>최고점</th>
                 </tr>
@@ -333,7 +333,7 @@ function MyMonthlyStatisticsDetail() {
                       console.log(`[${item.date}] 학생 기록 있음, 반평균:`, classStats, '최고점:', classMaxScore);
                     }
                     
-                    // 일일테스트 점수 포맷팅 (항상 "점" 포함)
+                    // 리뷰TEST 점수 포맷팅 (항상 "점" 포함)
                     const dailyScore = record?.dailyTestScore ? formatScore(record.dailyTestScore) : '-';
                     
                     // 반평균: null/undefined가 아니고 유효한 숫자인 경우만 표시
@@ -375,10 +375,10 @@ function MyMonthlyStatisticsDetail() {
             </table>
           </div>
 
-          {/* 일일테스트 점수 추이 그래프 */}
+          {/* 리뷰TEST 점수 추이 그래프 */}
           {getChartData().length > 0 && (
             <div className="trend-chart-container">
-              <h2 className="chart-title">일일테스트 점수 추이</h2>
+              <h2 className="chart-title">리뷰TEST 점수 추이</h2>
               <p className="chart-hint">
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>
@@ -389,10 +389,10 @@ function MyMonthlyStatisticsDetail() {
             </div>
           )}
 
-          {/* 월말평가 별도 섹션 */}
+          {/* 실전TEST 별도 섹션 */}
           {monthlyData.some(item => item.data?.studentRecord?.monthlyEvaluationScore) && (
             <div className="monthly-evaluation-section">
-              <h2 className="section-title">월말평가</h2>
+              <h2 className="section-title">실전TEST</h2>
               <div className="monthly-table-container">
                 <table className="monthly-table">
                   <thead>
@@ -405,7 +405,7 @@ function MyMonthlyStatisticsDetail() {
                   </thead>
                   <tbody>
                     {monthlyData
-                      .filter(item => item.data?.studentRecord?.monthlyEvaluationScore) // 월말평가 데이터가 있는 날짜만 필터링
+                      .filter(item => item.data?.studentRecord?.monthlyEvaluationScore) // 실전TEST 데이터가 있는 날짜만 필터링
                       .map((item) => {
                         const record = item.data?.studentRecord;
                         const monthlyScore = record?.monthlyEvaluationScore ? formatScore(record.monthlyEvaluationScore) : '-';

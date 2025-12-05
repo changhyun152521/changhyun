@@ -170,7 +170,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="javascript:void(0)" 
+                  href="#" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -197,7 +197,7 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -214,7 +214,7 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -247,7 +247,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="javascript:void(0)" 
+                  href="#" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -274,7 +274,7 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -291,7 +291,7 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -324,7 +324,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="javascript:void(0)" 
+                  href="#" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -351,7 +351,7 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -368,7 +368,7 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -401,7 +401,7 @@ function Header() {
                 }}
               >
                 <a 
-                  href="javascript:void(0)" 
+                  href="#" 
                   className="nav-link" 
                   onClick={(e) => {
                     e.preventDefault();
@@ -428,7 +428,7 @@ function Header() {
                 <ul className="dropdown-menu">
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();
@@ -445,7 +445,7 @@ function Header() {
                   </li>
                   <li>
                     <a 
-                      href="javascript:void(0)" 
+                      href="#" 
                       className="dropdown-link"
                       onClick={(e) => {
                         e.preventDefault();

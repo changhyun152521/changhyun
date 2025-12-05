@@ -99,7 +99,10 @@ function UsersList() {
     const user = users.find(u => u._id === userId);
     let confirmMessage = `정말로 "${userName}" 사용자를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
     
-    if (user && user.linkedUser) {
+    if (user && user.linkedUsers && user.linkedUsers.length > 0) {
+      const linkedCount = user.linkedUsers.length;
+      confirmMessage += `\n\n⚠️ 주의: 이 사용자는 ${linkedCount}명의 ${user.userType === '학생' ? '학부모' : '학생'}와 연동되어 있습니다.\n삭제 시 모든 연동 정보가 제거됩니다.`;
+    } else if (user && user.linkedUser) {
       confirmMessage += `\n\n⚠️ 주의: 이 사용자는 "${user.linkedUser.name}" (${user.linkedUser.userId})와 연동되어 있습니다.\n삭제 시 연동 정보가 제거됩니다.`;
     }
     
@@ -374,21 +377,25 @@ function UsersList() {
                               </div>
                             </td>
                             <td>
-                              {user.linkedUser && user.linkedUser.userId ? (
-                                <div className="linked-user-info">
-                                  <span 
-                                    className="linked-user-badge" 
-                                    title={`연동된 ${user.linkedUser.userType}: ${user.linkedUser.name} (${user.linkedUser.userId})`}
-                                  >
-                                    <i className={`fas ${user.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
-                                    <span className="linked-user-text">
-                                      {user.linkedUser.name} ({user.linkedUser.userId})
-                                    </span>
-                                  </span>
-                                </div>
-                              ) : (
-                                <span className="no-linked-user">-</span>
-                              )}
+                              <div className="linked-users-container">
+                                {user.linkedUsers && user.linkedUsers.length > 0 ? (
+                                  user.linkedUsers.map((linkedUser, idx) => (
+                                    <div key={linkedUser._id || idx} className="linked-user-item">
+                                      <span 
+                                        className="linked-user-badge" 
+                                        title={`연동된 ${linkedUser.userType}: ${linkedUser.name} (${linkedUser.userId})`}
+                                      >
+                                        <i className={`fas ${user.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
+                                        <span className="linked-user-text">
+                                          {linkedUser.name} ({linkedUser.userId})
+                                        </span>
+                                      </span>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <span className="no-linked-user">-</span>
+                                )}
+                              </div>
                             </td>
                             <td>
                               {user.classes && user.classes.length > 0 ? (
