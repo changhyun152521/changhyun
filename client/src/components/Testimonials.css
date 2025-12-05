@@ -54,11 +54,20 @@
   z-index: 1;
 }
 
-/* PC에서는 항상 보이는 상태 */
+/* PC에서만 애니메이션 적용 */
 @media (min-width: 641px) {
   .testimonials-header {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  .testimonials-header.no-initial-animation {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .testimonials-header.animate-in {
+    animation: fadeInDown 1s ease-out forwards;
   }
 }
 
@@ -200,15 +209,26 @@
   perspective: 1000px;
 }
 
-/* PC에서는 항상 보이는 상태 */
+/* PC에서만 애니메이션 적용 */
 @media (min-width: 641px) {
   .testimonial-card {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95) rotateX(10deg);
+  }
+
+  .testimonial-card.no-initial-animation {
     opacity: 1;
     transform: translateY(0) scale(1) rotateX(0deg);
   }
+
+  .testimonial-card.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+    animation: testimonialSlideIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
 }
 
-/* 모바일에서만 애니메이션 적용 */
+/* 모바일에서만 첫 번째 카드에 애니메이션 적용 */
 @media (max-width: 640px) {
   .testimonial-card {
     opacity: 0;
