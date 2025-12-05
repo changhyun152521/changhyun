@@ -174,8 +174,24 @@ function Testimonials() {
     };
   }, []); // 의존성 배열을 비워서 마운트 시 한 번만 등록
 
-  // IntersectionObserver를 사용한 스크롤 애니메이션 (첫 카드만)
+  // IntersectionObserver를 사용한 스크롤 애니메이션 (모바일 화면에서만 적용)
   useEffect(() => {
+    // 모바일 화면인지 확인 (640px 이하)
+    const isMobile = window.matchMedia('(max-width: 640px)').matches;
+    
+    if (!isMobile) {
+      // PC에서는 모든 카드와 제목을 보이는 상태로 설정
+      if (headerRef.current) {
+        headerRef.current.classList.add('no-initial-animation');
+      }
+      cardsRef.current.forEach((ref) => {
+        if (ref) {
+          ref.classList.add('no-initial-animation');
+        }
+      });
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -187,11 +203,12 @@ function Testimonials() {
       { threshold: 0.1 }
     );
 
+    // 제목 애니메이션 (모바일에서만)
     if (headerRef.current) {
       observer.observe(headerRef.current);
     }
 
-    // 첫 카드(index 0)만 관찰
+    // 첫 번째 카드만 관찰 (모바일에서만)
     if (cardsRef.current[0]) {
       observer.observe(cardsRef.current[0]);
     }
