@@ -61,3 +61,7 @@ coverage/
 *.temp
 .cache/
 
+# Project reports
+PROJECT_REPORT.md
+project_report.md
+
