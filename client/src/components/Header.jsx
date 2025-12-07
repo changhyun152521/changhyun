@@ -306,6 +306,23 @@ function Header() {
                       월별통계
                     </a>
                   </li>
+                  <li>
+                    <a 
+                      href="#" 
+                      className="dropdown-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = 'https://www.mathchang-quiz.com/';
+                        setIsMobileMenuOpen(false);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      Quiz lab
+                    </a>
+                  </li>
                 </ul>
               </li>
 
