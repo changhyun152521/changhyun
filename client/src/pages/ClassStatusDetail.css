@@ -1,3 +1,5 @@
+/* Page Title 스타일 - 깔끔하게 재작성 */
+
 .class-status-detail-page {
   min-height: 100vh;
   display: flex;
@@ -18,7 +20,7 @@
 }
 
 .page-header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .btn-back {
@@ -56,7 +58,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .page-header-icon {
@@ -77,17 +79,26 @@
   color: white;
 }
 
-.page-title {
-  font-size: 2.5rem;
+/* Page Title 스타일 - 깔끔하게 재작성 */
+.class-status-detail-page .page-header-content h1.page-title {
+  font-size: 3rem;
   font-weight: 700;
-  color: #2b2d42;
+  color: #667eea !important;
+  -webkit-text-fill-color: #667eea !important;
   margin-bottom: 0.5rem;
+  font-family: '공체', sans-serif !important;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+  text-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
 }
 
 .page-description {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #6c757d;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
 }
 
 .date-selector-container {
@@ -376,17 +387,19 @@
 
 .table-section-title {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #667eea;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #e0e7ff;
+  font-family: '공체', sans-serif;
+  letter-spacing: -0.01em;
 }
 
 .records-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .records-table thead {
@@ -400,7 +413,7 @@
   padding: 1.2rem 1.5rem;
   text-align: left;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 0.85rem;
 }
 
 .records-table tbody tr {
@@ -421,16 +434,22 @@
   padding: 1.2rem 1.5rem;
   font-weight: 600;
   color: #495057;
-  width: 200px;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
   vertical-align: top;
   background: #f8f9fa;
   border-right: 1px solid #e0e7ff;
+  font-size: 0.9rem;
 }
 
 .table-value {
   padding: 1.2rem 1.5rem;
   color: #212529;
   font-weight: 500;
+  font-size: 0.9rem;
+  width: auto;
+  min-width: 0;
 }
 
 .test-score-detail {
@@ -498,8 +517,15 @@
     padding: 2rem 0;
   }
 
-  .page-title {
-    font-size: 2rem;
+  .class-status-detail-page .page-header-content h1.page-title {
+    font-size: 2.5rem;
+    color: #667eea !important;
+    -webkit-text-fill-color: #667eea !important;
+    font-weight: 700;
+    font-family: '공체', sans-serif !important;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
   }
 
   .date-selector-container {
@@ -567,12 +593,12 @@
   }
 
   .records-table {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
   .records-table thead th {
     padding: 1rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 
   .table-label,
@@ -596,18 +622,22 @@
   }
 
   .page-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
   }
 
-  .btn-back {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    width: auto;
+  .class-status-detail-page .btn-back,
+  .class-status-detail-section .btn-back {
+    padding: 0.45rem 0.9rem !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 1rem !important;
+    width: auto !important;
+    min-height: auto !important;
+    height: auto !important;
+    line-height: 1.2 !important;
   }
 
   .page-header-content {
@@ -630,15 +660,23 @@
     font-size: 1.8rem;
   }
 
-  .page-title {
+  .class-status-detail-page .page-header-content h1.page-title {
     font-size: 1.5rem;
     text-align: center;
     width: 100%;
+    color: #667eea !important;
+    -webkit-text-fill-color: #667eea !important;
+    font-weight: 700;
+    font-family: '공체', sans-serif !important;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
   }
 
   .page-description {
-    font-size: 0.9rem;
+    font-size: 1rem;
     text-align: center;
+    line-height: 1.6;
   }
 
   .date-selector-container {
@@ -727,6 +765,9 @@
   .table-section-title {
     font-size: 1rem;
     padding: 0.7rem 0.75rem;
+    font-family: '공체', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
   .records-table {
@@ -737,22 +778,30 @@
 
   .records-table thead th {
     padding: 0.7rem 0.75rem;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
+  }
+
+  .records-table {
+    font-size: 0.8rem;
   }
 
   .records-table tbody td {
     padding: 0.7rem 0.75rem;
     word-break: break-word;
+    font-size: 0.8rem;
   }
 
   .table-label {
-    font-size: 0.85rem;
-    min-width: 80px;
-    width: auto;
+    font-size: 0.75rem;
+    min-width: 90px;
+    width: 90px;
+    max-width: 90px;
   }
 
   .table-value {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    width: auto;
+    min-width: 0;
   }
 
   .test-score-detail {
@@ -775,6 +824,9 @@
     font-size: 1.2rem;
     margin-bottom: 1rem;
     padding-bottom: 0.8rem;
+    font-family: '공체', sans-serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
   .records-table {
@@ -787,14 +839,18 @@
   }
 
   .table-label {
-    width: 150px;
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
     padding: 0.8rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .table-value {
     padding: 0.8rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    width: auto;
+    min-width: 0;
   }
 
   .test-score-detail .my-score {
@@ -1098,4 +1154,5 @@
     font-size: 0.8rem;
   }
 }
+
 

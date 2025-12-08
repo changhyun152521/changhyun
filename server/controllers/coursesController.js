@@ -713,6 +713,14 @@ exports.getMyCourses = async (req, res) => {
       courses = await Course.find()
         .populate('instructorId', 'userId name email userType profileImage')
         .sort({ createdAt: -1 });
+      
+      // 강사 이름 동기화: populate된 instructorId의 name과 Course의 instructorName이 다르면 업데이트
+      for (const course of courses) {
+        if (course.instructorId && course.instructorId.name && course.instructorName !== course.instructorId.name) {
+          course.instructorName = course.instructorId.name;
+          await Course.findByIdAndUpdate(course._id, { instructorName: course.instructorId.name });
+        }
+      }
     } 
     // 학생인 경우: 자신이 속한 반의 강좌만 조회
     else if (userType === '학생') {
@@ -759,6 +767,14 @@ exports.getMyCourses = async (req, res) => {
         success: false,
         error: '접근 권한이 없습니다. 학생 또는 관리자 권한이 필요합니다',
       });
+    }
+
+    // 강사 이름 동기화: populate된 instructorId의 name과 Course의 instructorName이 다르면 업데이트
+    for (const course of courses) {
+      if (course.instructorId && course.instructorId.name && course.instructorName !== course.instructorId.name) {
+        course.instructorName = course.instructorId.name;
+        await Course.findByIdAndUpdate(course._id, { instructorName: course.instructorId.name });
+      }
     }
 
     res.json({

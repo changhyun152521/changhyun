@@ -9,7 +9,7 @@ function ClassSteps() {
       number: 'STEP 01',
       image: '/3번.png',
       title: '섬세한 개념수업',
-      description: '수학의 기본 개념을 꼼꼼하고 세밀하게 설명하여 학생들이 수학의 원리를 정확히 이해할 수 있도록 합니다.'
+      description: '기본 개념을 꼼꼼하고 세밀하게 설명하여 학생들이 수학의 원리를 정확히 이해할 수 있도록 합니다.'
     },
     {
       number: 'STEP 02',

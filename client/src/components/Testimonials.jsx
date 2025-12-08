@@ -203,18 +203,18 @@ function Testimonials() {
       });
     } else {
       // 모바일: 제목과 첫 번째 카드에만 애니메이션 적용
-      if (headerRef.current) {
-        observer.observe(headerRef.current);
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+    if (cardsRef.current[0]) {
+      observer.observe(cardsRef.current[0]);
+    }
+    // 나머지 카드들은 초기 상태를 보이는 상태로 설정
+    cardsRef.current.forEach((ref, index) => {
+      if (ref && index > 0) {
+        ref.classList.add('no-initial-animation');
       }
-      if (cardsRef.current[0]) {
-        observer.observe(cardsRef.current[0]);
-      }
-      // 나머지 카드들은 초기 상태를 보이는 상태로 설정
-      cardsRef.current.forEach((ref, index) => {
-        if (ref && index > 0) {
-          ref.classList.add('no-initial-animation');
-        }
-      });
+    });
     }
 
     return () => {
@@ -224,7 +224,7 @@ function Testimonials() {
       cardsRef.current.forEach((ref) => {
         if (ref) {
           observer.unobserve(ref);
-        }
+      }
       });
     };
   }, []);

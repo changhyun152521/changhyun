@@ -95,12 +95,6 @@ function MyMonthlyStatisticsDetail() {
           api.get(`/student-records/my-records?classId=${classId}&date=${dateStr}`)
             .then(response => {
               if (response.data.success) {
-                // 디버깅: 반평균과 최고점 데이터 확인
-                console.log(`[${dateStr}] 반평균:`, response.data.data.classAverage, '최고점:', response.data.data.classMaxScore);
-                // 디버깅: 실전TEST 등수 데이터 확인
-                if (response.data.data.studentRecord?.monthlyEvaluationScore) {
-                  console.log(`[${dateStr}] 실전TEST 등수:`, response.data.data.monthlyRank, '전체인원수:', response.data.data.monthlyTotalCount);
-                }
                 return {
                   date: dateStr,
                   day: day,
@@ -330,7 +324,6 @@ function MyMonthlyStatisticsDetail() {
                     
                     // 디버깅: 각 날짜별 데이터 확인
                     if (record) {
-                      console.log(`[${item.date}] 학생 기록 있음, 반평균:`, classStats, '최고점:', classMaxScore);
                     }
                     
                     // 리뷰TEST 점수 포맷팅 (항상 "점" 포함)
@@ -383,6 +376,20 @@ function MyMonthlyStatisticsDetail() {
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>
               </p>
+              <div className="chart-legend">
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
+                  <span>내 점수</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
+                  <span>반평균</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
+                  <span>최고점</span>
+                </div>
+              </div>
               <div className="chart-wrapper">
                 <ChartComponent data={getChartData()} />
               </div>
@@ -732,20 +739,6 @@ function ChartComponent({ data }) {
 
   return (
     <div className="chart-container">
-      <div className="chart-legend">
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
-          <span>내 점수</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
-          <span>반평균</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
-          <span>최고점</span>
-        </div>
-      </div>
       <div 
         className="chart-svg-wrapper" 
         ref={chartWrapperRef}

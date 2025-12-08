@@ -512,20 +512,20 @@ function UserEdit() {
                         <div className="linked-users-list">
                           {linkedUsers.map((linkedUser, idx) => (
                             <div key={linkedUser._id || idx} className="linked-user-display">
-                              <div className="linked-user-info">
-                                <i className={`fas ${formData.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
-                                <span className="linked-user-name">
-                                  {linkedUser.name} ({linkedUser.userId})
-                                </span>
-                                <span className="linked-user-type">{linkedUser.userType}</span>
-                              </div>
-                              <button
-                                type="button"
-                                className="btn-unlink-user"
+                          <div className="linked-user-info">
+                            <i className={`fas ${formData.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
+                            <span className="linked-user-name">
+                              {linkedUser.name} ({linkedUser.userId})
+                            </span>
+                            <span className="linked-user-type">{linkedUser.userType}</span>
+                          </div>
+                          <button
+                            type="button"
+                            className="btn-unlink-user"
                                 onClick={() => handleUnlinkUser(linkedUser.linkId, linkedUser.name)}
-                              >
-                                <i className="fas fa-unlink"></i>
-                                연동 해지
+                          >
+                            <i className="fas fa-unlink"></i>
+                            연동 해지
                               </button>
                             </div>
                           ))}
@@ -783,54 +783,54 @@ function UserEdit() {
                   </div>
                 ) : (
                   <>
-                    {availableUsers
-                      .filter(user => {
-                        if (!linkSearchTerm) return true;
-                        const searchLower = linkSearchTerm.toLowerCase();
-                        return (
-                          user.name?.toLowerCase().includes(searchLower) ||
-                          user.userId?.toLowerCase().includes(searchLower)
-                        );
-                      })
-                      .map((user) => (
-                        <div
-                          key={user._id}
-                          className="modal-list-item"
-                          onClick={() => handleLinkUser(user._id)}
-                        >
-                          <div className="modal-item-info">
-                            <span className="modal-item-name">{user.name}</span>
-                            <span className="modal-item-id">({user.userId})</span>
-                            <span className="modal-item-type">{user.userType}</span>
-                            {user.schoolName && (
-                              <span className="modal-item-school">{user.schoolName}</span>
-                            )}
-                          </div>
-                          <button
-                            type="button"
-                            className="btn-link-item"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleLinkUser(user._id);
-                            }}
-                            disabled={linkLoading}
-                          >
-                            <i className="fas fa-link"></i>
-                            연동
-                          </button>
-                        </div>
-                      ))}
-                    {availableUsers.filter(user => {
-                      if (!linkSearchTerm) return true;
-                      const searchLower = linkSearchTerm.toLowerCase();
-                      return (
-                        user.name?.toLowerCase().includes(searchLower) ||
-                        user.userId?.toLowerCase().includes(searchLower)
-                      );
-                    }).length === 0 && !linkLoading && (
-                      <div className="modal-empty-message">
-                        {linkSearchTerm ? '검색 결과가 없습니다.' : '연동 가능한 사용자가 없습니다.'}
+                {availableUsers
+                  .filter(user => {
+                    if (!linkSearchTerm) return true;
+                    const searchLower = linkSearchTerm.toLowerCase();
+                    return (
+                      user.name?.toLowerCase().includes(searchLower) ||
+                      user.userId?.toLowerCase().includes(searchLower)
+                    );
+                  })
+                  .map((user) => (
+                    <div
+                      key={user._id}
+                      className="modal-list-item"
+                      onClick={() => handleLinkUser(user._id)}
+                    >
+                      <div className="modal-item-info">
+                        <span className="modal-item-name">{user.name}</span>
+                        <span className="modal-item-id">({user.userId})</span>
+                        <span className="modal-item-type">{user.userType}</span>
+                        {user.schoolName && (
+                          <span className="modal-item-school">{user.schoolName}</span>
+                        )}
                       </div>
+                      <button
+                        type="button"
+                        className="btn-link-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLinkUser(user._id);
+                        }}
+                            disabled={linkLoading}
+                      >
+                        <i className="fas fa-link"></i>
+                        연동
+                      </button>
+                    </div>
+                  ))}
+                {availableUsers.filter(user => {
+                  if (!linkSearchTerm) return true;
+                  const searchLower = linkSearchTerm.toLowerCase();
+                  return (
+                    user.name?.toLowerCase().includes(searchLower) ||
+                    user.userId?.toLowerCase().includes(searchLower)
+                  );
+                    }).length === 0 && !linkLoading && (
+                  <div className="modal-empty-message">
+                    {linkSearchTerm ? '검색 결과가 없습니다.' : '연동 가능한 사용자가 없습니다.'}
+                  </div>
                     )}
                   </>
                 )}

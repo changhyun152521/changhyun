@@ -1,7 +1,12 @@
 /* Testimonials Section */
 .testimonials-section {
   padding: 100px 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(240, 248, 255, 0.8) 100%);
+  background: 
+    linear-gradient(135deg, #f2f6fa 0%, #f0f5f9 25%, #f3f7fb 50%, #f5f9fc 75%, #f7fafd 100%),
+    linear-gradient(90deg, rgba(33, 150, 243, 0.03) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(33, 150, 243, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 55px 55px, 55px 55px;
+  background-position: 0 0, 0 0, 0 0;
   position: relative;
   overflow: hidden;
 }
@@ -14,42 +19,56 @@
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(33, 150, 243, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(66, 165, 245, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 30%, rgba(33, 150, 243, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(66, 165, 245, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(33, 150, 243, 0.025) 0%, transparent 75%);
   pointer-events: none;
   z-index: 0;
-  animation: gradientShift 8s ease-in-out infinite;
 }
 
 .testimonials-section::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(33, 150, 243, 0.02) 2px, rgba(33, 150, 243, 0.02) 4px),
-    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(66, 165, 245, 0.02) 2px, rgba(66, 165, 245, 0.02) 4px);
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 120px,
+      rgba(33, 150, 243, 0.02) 120px,
+      rgba(33, 150, 243, 0.02) 240px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 120px,
+      rgba(66, 165, 245, 0.018) 120px,
+      rgba(66, 165, 245, 0.018) 240px
+    );
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5;
+  opacity: 0.6;
+  animation: subtlePattern 20s ease-in-out infinite alternate;
 }
 
-@keyframes gradientShift {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
+@keyframes subtlePattern {
+  0% { 
+    opacity: 0.6;
+    transform: scale(1) rotate(0deg);
   }
-  50% {
+  100% { 
     opacity: 0.8;
-    transform: scale(1.1);
+    transform: scale(1.02) rotate(0.5deg);
   }
 }
+
 
 .testimonials-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 1.5rem;
   position: relative;
   z-index: 1;
 }
@@ -68,24 +87,24 @@
 
   .testimonials-header.animate-in {
     animation: fadeInDown 1s ease-out forwards;
-    margin-bottom: 3rem;
+    margin-bottom: 1.2rem;
   }
 }
 
 /* 모바일에서만 애니메이션 적용 */
 @media (max-width: 640px) {
   .testimonials-header {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
+  opacity: 0;
+  transform: translateY(-30px);
+}
 
   .testimonials-header.no-initial-animation {
     opacity: 1;
     transform: translateY(0);
-  }
+}
 
-  .testimonials-header.animate-in {
-    animation: fadeInDown 1s ease-out forwards;
+.testimonials-header.animate-in {
+  animation: fadeInDown 1s ease-out forwards;
     margin-bottom: 0;
   }
 }
@@ -156,11 +175,32 @@
   background-color: transparent !important;
 }
 
+.testimonials-section .section-title::after,
+.testimonials-section .section-title::before {
+  display: none !important;
+  content: none !important;
+}
+
+.testimonials-section .section-title {
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border: none !important;
+  text-decoration: none !important;
+}
+
 .section-title-img {
   max-width: 190px;
   width: auto;
   height: auto;
   display: block;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border: none !important;
+  text-decoration: none !important;
 }
 
 
@@ -169,6 +209,7 @@
   position: relative;
   z-index: 1;
   padding: 0 60px;
+  margin-top: -0.5rem;
 }
 
 .testimonials-carousel {
@@ -184,7 +225,7 @@
   padding: 1rem 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  background: linear-gradient(135deg, rgba(248, 248, 252, 1) 0%, rgba(245, 250, 255, 0.8) 100%);
+  background: transparent;
 }
 
 .testimonials-carousel::-webkit-scrollbar {
@@ -196,13 +237,18 @@
 }
 
 .testimonial-card {
-  background: #ffffff;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 50%, #f0f7ff 100%);
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(33, 150, 243, 0.1);
+  box-shadow: 
+    0 5px 24px rgba(33, 150, 243, 0.12),
+    0 2px 10px rgba(33, 150, 243, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(33, 150, 243, 0.05);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  border: 2px solid transparent;
+  border: 1px solid rgba(33, 150, 243, 0.15);
   flex: 0 0 calc(33.333% - 1.33rem);
   min-width: 350px;
   max-width: 400px;
@@ -210,6 +256,8 @@
   box-sizing: border-box;
   transform-style: preserve-3d;
   perspective: 1000px;
+  backdrop-filter: blur(12px) saturate(180%);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 /* PC에서만 애니메이션 적용 */
@@ -227,15 +275,15 @@
     transform: translateY(50px) scale(0.95) rotateX(10deg);
   }
 
-  .testimonial-card.no-initial-animation {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotateX(0deg);
-  }
+.testimonial-card.no-initial-animation {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotateX(0deg);
+}
 
-  .testimonial-card.animate-in {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotateX(0deg);
-    animation: testimonialSlideIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.testimonial-card.animate-in {
+  opacity: 1;
+  transform: translateY(0) scale(1) rotateX(0deg);
+  animation: testimonialSlideIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .testimonial-card:hover {
@@ -294,29 +342,45 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05), rgba(66, 165, 245, 0.05));
+  background: 
+    linear-gradient(135deg, 
+      rgba(33, 150, 243, 0.06) 0%, 
+      rgba(66, 165, 245, 0.05) 50%,
+      rgba(33, 150, 243, 0.06) 100%),
+    radial-gradient(circle at top left, rgba(33, 150, 243, 0.05) 0%, transparent 65%),
+    radial-gradient(circle at bottom right, rgba(66, 165, 245, 0.04) 0%, transparent 65%);
   opacity: 0;
   transition: opacity 0.5s ease;
   z-index: 0;
-  border-radius: 20px;
+  border-radius: 24px;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-15px) scale(1.03) rotateX(-2deg);
-  box-shadow: 0 30px 80px rgba(33, 150, 243, 0.25);
-  border-color: rgba(33, 150, 243, 0.4);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 12px 36px rgba(33, 150, 243, 0.18),
+    0 4px 16px rgba(33, 150, 243, 0.14),
+    0 1px 4px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(33, 150, 243, 0.08);
+  border-color: rgba(33, 150, 243, 0.25);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 50%, #e8f4ff 100%);
 }
 
 .testimonial-card:hover::before {
-  opacity: 1;
+  opacity: 0.6;
 }
 
 .testimonial-header {
-  background: linear-gradient(135deg, #2196F3, #42A5F5);
-  padding: 1.2rem 1.5rem;
+  background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+  padding: 1.4rem 10px;
   position: relative;
   z-index: 1;
   overflow: hidden;
+  box-shadow: 
+    0 2px 8px rgba(33, 150, 243, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 .testimonial-header::before {
@@ -335,8 +399,9 @@
 }
 
 .testimonial-school {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 400;
+  font-family: 'BM Dohyeon', '배달의민족 도현체', sans-serif !important;
   color: #ffffff;
   margin: 0;
   line-height: 1.4;
@@ -346,7 +411,9 @@
 
 .testimonial-content {
   padding: 2rem;
-  background: #ffffff;
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(248, 251, 255, 0.98) 100%);
   position: relative;
   z-index: 1;
   display: flex;
@@ -355,10 +422,15 @@
   overflow-y: auto;
   overflow-x: hidden;
   transition: all 0.3s ease;
+  border-top: 1px solid rgba(33, 150, 243, 0.12);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 .testimonial-card:hover .testimonial-content {
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(250, 252, 255, 0.98));
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(240, 247, 255, 0.99) 100%);
+  border-top-color: rgba(33, 150, 243, 0.18);
 }
 
 .testimonial-content::-webkit-scrollbar {
@@ -380,12 +452,13 @@
 }
 
 .testimonial-text {
-  font-size: 0.95rem;
-  color: #2b2d42;
-  line-height: 1.8;
+  font-size: 0.93rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif !important;
+  color: #4a5568;
+  line-height: 1.75;
   margin: 0;
   text-align: left;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 .carousel-btn {
@@ -485,11 +558,32 @@
   }
 
   .testimonials-header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
 
   .testimonials-header.animate-in {
     margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .testimonials-icon {
+    margin-bottom: 0.3rem;
+  }
+
+  .testimonials-section .section-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .section-title-img {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .testimonials-carousel-wrapper {
+    margin-top: -1.8rem;
+    padding-top: 0;
   }
 
   .testimonials-icon {
@@ -565,14 +659,52 @@
   }
 
   .testimonial-text {
-    font-size: 0.9rem;
+    font-size: 0.83rem;
     line-height: 1.7;
   }
 
+  .testimonial-school {
+    font-size: 0.90rem;
+  }
+
   .carousel-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     font-size: 1rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .carousel-btn::before {
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .carousel-btn:active {
+    transform: translateY(-50%) scale(0.88) !important;
+    opacity: 0.8 !important;
+    box-shadow: 0 3px 12px rgba(33, 150, 243, 0.4) !important;
+    background: linear-gradient(135deg, #1976D2, #2196F3) !important;
+  }
+
+  .carousel-btn:active::before {
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1), height 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .carousel-btn:active i {
+    transform: scale(0.92) !important;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .carousel-btn-prev:active i {
+    transform: translateX(-1px) scale(0.92) !important;
+  }
+
+  .carousel-btn-next:active i {
+    transform: translateX(1px) scale(0.92) !important;
   }
 }
 

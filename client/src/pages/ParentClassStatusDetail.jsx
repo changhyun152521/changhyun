@@ -598,7 +598,7 @@ function ParentClassStatusDetail() {
                     ) : null;
                   })()}
                   <tr>
-                    <td className="table-label">클리닉 해당여부</td>
+                    <td className="table-label">클리닉 여부</td>
                     <td className="table-value">
                       {studentRecord?.hasClinic !== undefined
                         ? studentRecord.hasClinic ? '해당' : '해당 없음'
@@ -617,6 +617,20 @@ function ParentClassStatusDetail() {
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>
               </p>
+              <div className="chart-legend">
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
+                  <span>내 점수</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
+                  <span>반평균</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
+                  <span>최고점</span>
+                </div>
+              </div>
               <div className="chart-wrapper">
                 <ChartComponent data={trendData} />
               </div>
@@ -805,7 +819,10 @@ function ChartComponent({ data }) {
         setIsDragging(true);
         setHoveredIndex(null); // 툴팁 숨기기
         setIsTouchTooltip(false);
-        e.preventDefault(); // 기본 스크롤 방지
+        // passive 이벤트 리스너에서는 preventDefault를 호출할 수 없으므로 안전하게 처리
+        if (e.cancelable) {
+          e.preventDefault();
+        }
         const x = touch.pageX - chartWrapperRef.current.offsetLeft;
         const walk = (x - touchStartPos.x) * 2;
         chartWrapperRef.current.scrollLeft = chartWrapperRef.current.scrollLeft - walk;
@@ -927,20 +944,6 @@ function ChartComponent({ data }) {
 
   return (
     <div className="chart-container">
-      <div className="chart-legend">
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
-          <span>내 점수</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
-          <span>반평균</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
-          <span>최고점</span>
-        </div>
-      </div>
       <div 
         className="chart-svg-wrapper" 
         ref={chartWrapperRef}
@@ -1086,7 +1089,9 @@ function ChartComponent({ data }) {
                 }}
                 onTouchEnd={(e) => {
                   e.stopPropagation();
-                  e.preventDefault();
+                  if (e.cancelable) {
+                    e.preventDefault();
+                  }
                   // 드래그가 아니었으면 정보 표시
                   if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                     const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
@@ -1125,7 +1130,9 @@ function ChartComponent({ data }) {
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                         const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
@@ -1160,7 +1167,9 @@ function ChartComponent({ data }) {
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                         const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
@@ -1200,7 +1209,9 @@ function ChartComponent({ data }) {
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                         const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
@@ -1235,7 +1246,9 @@ function ChartComponent({ data }) {
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                         const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
@@ -1275,7 +1288,9 @@ function ChartComponent({ data }) {
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                         const wrapperRect = chartWrapperRef.current.getBoundingClientRect();
@@ -1310,7 +1325,9 @@ function ChartComponent({ data }) {
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
                         const wrapperRect = chartWrapperRef.current.getBoundingClientRect();

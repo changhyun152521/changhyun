@@ -72,6 +72,21 @@ function Attendance() {
         return;
       }
       
+      // 사용자 타입 확인
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        try {
+          const userData = JSON.parse(userStr);
+          // 학생이 아닌 경우 (학부모, 강사 등) 빈 배열로 설정
+          if (userData.userType !== '학생') {
+            setUserCourses([]);
+            return;
+          }
+        } catch (error) {
+          console.error('사용자 데이터 파싱 오류:', error);
+        }
+      }
+      
       const response = await api.get('/courses/my-courses');
       if (response.data.success) {
         setUserCourses(response.data.data || []);

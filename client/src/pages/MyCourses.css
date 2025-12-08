@@ -3,8 +3,15 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+  background: 
+    linear-gradient(135deg, #f5f8fb 0%, #f3f7fb 30%, #f6f9fc 70%, #f8fafd 100%),
+    linear-gradient(90deg, rgba(33, 150, 243, 0.025) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(33, 150, 243, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 60px 60px, 60px 60px;
+  background-position: 0 0, 0 0, 0 0;
   padding-top: 100px; /* 헤더 높이만큼 상단 패딩 추가 */
+  position: relative;
+  overflow: hidden;
 }
 
 .my-courses-section {
@@ -14,11 +21,61 @@
   overflow: hidden;
 }
 
+.my-courses-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 200px);
+  background: 
+    radial-gradient(ellipse at 15% 25%, rgba(33, 150, 243, 0.02) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 75%, rgba(66, 165, 245, 0.02) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(33, 150, 243, 0.01) 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.my-courses-page::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: calc(200% - 200px);
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 120px,
+      rgba(33, 150, 243, 0.02) 120px,
+      rgba(33, 150, 243, 0.02) 240px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 120px,
+      rgba(66, 165, 245, 0.015) 120px,
+      rgba(66, 165, 245, 0.015) 240px
+    );
+  animation: slidePattern 25s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+}
+
+@keyframes slidePattern {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(100px, 100px); }
+}
+
 .my-courses-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 /* Page Header */
@@ -215,15 +272,17 @@
 
 .no-courses-container h2 {
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #2b2d42;
   margin-bottom: 1rem;
+  font-family: '공체', sans-serif;
 }
 
 .no-courses-container p {
   font-size: 1.1rem;
   color: #6c757d;
   line-height: 1.8;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 .empty-state {
@@ -568,17 +627,23 @@
   gap: 0.75rem;
   margin-top: 0.5rem;
   margin-bottom: 0.25rem;
-  padding: 0.625rem 0.875rem;
-  background: rgba(33, 150, 243, 0.05);
+  padding: 0.35rem 0.875rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(66, 165, 245, 0.04) 100%);
   border-radius: 10px;
   flex-shrink: 0;
   transition: all 0.3s ease;
   width: 100%;
+  border: 1px solid rgba(33, 150, 243, 0.08);
+  box-shadow: 0 1px 1px rgba(33, 150, 243, 0.05);
 }
 
+@media (hover: hover) {
 .course-card:hover .course-instructor {
-  background: rgba(33, 150, 243, 0.08);
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(66, 165, 245, 0.06) 100%);
   transform: translateX(2px);
+    border-color: rgba(33, 150, 243, 0.12);
+    box-shadow: 0 1px 2px rgba(33, 150, 243, 0.08);
+  }
 }
 
 .instructor-avatar {
@@ -586,23 +651,28 @@
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(33, 150, 243, 0.2);
-  box-shadow: 0 1px 4px rgba(33, 150, 243, 0.1);
+  border: 2px solid rgba(33, 150, 243, 0.3);
+  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.2);
   transition: all 0.3s ease;
   flex-shrink: 0;
+  background: #ffffff;
 }
 
+@media (hover: hover) {
 .course-card:hover .instructor-avatar {
   border-color: #2196F3;
-  box-shadow: 0 3px 12px rgba(33, 150, 243, 0.25);
+    box-shadow: 0 3px 12px rgba(33, 150, 243, 0.3);
   transform: scale(1.1);
+  }
 }
 
 .instructor-name {
   font-size: 0.95rem;
-  color: #333;
-  font-weight: 600;
+  color: #4a5568;
+  font-weight: 500;
   letter-spacing: -0.2px;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .course-details {
@@ -779,22 +849,28 @@
 
 .parent-message h2 {
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #2b2d42;
   margin-bottom: 1rem;
+  font-family: '공체', sans-serif;
 }
 
 .parent-message p {
   font-size: 1.1rem;
   color: #6c757d;
-  margin-bottom: 0.5rem;
-  line-height: 1.8;
+  margin-bottom: 0;
+  line-height: 1.5;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 .parent-message-sub {
   font-size: 0.95rem;
   color: #999;
-  font-style: italic;
+  font-style: normal;
+  margin-top: -0.3rem;
+  margin-bottom: 0;
+  line-height: 1.5;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 /* Responsive Design */
@@ -937,12 +1013,22 @@
   }
 
   .course-instructor {
-    padding: 0.5rem 0.75rem;
+    padding: 0.35rem 0.75rem;
     margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(66, 165, 245, 0.04) 100%);
+    border: 1px solid rgba(33, 150, 243, 0.08);
+    box-shadow: 0 1px 1px rgba(33, 150, 243, 0.05);
   }
 
   .instructor-name {
     font-size: 0.85rem;
+    color: #4a5568;
+    font-weight: 500;
+  }
+
+  .instructor-avatar {
+    border: 2px solid rgba(33, 150, 243, 0.35);
+    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.25);
   }
 
   .course-detail-item {

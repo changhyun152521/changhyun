@@ -139,7 +139,6 @@ function MyClassStatus() {
                 <i className="fas fa-info-circle"></i>
               </div>
               <h2>학생회원 전용 페이지입니다</h2>
-              <p>이 페이지는 학생회원만 이용할 수 있습니다.</p>
               <p className="student-only-message-sub">학생 계정으로 로그인해주세요.</p>
             </div>
           </div>
@@ -225,7 +224,7 @@ function MyClassStatus() {
                     <div className="class-info-item">
                       <i className="fas fa-user-tie"></i>
                       <span className="class-info-label">담당강사:</span>
-                      <span className="class-info-value">{classItem.instructorName}</span>
+                      <span className="class-info-value">{classItem.instructorName}T</span>
                     </div>
                   </div>
                   <div className="class-card-footer">

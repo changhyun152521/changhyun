@@ -65,3 +65,71 @@ coverage/
 PROJECT_REPORT.md
 project_report.md
 
+# Package lock files (선택사항 - 일반적으로는 포함하지만 필요시 제외)
+# package-lock.json
+# client/package-lock.json
+# server/package-lock.json
+
+# Vite cache
+.vite/
+client/.vite/
+.vite-cache/
+
+# ESLint cache
+.eslintcache
+client/.eslintcache
+server/.eslintcache
+
+# Prettier cache
+.prettiercache
+
+# Duplicate/copy files (복사본 파일들)
+**/*복사본*
+**/*copy*
+**/*Copy*
+**/* - 복사본*
+**/* - Copy*
+**/*(1)*
+**/*(2)*
+**/*(3)*
+**/*(4)*
+**/*(5)*
+**/*(6)*
+**/*(7)*
+**/*(8)*
+**/*(9)*
+**/*(10)*
+
+# Test files
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+__tests__/
+test/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cloudinary upload cache
+.upload/
+
+# Vercel
+.vercel/
+
+# Local development
+.local/
+
+# Misc
+.DS_Store
+*.pem
+*.key
+*.cert
+

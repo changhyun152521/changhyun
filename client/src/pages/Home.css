@@ -2,14 +2,40 @@
 .home {
   width: 100%;
   min-height: 100vh;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 /* Section Title 공통 스타일 */
 .section-title {
   font-size: 2.5rem;
   font-weight: 700;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   margin-bottom: 1.5rem;
   color: #2b2d42;
   position: relative;
   display: inline-block;
+}
+
+.section-title::after,
+.section-title::before {
+  display: none !important;
+  content: none !important;
+}
+
+.section-title {
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border: none !important;
+  text-decoration: none !important;
+}
+
+.section-title-img {
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border: none !important;
+  text-decoration: none !important;
 }

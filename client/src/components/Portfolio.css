@@ -76,7 +76,7 @@
 }
 
 .portfolio .section-title {
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 0.8rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -86,38 +86,65 @@
   background-color: transparent !important;
 }
 
+.portfolio .section-title::after,
+.portfolio .section-title::before {
+  display: none !important;
+  content: none !important;
+}
+
+.portfolio .section-title {
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border: none !important;
+  text-decoration: none !important;
+}
+
 .portfolio .section-title-img {
   max-width: 240px;
   width: auto;
   height: auto;
   display: block;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border: none !important;
+  text-decoration: none !important;
 }
 
 
 .portfolio .section-description {
   font-size: 1.1rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   color: #6c757d;
   max-width: 700px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2rem;
+  padding: 0 2rem;
   line-height: 1.8;
+  box-sizing: border-box;
+  margin-top: -0.3rem;
 }
 
 .portfolio-filters {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin: 3rem 0;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 12px 28px;
+  padding: 10px 24px;
   background: #ffffff;
-  border: 2px solid #2196F3;
+  border: 1.5px solid #2196F3;
   color: #2196F3;
-  border-radius: 30px;
+  border-radius: 24px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.95rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
@@ -158,8 +185,8 @@
 .filter-btn.active {
   background: #2196F3;
   color: #ffffff !important;
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.25);
   border-color: #2196F3;
 }
 
@@ -180,9 +207,12 @@
   overflow: hidden;
   aspect-ratio: 1;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 4px 20px rgba(33, 150, 243, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   background: #ffffff;
+  border: 1px solid rgba(33, 150, 243, 0.08);
   opacity: 0;
   transform: translateY(40px) scale(0.9);
 }
@@ -209,38 +239,47 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+  background: linear-gradient(135deg, 
+    rgba(33, 150, 243, 0.06) 0%, 
+    rgba(66, 165, 245, 0.04) 50%,
+    rgba(33, 150, 243, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.5s;
   z-index: 1;
 }
 
 .portfolio-item:hover {
-  transform: translateY(-10px) scale(1.03) rotateZ(1deg);
-  box-shadow: 0 20px 50px rgba(33, 150, 243, 0.3);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 12px 36px rgba(33, 150, 243, 0.15),
+    0 4px 16px rgba(33, 150, 243, 0.1);
+  border-color: rgba(33, 150, 243, 0.2);
 }
 
 .portfolio-item:hover::before {
-  opacity: 0.1;
+  opacity: 1;
 }
 
 .portfolio-image {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+  background: linear-gradient(135deg, #e8f4fd 0%, #e0f0fa 50%, #e5f2fc 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 4rem;
-  color: #2196F3;
+  color: #1976D2;
   transition: all 0.5s ease;
   position: relative;
   z-index: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .portfolio-item:hover .portfolio-image {
-  transform: scale(1.1);
-  filter: brightness(1.1);
+  transform: scale(1.05);
+  filter: brightness(1.05);
+  color: #1565C0;
+  background: linear-gradient(135deg, #e0f0fa 0%, #d8ecf8 50%, #ddeef9 100%);
 }
 
 .portfolio-overlay {
@@ -278,11 +317,13 @@
 
 .portfolio-overlay h3 {
   font-size: 1.5rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   margin-bottom: 0.5rem;
 }
 
 .portfolio-overlay p {
   font-size: 1rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 /* Mobile Responsive */
@@ -325,6 +366,12 @@
 
   .portfolio .section-description {
     padding-bottom: 0;
+    font-size: 0.9rem;
+  }
+
+  .filter-btn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
   }
 
   .portfolio-grid {

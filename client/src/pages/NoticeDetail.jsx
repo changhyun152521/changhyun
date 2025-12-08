@@ -12,12 +12,13 @@ function NoticeDetail() {
   const [notice, setNotice] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     checkAdminAndFetchNotice();
   }, [noticeId]);
 
-  // 빈 태그 제거
+  // 빈 태그 제거 및 이미지 클릭 이벤트 추가
   useEffect(() => {
     if (!notice) return;
     
@@ -50,12 +51,41 @@ function NoticeDetail() {
           }
         }
       });
+
+      // 이미지에 클릭 이벤트 추가
+      const images = noticeContent.querySelectorAll('img');
+      images.forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', (e) => {
+          e.preventDefault();
+          setSelectedImage(img.src);
+        });
+      });
     };
 
     // DOM이 업데이트된 후 실행
     const timer = setTimeout(removeEmptyTags, 100);
     return () => clearTimeout(timer);
   }, [notice]);
+
+  // ESC 키로 이미지 모달 닫기
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedImage(null);
+      }
+    };
+
+    if (selectedImage) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedImage]);
 
   const checkAdminAndFetchNotice = async () => {
     try {
@@ -254,6 +284,30 @@ function NoticeDetail() {
           </article>
         </div>
       </div>
+      
+      {/* 이미지 확대 모달 */}
+      {selectedImage && (
+        <div 
+          className="image-modal"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="image-modal-close"
+              onClick={() => setSelectedImage(null)}
+              aria-label="닫기"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+            <img 
+              src={selectedImage} 
+              alt="확대 이미지"
+              className="image-modal-img"
+            />
+          </div>
+        </div>
+      )}
+      
       <Footer />
     </div>
   );

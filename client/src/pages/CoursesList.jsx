@@ -218,7 +218,7 @@ function CoursesList() {
                           {paginatedCourses.map((course) => (
                             <tr key={course._id}>
                               <td>{course.courseName}</td>
-                              <td>{course.instructorName}</td>
+                              <td>{course.instructorName}OOOT</td>
                               <td>{course.grade}</td>
                               <td>{((course.lectures && Array.isArray(course.lectures)) ? course.lectures.length : (course.courseCount ?? 0))}강</td>
                               <td>{course.textbook || '-'}</td>

@@ -381,6 +381,20 @@ function ParentMonthlyStatisticsDetail() {
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>
               </p>
+              <div className="chart-legend">
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
+                  <span>내 점수</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
+                  <span>반평균</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
+                  <span>최고점</span>
+                </div>
+              </div>
               <div className="chart-wrapper">
                 <ChartComponent data={getChartData()} />
               </div>
@@ -718,20 +732,6 @@ function ChartComponent({ data }) {
 
   return (
     <div className="chart-container">
-      <div className="chart-legend">
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
-          <span>내 점수</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
-          <span>반평균</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
-          <span>최고점</span>
-        </div>
-      </div>
       <div 
         className="chart-svg-wrapper" 
         ref={chartWrapperRef}

@@ -1,15 +1,75 @@
+/* Page Title 스타일 - 깔끔하게 재작성 */
+
 /* MonthlyStatisticsDetail Page Styles */
 .monthly-statistics-detail-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f0f4ff 0%, #f8f9fa 100%);
+  background: 
+    linear-gradient(135deg, #f0f4ff 0%, #f5f7fb 30%, #f2f5fa 70%, #f8f9fa 100%),
+    linear-gradient(90deg, rgba(102, 126, 234, 0.025) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(102, 126, 234, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 60px 60px, 60px 60px;
+  background-position: 0 0, 0 0, 0 0;
   padding-top: 100px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+.monthly-statistics-detail-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 200px);
+  background: 
+    radial-gradient(ellipse at 15% 25%, rgba(102, 126, 234, 0.02) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 75%, rgba(118, 75, 162, 0.02) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(102, 126, 234, 0.01) 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.monthly-statistics-detail-page::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: calc(200% - 200px);
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 120px,
+      rgba(102, 126, 234, 0.02) 120px,
+      rgba(102, 126, 234, 0.02) 240px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 120px,
+      rgba(118, 75, 162, 0.015) 120px,
+      rgba(118, 75, 162, 0.015) 240px
+    );
+  animation: slidePattern 25s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+}
+
+@keyframes slidePattern {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(100px, 100px); }
 }
 
 .monthly-statistics-detail-section {
   flex: 1;
   padding: 3rem 0;
+  position: relative;
+  z-index: 1;
 }
 
 .monthly-statistics-detail-section .container {
@@ -32,8 +92,8 @@
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(33, 150, 243, 0.2);
-  border-top-color: #2196F3;
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  border-top-color: #667eea;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -52,14 +112,14 @@
 
 /* Page Header */
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .btn-back {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.4rem 1.5rem;
   background: white;
   color: #667eea;
   border: 2px solid #e0e7ff;
@@ -90,7 +150,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .page-header-icon {
@@ -120,17 +180,27 @@
   }
 }
 
-.page-title {
-  font-size: 2.5rem;
+/* Page Title 스타일 - 깔끔하게 재작성 */
+.monthly-statistics-detail-page .page-header-content h1.page-title {
+  font-size: 3rem;
   font-weight: 700;
-  color: #2b2d42;
+  color: #667eea !important;
+  -webkit-text-fill-color: #667eea !important;
   margin-bottom: 0.5rem;
+  font-family: '공체', sans-serif !important;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+  text-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
 }
 
 .page-description {
-  font-size: 1.1rem;
-  color: #6c757d;
-  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  line-height: 1.6;
 }
 
 /* Month Selector */
@@ -559,12 +629,14 @@
 }
 
 .chart-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #667eea;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e0e7ff;
+  font-size: 1.5rem !important;
+  font-weight: 400 !important;
+  color: #667eea !important;
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 2px solid #e0e7ff !important;
+  font-family: '공체', sans-serif !important;
+  letter-spacing: -0.01em !important;
 }
 
 .chart-hint {
@@ -606,12 +678,20 @@
   width: max-content;
 }
 
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+.chart-legend,
+.chart-container .chart-legend,
+.chart-wrapper .chart-legend,
+.trend-chart-container .chart-legend {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 2rem !important;
+  margin: 0 !important;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+  flex-wrap: wrap !important;
 }
 
 .legend-item {
@@ -743,7 +823,7 @@
   }
 
   .page-header-content {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .page-header-icon {
@@ -753,12 +833,24 @@
     margin-bottom: 1rem;
   }
 
-  .page-title {
-    font-size: 2rem;
+  .page-header-content {
+    margin-bottom: 0.5rem;
+  }
+
+  .monthly-statistics-detail-page .page-header-content h1.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea !important;
+    -webkit-text-fill-color: #667eea !important;
+    margin-bottom: 0.5rem;
+    font-family: '공체', sans-serif !important;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
   }
 
   .page-description {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
   }
 
   .month-selector-container {
@@ -853,23 +945,43 @@
     padding: 1.5rem 0;
   }
 
+  .monthly-statistics-detail-page .btn-back,
+  .monthly-statistics-detail-section .btn-back {
+    padding: 0.45rem 0.9rem !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 1rem !important;
+    min-height: auto !important;
+    height: auto !important;
+    line-height: 1.2 !important;
+  }
+
   .page-header-icon {
     width: 60px;
     height: 60px;
     font-size: 1.8rem;
   }
 
-  .page-title {
-    font-size: 1.8rem;
+  .monthly-statistics-detail-page .page-header-content h1.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea !important;
+    -webkit-text-fill-color: #667eea !important;
+    margin-bottom: 0.5rem;
+    font-family: '공체', sans-serif !important;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+    text-align: center;
+    width: 100%;
   }
 
   .page-description {
-    font-size: 0.95rem;
+    font-size: 1rem;
     padding: 0 1rem;
+    line-height: 1.6;
   }
 
   .page-header-content {
-    margin: 0;
+    margin-bottom: 0.5rem;
   }
 
   .month-selector-container {
@@ -1097,10 +1209,15 @@
   }
 
   .chart-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.75rem;
-    text-align: center;
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
+    color: #667eea !important;
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 2px solid #e0e7ff !important;
+    font-family: '공체', sans-serif !important;
+    letter-spacing: -0.01em !important;
+    text-align: center !important;
   }
 
   .chart-hint {
@@ -1122,12 +1239,20 @@
     margin-bottom: 0;
   }
 
-  .chart-legend {
-    gap: 1rem;
-    font-size: 0.8rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
+  .chart-legend,
+  .chart-container .chart-legend,
+  .chart-wrapper .chart-legend,
+  .trend-chart-container .chart-legend {
+    gap: 1rem !important;
+    font-size: 0.8rem !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
   }
 
   .legend-item {
@@ -1180,7 +1305,14 @@
   }
 
   .chart-title {
-    font-size: 1.3rem;
+    font-size: 1.3rem !important;
+    font-weight: 400 !important;
+    color: #667eea !important;
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 2px solid #e0e7ff !important;
+    font-family: '공체', sans-serif !important;
+    letter-spacing: -0.01em !important;
   }
 
   .chart-container {
@@ -1264,4 +1396,5 @@
     font-size: 0.65rem;
   }
 }
+
 

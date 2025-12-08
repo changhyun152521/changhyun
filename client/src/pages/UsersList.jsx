@@ -381,20 +381,20 @@ function UsersList() {
                                 {user.linkedUsers && user.linkedUsers.length > 0 ? (
                                   user.linkedUsers.map((linkedUser, idx) => (
                                     <div key={linkedUser._id || idx} className="linked-user-item">
-                                      <span 
-                                        className="linked-user-badge" 
+                                  <span 
+                                    className="linked-user-badge" 
                                         title={`연동된 ${linkedUser.userType}: ${linkedUser.name} (${linkedUser.userId})`}
-                                      >
-                                        <i className={`fas ${user.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
-                                        <span className="linked-user-text">
+                                  >
+                                    <i className={`fas ${user.userType === '학생' ? 'fa-user-friends' : 'fa-user-graduate'}`}></i>
+                                    <span className="linked-user-text">
                                           {linkedUser.name} ({linkedUser.userId})
-                                        </span>
-                                      </span>
-                                    </div>
+                                    </span>
+                                  </span>
+                                </div>
                                   ))
-                                ) : (
-                                  <span className="no-linked-user">-</span>
-                                )}
+                              ) : (
+                                <span className="no-linked-user">-</span>
+                              )}
                               </div>
                             </td>
                             <td>

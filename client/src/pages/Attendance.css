@@ -4,6 +4,22 @@
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+.attendance-page * {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+/* Font Awesome 아이콘은 원래 폰트 유지 */
+.attendance-page .fas,
+.attendance-page .far,
+.attendance-page .fab,
+.attendance-page .fal,
+.attendance-page .fad,
+.attendance-page [class^="fa-"],
+.attendance-page [class*=" fa-"] {
+  font-family: "Font Awesome 6 Free" !important;
 }
 
 /* Title Section - 공지사항 페이지와 동일한 스타일 */
@@ -506,7 +522,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   transition: border-color 0.3s ease;
   background-color: white;
 }
@@ -534,7 +550,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   transition: border-color 0.3s ease;
   background-color: white;
 }
@@ -614,7 +630,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   transition: border-color 0.3s ease;
   background-color: white;
 }
@@ -1172,7 +1188,7 @@ h2.page-title {
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   font-size: 0.875rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   resize: vertical;
   transition: border-color 0.2s ease;
 }
@@ -1241,7 +1257,7 @@ h2.page-title {
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   font-size: 0.875rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   resize: vertical;
   transition: border-color 0.2s ease;
 }
@@ -1340,7 +1356,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 6px;
   font-size: 0.875rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   background-color: white;
   transition: border-color 0.3s ease;
 }
@@ -1362,7 +1378,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   margin-bottom: 0.75rem;
   resize: vertical;
   transition: border-color 0.3s ease;
@@ -1540,6 +1556,22 @@ h2.page-title {
   overflow-y: auto;
   animation: slideUp 0.3s ease;
   position: relative;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+.modal-container * {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+/* Font Awesome 아이콘은 원래 폰트 유지 */
+.modal-container .fas,
+.modal-container .far,
+.modal-container .fab,
+.modal-container .fal,
+.modal-container .fad,
+.modal-container [class^="fa-"],
+.modal-container [class*=" fa-"] {
+  font-family: "Font Awesome 6 Free" !important;
 }
 
 @keyframes slideUp {
@@ -1572,7 +1604,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   background-color: #f3f4f6;
   color: var(--text-dark);
   box-sizing: border-box;
@@ -2035,6 +2067,22 @@ h2.page-title {
   overflow-y: auto;
   animation: slideUp 0.3s ease;
   position: relative;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+.modal-container * {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+/* Font Awesome 아이콘은 원래 폰트 유지 */
+.modal-container .fas,
+.modal-container .far,
+.modal-container .fab,
+.modal-container .fal,
+.modal-container .fad,
+.modal-container [class^="fa-"],
+.modal-container [class*=" fa-"] {
+  font-family: "Font Awesome 6 Free" !important;
 }
 
 @keyframes slideUp {
@@ -2067,7 +2115,7 @@ h2.page-title {
   border: 2px solid var(--bg-light);
   border-radius: 8px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   background-color: #f3f4f6;
   color: var(--text-dark);
   box-sizing: border-box;

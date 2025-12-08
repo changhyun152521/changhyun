@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Class = require('../models/Class');
+const Course = require('../models/Course');
 const PrivacyLog = require('../models/PrivacyLog');
 const ParentStudentLink = require('../models/ParentStudentLink');
 const bcrypt = require('bcrypt');
@@ -860,6 +861,28 @@ exports.updateUser = async (req, res) => {
         success: false,
         error: '유저를 찾을 수 없습니다',
       });
+    }
+
+    // 강사 이름이 변경된 경우, 담당반과 담당강좌의 강사명도 업데이트
+    if (name && (existingUser.userType === '강사' || user.userType === '강사')) {
+      try {
+        // 해당 강사가 담당하는 모든 반의 instructorName 업데이트
+        const updatedClasses = await Class.updateMany(
+          { instructorId: user._id },
+          { $set: { instructorName: name } }
+        );
+        console.log(`강사 ${user.userId}의 이름 변경: ${updatedClasses.modifiedCount}개의 반이 업데이트되었습니다.`);
+
+        // 해당 강사가 담당하는 모든 강좌의 instructorName 업데이트
+        const updatedCourses = await Course.updateMany(
+          { instructorId: user._id },
+          { $set: { instructorName: name } }
+        );
+        console.log(`강사 ${user.userId}의 이름 변경: ${updatedCourses.modifiedCount}개의 강좌가 업데이트되었습니다.`);
+      } catch (teacherUpdateError) {
+        console.error('강사 이름 업데이트 중 오류:', teacherUpdateError);
+        // 강사명 업데이트 실패해도 사용자 정보 수정은 성공으로 처리
+      }
     }
 
     // 개인정보 처리 로그 기록 (수정) - 개인정보 관련 필드만 기록

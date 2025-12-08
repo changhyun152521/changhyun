@@ -143,10 +143,8 @@ function ClassStatusDetail() {
           setAvailableDates(response.data.data.availableDates);
         }
         if (response.data.data.trendData) {
-          console.log('trendData 받음:', response.data.data.trendData);
           setTrendData(response.data.data.trendData);
         } else {
-          console.log('trendData 없음');
           setTrendData([]);
         }
       } else {
@@ -593,7 +591,7 @@ function ClassStatusDetail() {
                     ) : null;
                   })()}
                   <tr>
-                    <td className="table-label">클리닉 해당여부</td>
+                    <td className="table-label">클리닉 여부</td>
                     <td className="table-value">
                       {studentRecord?.hasClinic !== undefined
                         ? studentRecord.hasClinic ? '해당' : '해당 없음'
@@ -612,6 +610,20 @@ function ClassStatusDetail() {
                 <span>좌우 스와이프로 전체 정보 확인</span>
                 <span>점수 터치 시 상세 정보 표시</span>
               </p>
+              <div className="chart-legend">
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
+                  <span>내 점수</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
+                  <span>반평균</span>
+                </div>
+                <div className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
+                  <span>최고점</span>
+                </div>
+              </div>
               <div className="chart-wrapper">
                 <ChartComponent data={trendData} />
               </div>
@@ -641,7 +653,6 @@ function ChartComponent({ data }) {
 
   // 백엔드에서 이미 정렬된 데이터를 그대로 사용 (불필요한 재정렬 제거)
   const sortedData = [...data];
-  console.log('ChartComponent sortedData:', sortedData);
 
   // 유효한 점수만 필터링
   const validScores = sortedData.flatMap(d => [
@@ -923,20 +934,6 @@ function ChartComponent({ data }) {
 
   return (
     <div className="chart-container">
-      <div className="chart-legend">
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#ef4444' }}></span>
-          <span>내 점수</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#42a5f5' }}></span>
-          <span>반평균</span>
-        </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ backgroundColor: '#f59e0b' }}></span>
-          <span>최고점</span>
-        </div>
-      </div>
       <div 
         className="chart-svg-wrapper" 
         ref={chartWrapperRef}

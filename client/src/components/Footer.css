@@ -6,6 +6,7 @@
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 .footer::before {
@@ -88,6 +89,7 @@
 
 .footer-text {
   font-size: 0.95rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
   font-weight: 400;
@@ -97,6 +99,7 @@
 
 .footer-contact {
   font-size: 0.9rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
   color: rgba(255, 255, 255, 0.75);
   margin: 0;
   display: flex;

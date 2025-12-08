@@ -11,6 +11,14 @@ exports.getAllClasses = async (req, res) => {
       .populate('courses', 'sku courseName instructorName grade courseCount courseStatus')
       .sort({ createdAt: -1 }); // 생성일 기준 최신순 정렬
     
+    // 강사 이름 동기화: populate된 instructorId의 name과 Class의 instructorName이 다르면 업데이트
+    for (const classItem of classes) {
+      if (classItem.instructorId && classItem.instructorId.name && classItem.instructorName !== classItem.instructorId.name) {
+        classItem.instructorName = classItem.instructorId.name;
+        await Class.findByIdAndUpdate(classItem._id, { instructorName: classItem.instructorId.name });
+      }
+    }
+    
     res.json({
       success: true,
       count: classes.length,
@@ -39,6 +47,12 @@ exports.getClassById = async (req, res) => {
         success: false,
         error: '반을 찾을 수 없습니다',
       });
+    }
+
+    // 강사 이름 동기화: populate된 instructorId의 name과 Class의 instructorName이 다르면 업데이트
+    if (classData.instructorId && classData.instructorId.name && classData.instructorName !== classData.instructorId.name) {
+      classData.instructorName = classData.instructorId.name;
+      await Class.findByIdAndUpdate(classData._id, { instructorName: classData.instructorId.name });
     }
 
     res.json({
