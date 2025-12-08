@@ -336,7 +336,7 @@
 .service-title {
   font-size: 1.5rem;
   font-weight: 400;
-  font-family: '공체', sans-serif;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0 0 1rem 0;
   padding: 0;
   color: #2d3748;

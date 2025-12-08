@@ -187,7 +187,7 @@
   color: #667eea !important;
   -webkit-text-fill-color: #667eea !important;
   margin-bottom: 0.5rem;
-  font-family: '공체', sans-serif !important;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif !important;
   letter-spacing: -0.02em;
   line-height: 1.4;
   text-shadow: none !important;
@@ -635,7 +635,7 @@
   margin-bottom: 1.5rem !important;
   padding-bottom: 1rem !important;
   border-bottom: 2px solid #e0e7ff !important;
-  font-family: '공체', sans-serif !important;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif !important;
   letter-spacing: -0.01em !important;
 }
 
@@ -843,7 +843,7 @@
     color: #667eea !important;
     -webkit-text-fill-color: #667eea !important;
     margin-bottom: 0.5rem;
-    font-family: '공체', sans-serif !important;
+    font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif !important;
     letter-spacing: -0.02em;
     line-height: 1.4;
   }
@@ -967,7 +967,7 @@
     color: #667eea !important;
     -webkit-text-fill-color: #667eea !important;
     margin-bottom: 0.5rem;
-    font-family: '공체', sans-serif !important;
+    font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif !important;
     letter-spacing: -0.02em;
     line-height: 1.4;
     text-align: center;
@@ -1215,7 +1215,7 @@
     margin-bottom: 1.5rem !important;
     padding-bottom: 1rem !important;
     border-bottom: 2px solid #e0e7ff !important;
-    font-family: '공체', sans-serif !important;
+    font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif !important;
     letter-spacing: -0.01em !important;
     text-align: center !important;
   }
@@ -1311,7 +1311,7 @@
     margin-bottom: 1.5rem !important;
     padding-bottom: 1rem !important;
     border-bottom: 2px solid #e0e7ff !important;
-    font-family: '공체', sans-serif !important;
+    font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif !important;
     letter-spacing: -0.01em !important;
   }
 

@@ -1,3 +1,86 @@
+/* Font Face Definitions */
+/* Pretendard 폰트 - CDN 실패 시 대비 */
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Pretendard Regular'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Pretendard Medium'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Pretendard SemiBold'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-SemiBold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Pretendard Bold'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Bold.woff') format('woff');
+}
+
+/* 배달의민족 도현체 (BM Dohyeon) - CDN 실패 시 대비 */
+@font-face {
+  font-family: 'BM Dohyeon';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('BM Dohyeon'),
+       local('배달의민족 도현체'),
+       url('https://cdn.jsdelivr.net/gh/fonts-archive/BMDohyeon@1.0.0/fonts/woff2/BMDohyeon.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/fonts-archive/BMDohyeon@1.0.0/fonts/woff/BMDohyeon.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/gh/fonts-archive/BMDohyeon@1.0.0/fonts/ttf/BMDohyeon.ttf') format('truetype');
+}
+
+/* 공체 폰트 - 로컬 폰트 파일이 있으면 사용, 없으면 시스템 폰트 fallback */
+/* 공체 폰트 파일이 client/public/fonts/ 폴더에 있다면 아래 주석을 해제하고 경로를 수정하세요 */
+/* 
+@font-face {
+  font-family: '공체';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/공체-Regular.woff2') format('woff2'),
+       url('/fonts/공체-Regular.woff') format('woff'),
+       local('공체'),
+       local('GongGothic'),
+       local('Gong Gothic');
+}
+
+@font-face {
+  font-family: '공체';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/공체-Bold.woff2') format('woff2'),
+       url('/fonts/공체-Bold.woff') format('woff'),
+       local('공체 Bold'),
+       local('GongGothic Bold'),
+       local('Gong Gothic Bold');
+}
+*/
+
 /* Reset & Base Styles */
 * {
   margin: 0;

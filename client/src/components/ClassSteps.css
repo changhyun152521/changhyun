@@ -409,7 +409,7 @@
 .step-title {
   font-size: 1.5rem;
   font-weight: 500;
-  font-family: '공체', sans-serif;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #2d3748;
   margin: 0 0 1rem 0;
   line-height: 1.4;
@@ -523,7 +523,7 @@
 
   .step-title {
     font-size: 1.1rem;
-    font-family: '공체', sans-serif;
+    font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
     margin-bottom: 0.75rem;
   }
 

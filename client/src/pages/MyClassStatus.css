@@ -254,7 +254,7 @@
   font-weight: 400;
   color: #2b2d42;
   margin-bottom: 1rem;
-  font-family: '공체', sans-serif;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .login-prompt p {
@@ -322,7 +322,7 @@
   font-weight: 400;
   color: #2b2d42;
   margin-bottom: 1rem;
-  font-family: '공체', sans-serif;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .student-only-message p {
@@ -376,7 +376,7 @@
   font-weight: 400;
   color: #2b2d42;
   margin-bottom: 1rem;
-  font-family: '공체', sans-serif;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .parent-only-message p {
@@ -426,7 +426,7 @@
   font-weight: 400;
   color: #2b2d42;
   margin-bottom: 1rem;
-  font-family: '공체', sans-serif;
+  font-family: '공체', 'GongGothic', 'Gong Gothic', '나눔고딕', 'NanumGothic', '맑은 고딕', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .no-classes-container p {
