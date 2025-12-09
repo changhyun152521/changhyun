@@ -200,6 +200,13 @@ function Header() {
                 <a 
                   href="#" 
                   className="nav-link" 
+                  onTouchStart={(e) => {
+                    if (isMobileRef.current) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveDropdown(activeDropdown === 'myClassroom' ? null : 'myClassroom');
+                    }
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -258,6 +265,13 @@ function Header() {
                 <a 
                   href="#" 
                   className="nav-link" 
+                  onTouchStart={(e) => {
+                    if (isMobileRef.current) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveDropdown(activeDropdown === 'myClass' ? null : 'myClass');
+                    }
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -329,6 +343,13 @@ function Header() {
                 <a 
                   href="#" 
                   className="nav-link" 
+                  onTouchStart={(e) => {
+                    if (isMobileRef.current) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveDropdown(activeDropdown === 'parentClass' ? null : 'parentClass');
+                    }
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -387,6 +408,13 @@ function Header() {
                 <a 
                   href="#" 
                   className="nav-link" 
+                  onTouchStart={(e) => {
+                    if (isMobileRef.current) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveDropdown(activeDropdown === 'community' ? null : 'community');
+                    }
+                  }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
