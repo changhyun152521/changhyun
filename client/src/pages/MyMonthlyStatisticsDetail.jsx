@@ -562,7 +562,7 @@ function MyMonthlyStatisticsDetail() {
         return subUnitA - subUnitB;
       };
       
-      // 정답률 70% 이상인 단원 (잘한 단원) - 정답률 높은 순으로 정렬
+      // 정답률 70% 이상인 단원 (강점 단원) - 정답률 높은 순으로 정렬
       const strongUnitsList = subUnitList
         .filter(unit => unit.percentage >= 70)
         .sort((a, b) => b.percentage - a.percentage);
@@ -1171,7 +1171,7 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
             <div className="report-section">
               <h3 className="report-section-title">
                 <i className="fas fa-check-circle"></i>
-                잘한 단원
+                강점 단원
               </h3>
               <div className="report-units-table-container">
                 <table className="report-units-table report-units-table-strong">

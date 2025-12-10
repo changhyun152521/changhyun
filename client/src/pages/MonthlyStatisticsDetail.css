@@ -1661,7 +1661,7 @@
   color: #6b7280;
 }
 
-/* 잘한 단원 / 취약 단원 테이블 */
+/* 강점 단원 / 취약 단원 테이블 */
 .report-units-table-container {
   overflow-x: auto;
   border-radius: 8px;
