@@ -1479,6 +1479,13 @@
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 }
 
+.report-pdf-hint {
+  display: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
 .report-modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
@@ -1659,6 +1666,16 @@
 .report-section-title i {
   font-size: 1rem;
   color: #6b7280;
+}
+
+/* 표 스와이프 안내 문구 - 모바일에서만 표시 */
+.report-table-swipe-hint {
+  display: none;
+}
+
+/* PDF 다운로드 안내 문구 - 모바일에서만 표시 */
+.report-pdf-hint {
+  display: none;
 }
 
 /* 강점 단원 / 취약 단원 테이블 */
@@ -1943,7 +1960,7 @@
   }
   
   .report-modal-header {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.5rem;
   }
   
   .report-modal-header h2 {
@@ -2006,6 +2023,61 @@
     .report-summary-value {
       font-size: 1.15rem;
     }
+  }
+  
+  .report-table-swipe-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #667eea;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+  }
+  
+  .report-table-swipe-hint i {
+    font-size: 0.9rem;
+    animation: swipeHint 2s ease-in-out infinite;
+  }
+  
+  @keyframes swipeHint {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(5px);
+    }
+  }
+  
+  .report-pdf-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.7rem 1.5rem;
+    margin: 0;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(66, 165, 245, 0.1) 100%);
+    border-bottom: 1px solid rgba(33, 150, 243, 0.15);
+    font-size: 0.85rem;
+    color: #1976D2;
+    font-weight: 600;
+    text-align: left;
+    line-height: 1.5;
+  }
+  
+  .report-pdf-hint i {
+    font-size: 1rem;
+    color: #2196F3;
+    flex-shrink: 0;
+  }
+  
+  .report-pdf-hint span {
+    flex: 1;
   }
   
   .report-units-table-container,

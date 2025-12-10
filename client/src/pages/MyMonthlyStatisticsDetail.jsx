@@ -905,6 +905,7 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
       const modalBody = element.querySelector('.report-modal-body');
       const modalHeader = element.querySelector('.report-modal-header');
       const modal = element.closest('.report-modal');
+      const closeButton = element.querySelector('.report-modal-close');
       
       // PC 기준 최소 너비 (900px, 모달의 max-width)
       const minWidth = 900;
@@ -915,6 +916,12 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
       const originalBodyMaxHeight = modalBody ? modalBody.style.maxHeight : '';
       const originalModalMaxHeight = modal ? modal.style.maxHeight : '';
       const originalModalOverflow = modal ? modal.style.overflow : '';
+      const originalCloseButtonDisplay = closeButton ? closeButton.style.display : '';
+      
+      // 닫기 버튼 숨기기
+      if (closeButton) {
+        closeButton.style.display = 'none';
+      }
       
       // 스크롤을 최상단으로 이동
       if (modalBody) {
@@ -970,6 +977,12 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
           const clonedModal = clonedDoc.querySelector('.report-modal');
           const clonedBody = clonedDoc.querySelector('.report-modal-body');
           const clonedElement = clonedDoc.querySelector('[class*="report-modal"]');
+          const clonedCloseButton = clonedDoc.querySelector('.report-modal-close');
+          
+          // 복제된 문서에서도 닫기 버튼 숨기기
+          if (clonedCloseButton) {
+            clonedCloseButton.style.display = 'none';
+          }
           
           if (clonedModal) {
             clonedModal.style.maxHeight = 'none';
@@ -999,6 +1012,10 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
         modalBody.style.height = originalBodyHeight;
         modalBody.style.maxHeight = originalBodyMaxHeight;
         modalBody.style.overflow = originalBodyOverflow;
+      }
+      // 닫기 버튼 다시 보이기
+      if (closeButton) {
+        closeButton.style.display = originalCloseButtonDisplay || '';
       }
       
       const imgData = canvas.toDataURL('image/png', 1.0);
@@ -1088,6 +1105,10 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
               <i className="fas fa-times"></i>
             </button>
           </div>
+          <div className="report-pdf-hint">
+            <i className="fas fa-info-circle"></i>
+            <span>모바일에서는 PDF로 다운로드하여 보시면 더 편리하게 확인하실 수 있습니다.</span>
+          </div>
           <div className="report-modal-body">
           <div className="report-summary">
             <div className="report-summary-card">
@@ -1133,6 +1154,10 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
               <i className="fas fa-list"></i>
               소단원별 상세 통계
             </h3>
+            <div className="report-table-swipe-hint">
+              <i className="fas fa-arrows-alt-h"></i>
+              표를 좌우로 스와이프하여 전체 정보를 확인하세요
+            </div>
             <div className="report-subunit-table-container">
               <table className="report-subunit-table">
                 <thead>
@@ -1173,6 +1198,10 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
                 <i className="fas fa-check-circle"></i>
                 강점 단원
               </h3>
+              <div className="report-table-swipe-hint">
+                <i className="fas fa-arrows-alt-h"></i>
+                표를 좌우로 스와이프하여 전체 정보를 확인하세요
+              </div>
               <div className="report-units-table-container">
                 <table className="report-units-table report-units-table-strong">
                   <thead>
@@ -1208,6 +1237,10 @@ function MonthlyReportModal({ reportData, loading, onClose }) {
                 <i className="fas fa-exclamation-circle"></i>
                 취약 단원
               </h3>
+              <div className="report-table-swipe-hint">
+                <i className="fas fa-arrows-alt-h"></i>
+                표를 좌우로 스와이프하여 전체 정보를 확인하세요
+              </div>
               <div className="report-units-table-container">
                 <table className="report-units-table report-units-table-weak">
                   <thead>

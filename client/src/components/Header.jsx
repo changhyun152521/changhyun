@@ -222,8 +222,8 @@ function Header() {
                         e.stopPropagation();
                         return;
                       }
-                      e.preventDefault();
-                      e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'myClassroom' ? null : 'myClassroom');
                     }
                   }}
@@ -299,8 +299,8 @@ function Header() {
                         e.stopPropagation();
                         return;
                       }
-                      e.preventDefault();
-                      e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'myClass' ? null : 'myClass');
                     }
                   }}
@@ -389,8 +389,8 @@ function Header() {
                         e.stopPropagation();
                         return;
                       }
-                      e.preventDefault();
-                      e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'parentClass' ? null : 'parentClass');
                     }
                   }}
@@ -466,8 +466,8 @@ function Header() {
                         e.stopPropagation();
                         return;
                       }
-                      e.preventDefault();
-                      e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'community' ? null : 'community');
                     }
                   }}
