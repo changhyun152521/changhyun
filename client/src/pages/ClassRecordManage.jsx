@@ -557,12 +557,12 @@ function ClassRecordManage() {
         date: selectedDate,
         classId: classId,
         className: formData.className.trim(),
-        progress: formData.progress.trim(),
-        assignment: formData.assignment.trim(),
+        progress: formData.progress ? formData.progress.trim() : '',
+        assignment: formData.assignment ? formData.assignment.trim() : '',
         hasVideo: formData.hasVideo,
-        subject: formData.subject.trim(),
-        mainUnit: formData.mainUnit.trim(),
-        subUnit: formData.subUnit.trim(),
+        subject: formData.subject ? formData.subject.trim() : '',
+        mainUnit: formData.mainUnit ? formData.mainUnit.trim() : '',
+        subUnit: formData.subUnit ? formData.subUnit.trim() : '',
       };
 
       let response;

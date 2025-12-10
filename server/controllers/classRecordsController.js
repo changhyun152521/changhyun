@@ -238,6 +238,9 @@ exports.createClassRecord = async (req, res) => {
       progress,
       assignment,
       hasVideo,
+      subject,
+      mainUnit,
+      subUnit,
     } = req.body;
 
     // 필수 필드 검증
