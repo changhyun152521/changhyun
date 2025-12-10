@@ -14,6 +14,10 @@ const asyncHandler = (fn) => {
 // 쿼리 파라미터: classId, date
 router.get('/', protect, authorize('강사'), asyncHandler(classRecordsController.getAllClassRecords));
 
+// 학생/학부모가 자신의 반에 대한 교실관리 기록 조회 (GET /api/class-records/my-class-records)
+// 쿼리 파라미터: classId, date
+router.get('/my-class-records', protect, asyncHandler(classRecordsController.getMyClassRecords));
+
 // 특정 교실관리 기록 조회 (GET /api/class-records/:id)
 router.get('/:id', protect, authorize('강사'), asyncHandler(classRecordsController.getClassRecordById));
 

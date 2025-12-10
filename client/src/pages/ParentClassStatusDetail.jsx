@@ -1090,7 +1090,7 @@ function ChartComponent({ data }) {
                 onTouchEnd={(e) => {
                   e.stopPropagation();
                   if (e.cancelable) {
-                    e.preventDefault();
+                  e.preventDefault();
                   }
                   // 드래그가 아니었으면 정보 표시
                   if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
@@ -1131,7 +1131,7 @@ function ChartComponent({ data }) {
                     onTouchEnd={(e) => {
                       e.stopPropagation();
                       if (e.cancelable) {
-                        e.preventDefault();
+                      e.preventDefault();
                       }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
@@ -1168,7 +1168,7 @@ function ChartComponent({ data }) {
                     onTouchEnd={(e) => {
                       e.stopPropagation();
                       if (e.cancelable) {
-                        e.preventDefault();
+                      e.preventDefault();
                       }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
@@ -1210,7 +1210,7 @@ function ChartComponent({ data }) {
                     onTouchEnd={(e) => {
                       e.stopPropagation();
                       if (e.cancelable) {
-                        e.preventDefault();
+                      e.preventDefault();
                       }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
@@ -1247,7 +1247,7 @@ function ChartComponent({ data }) {
                     onTouchEnd={(e) => {
                       e.stopPropagation();
                       if (e.cancelable) {
-                        e.preventDefault();
+                      e.preventDefault();
                       }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
@@ -1289,7 +1289,7 @@ function ChartComponent({ data }) {
                     onTouchEnd={(e) => {
                       e.stopPropagation();
                       if (e.cancelable) {
-                        e.preventDefault();
+                      e.preventDefault();
                       }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {
@@ -1326,7 +1326,7 @@ function ChartComponent({ data }) {
                     onTouchEnd={(e) => {
                       e.stopPropagation();
                       if (e.cancelable) {
-                        e.preventDefault();
+                      e.preventDefault();
                       }
                       // 드래그가 아니었으면 정보 표시
                       if (!isDragging && touchStartIndex === i && chartWrapperRef.current && svgRef.current) {

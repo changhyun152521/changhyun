@@ -47,6 +47,127 @@ exports.getAllStudentRecords = async (req, res) => {
   }
 };
 
+// 학생/학부모가 자신의 반에 대한 모든 학생 기록 조회 (상위 퍼센트 계산용)
+exports.getMyClassStudentRecords = async (req, res) => {
+  try {
+    // req.user가 없으면 에러
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: '인증이 필요합니다.',
+      });
+    }
+
+    const userId = req.user.id;
+    const { classId, date } = req.query;
+
+    // 사용자 확인
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: '사용자를 찾을 수 없습니다.',
+      });
+    }
+
+    // 학생 또는 학부모만 접근 가능
+    if (user.userType !== '학생' && user.userType !== '학부모') {
+      return res.status(403).json({
+        success: false,
+        error: '학생 또는 학부모만 기록을 조회할 수 있습니다.',
+      });
+    }
+
+    // 반 ID 확인
+    if (!classId) {
+      return res.status(400).json({
+        success: false,
+        error: '반 ID가 필요합니다.',
+      });
+    }
+
+    // classId가 유효한 ObjectId 형식인지 확인
+    if (!mongoose.Types.ObjectId.isValid(classId)) {
+      return res.status(400).json({
+        success: false,
+        error: '유효하지 않은 반 ID입니다.',
+      });
+    }
+
+    // 반 정보 확인
+    const classData = await Class.findById(classId);
+    if (!classData) {
+      return res.status(404).json({
+        success: false,
+        error: '반을 찾을 수 없습니다.',
+      });
+    }
+
+    // 학생이 해당 반에 속해있는지 확인
+    const isStudentInClass = classData.students.some(
+      (id) => id.toString() === userId.toString()
+    );
+
+    // 학부모인 경우 자녀 학생이 해당 반에 속해있는지 확인
+    let isAuthorized = isStudentInClass;
+    if (user.userType === '학부모' && !isStudentInClass) {
+      const parentLinks = await ParentStudentLink.find({ parentId: userId });
+      const studentIds = parentLinks.map(link => link.studentId.toString());
+      isAuthorized = classData.students.some(
+        (id) => studentIds.includes(id.toString())
+      );
+    }
+
+    if (!isAuthorized) {
+      return res.status(403).json({
+        success: false,
+        error: '해당 반에 대한 접근 권한이 없습니다.',
+      });
+    }
+
+    // 날짜 범위로 검색
+    const query = { classId };
+    if (date) {
+      const dateParts = date.split('-');
+      if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0], 10);
+        const month = parseInt(dateParts[1], 10) - 1;
+        const day = parseInt(dateParts[2], 10);
+        
+        const startDate = new Date(year, month, day, 0, 0, 0, 0);
+        const endDate = new Date(year, month, day, 23, 59, 59, 999);
+        
+        query.date = { $gte: startDate, $lte: endDate };
+      } else {
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999);
+        query.date = { $gte: startDate, $lte: endDate };
+      }
+    }
+
+    const records = await StudentRecord.find(query)
+      .populate('studentId', 'userId name email userType')
+      .populate('classId', 'grade className instructorName')
+      .select('studentId classId date dailyTestScore monthlyEvaluationScore')
+      .sort({ date: -1, createdAt: -1 });
+
+    res.json({
+      success: true,
+      count: records.length,
+      data: records,
+    });
+  } catch (error) {
+    console.error('학생 기록 조회 오류:', error);
+    res.status(500).json({
+      success: false,
+      error: '학생 기록을 가져오는 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
 // 특정 학생 기록 조회 (ID로)
 exports.getStudentRecordById = async (req, res) => {
   try {

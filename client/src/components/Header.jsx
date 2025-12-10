@@ -12,6 +12,7 @@ function Header() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const isMobileRef = useRef(window.innerWidth <= 968);
+  const touchHandledRef = useRef(false);
 
   // 로그인 상태 확인 함수
   const checkLoginStatus = (silent = false) => {
@@ -202,15 +203,27 @@ function Header() {
                   className="nav-link" 
                   onTouchStart={(e) => {
                     if (isMobileRef.current) {
-                      e.preventDefault();
+                      touchHandledRef.current = true;
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'myClassroom' ? null : 'myClassroom');
+                      // onClick 이벤트가 발생하지 않도록 짧은 시간 후 리셋
+                      setTimeout(() => {
+                        touchHandledRef.current = false;
+                      }, 300);
                     }
                   }}
                   onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
                     if (isMobileRef.current) {
+                      if (touchHandledRef.current) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                      e.preventDefault();
+                      e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'myClassroom' ? null : 'myClassroom');
                     }
                   }}
@@ -267,15 +280,27 @@ function Header() {
                   className="nav-link" 
                   onTouchStart={(e) => {
                     if (isMobileRef.current) {
-                      e.preventDefault();
+                      touchHandledRef.current = true;
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'myClass' ? null : 'myClass');
+                      // onClick 이벤트가 발생하지 않도록 짧은 시간 후 리셋
+                      setTimeout(() => {
+                        touchHandledRef.current = false;
+                      }, 300);
                     }
                   }}
                   onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
                     if (isMobileRef.current) {
+                      if (touchHandledRef.current) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                      e.preventDefault();
+                      e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'myClass' ? null : 'myClass');
                     }
                   }}
@@ -345,15 +370,27 @@ function Header() {
                   className="nav-link" 
                   onTouchStart={(e) => {
                     if (isMobileRef.current) {
-                      e.preventDefault();
+                      touchHandledRef.current = true;
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'parentClass' ? null : 'parentClass');
+                      // onClick 이벤트가 발생하지 않도록 짧은 시간 후 리셋
+                      setTimeout(() => {
+                        touchHandledRef.current = false;
+                      }, 300);
                     }
                   }}
                   onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
                     if (isMobileRef.current) {
+                      if (touchHandledRef.current) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                      e.preventDefault();
+                      e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'parentClass' ? null : 'parentClass');
                     }
                   }}
@@ -410,15 +447,27 @@ function Header() {
                   className="nav-link" 
                   onTouchStart={(e) => {
                     if (isMobileRef.current) {
-                      e.preventDefault();
+                      touchHandledRef.current = true;
+                      if (e.cancelable) {
+                        e.preventDefault();
+                      }
                       e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'community' ? null : 'community');
+                      // onClick 이벤트가 발생하지 않도록 짧은 시간 후 리셋
+                      setTimeout(() => {
+                        touchHandledRef.current = false;
+                      }, 300);
                     }
                   }}
                   onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
                     if (isMobileRef.current) {
+                      if (touchHandledRef.current) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                      }
+                      e.preventDefault();
+                      e.stopPropagation();
                       setActiveDropdown(activeDropdown === 'community' ? null : 'community');
                     }
                   }}

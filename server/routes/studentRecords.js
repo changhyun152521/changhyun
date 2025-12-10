@@ -18,6 +18,10 @@ router.get('/', protect, authorize('강사'), asyncHandler(studentRecordsControl
 // 쿼리 파라미터: classId, date
 router.get('/my-records', protect, asyncHandler(studentRecordsController.getMyStudentRecords));
 
+// 학생/학부모가 자신의 반에 대한 모든 학생 기록 조회 (GET /api/student-records/my-class-records)
+// 쿼리 파라미터: classId, date
+router.get('/my-class-records', protect, asyncHandler(studentRecordsController.getMyClassStudentRecords));
+
 // 특정 학생 기록 조회 (GET /api/student-records/:id)
 router.get('/:id', protect, authorize('강사'), asyncHandler(studentRecordsController.getStudentRecordById));
 

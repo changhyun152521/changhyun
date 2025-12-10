@@ -5,6 +5,240 @@ import Footer from '../components/Footer';
 import api from '../api/axiosConfig';
 import './ClassRecordManage.css';
 
+// 과목별 대단원/소단원 데이터 구조
+const subjectData = {
+  '중1-1': {
+    mainUnits: [
+      {
+        name: '수와 연산',
+        subUnits: ['소인수분해', '최대공약수와 최소공배수']
+      },
+      {
+        name: '정수와 유리수',
+        subUnits: ['정수와 유리수', '정수와 유리수의 계산']
+      },
+      {
+        name: '문자와 식',
+        subUnits: ['문자의 사용과 식의 계산', '일차방정식', '일차방정식의 활용']
+      },
+      {
+        name: '좌표평면과 그래프',
+        subUnits: ['좌표평면과 그래프', '정비례와 반비례']
+      }
+    ]
+  },
+  '중1-2': {
+    mainUnits: [
+      {
+        name: '기본 도형과 작도',
+        subUnits: ['기본 도형', '위치 관계', '작도와 합동']
+      },
+      {
+        name: '평면도형의 성질',
+        subUnits: ['다각형', '원과 부채꼴']
+      },
+      {
+        name: '입체도형의 성질',
+        subUnits: ['다면체와 회전체', '입체도형의 겉넓이와 부피']
+      },
+      {
+        name: '자료의 정리와 해석',
+        subUnits: ['자료의 정리와 해석']
+      }
+    ]
+  },
+  '중2-1': {
+    mainUnits: [
+      {
+        name: '수와 식',
+        subUnits: ['유리수와 순환소수', '식의 계산']
+      },
+      {
+        name: '부등식',
+        subUnits: ['일차부등식', '일차부등식의 활용']
+      },
+      {
+        name: '방정식',
+        subUnits: ['연립일차방정식', '연립방정식의 풀이', '연립방정식의 활용']
+      },
+      {
+        name: '함수',
+        subUnits: ['일차함수와 그래프(1)', '일차함수와 그래프(2)', '일차함수와 일차방정식의 관계']
+      }
+    ]
+  },
+  '중2-2': {
+    mainUnits: [
+      {
+        name: '도형의 성질',
+        subUnits: ['삼각형의 성질', '사각형의 성질']
+      },
+      {
+        name: '도형의 닮음',
+        subUnits: ['도형의 닮음', '닮은 도형의 성질', '피타고라스 정리']
+      },
+      {
+        name: '확률',
+        subUnits: ['경우의 수와 확률']
+      }
+    ]
+  },
+  '중3-1': {
+    mainUnits: [
+      {
+        name: '실수와 그 계산',
+        subUnits: ['제곱근과 실수', '근호를 포함한 식의 계산']
+      },
+      {
+        name: '다항식의 곱셈과 인수분해',
+        subUnits: ['다항식의 곱셈', '다항식의 인수분해']
+      },
+      {
+        name: '이차방정식',
+        subUnits: ['이차방정식의 풀이', '이차방정식의 활용']
+      },
+      {
+        name: '이차함수',
+        subUnits: ['이차함수의 그래프', '이차함수의 활용']
+      }
+    ]
+  },
+  '중3-2': {
+    mainUnits: [
+      {
+        name: '삼각비',
+        subUnits: ['삼각비', '삼각비의 활용']
+      },
+      {
+        name: '원의 성질',
+        subUnits: ['원과 직선', '원주각', '원주각의 활용']
+      },
+      {
+        name: '통계',
+        subUnits: ['대푯값과 산포도', '상관관계']
+      }
+    ]
+  },
+  '공통수학1': {
+    mainUnits: [
+      {
+        name: '다항식',
+        subUnits: ['다항식의 연산', '나머지정리', '인수분해']
+      },
+      {
+        name: '방정식과 부등식',
+        subUnits: ['복소수와 이차방정식', '이차방정식과 이차함수', '여러 가지 방정식과 부등식']
+      },
+      {
+        name: '경우의 수',
+        subUnits: ['합의 법칙과 곱의 법칙', '순열과 조합']
+      },
+      {
+        name: '행렬',
+        subUnits: ['행렬과 그 연산']
+      }
+    ]
+  },
+  '공통수학2': {
+    mainUnits: [
+      {
+        name: '도형의 방정식',
+        subUnits: ['평면좌표', '직선의 방정식', '원의 방정식', '도형의 이동']
+      },
+      {
+        name: '집합과 명제',
+        subUnits: ['집합', '명제']
+      },
+      {
+        name: '함수와 그래프',
+        subUnits: ['함수', '유무리함수']
+      }
+    ]
+  },
+  '대수': {
+    mainUnits: [
+      {
+        name: '지수함수와 로그함수',
+        subUnits: ['지수와 로그', '지수함수와 로그함수']
+      },
+      {
+        name: '삼각함수',
+        subUnits: ['삼각함수', '사인법칙과 코사인법칙']
+      },
+      {
+        name: '수열',
+        subUnits: ['등차수열과 등비수열', '수열의 합', '수학적 귀납법']
+      }
+    ]
+  },
+  '미적분1': {
+    mainUnits: [
+      {
+        name: '함수의 극한과 연속',
+        subUnits: ['함수의 극한', '함수의 연속']
+      },
+      {
+        name: '미분',
+        subUnits: ['미분계수와 도함수', '도함수의 활용']
+      },
+      {
+        name: '적분',
+        subUnits: ['부정적분과 정적분', '정적분의 활용']
+      }
+    ]
+  },
+  '미적분2': {
+    mainUnits: [
+      {
+        name: '수열의극한',
+        subUnits: ['수열의 극한', '급수']
+      },
+      {
+        name: '미분법',
+        subUnits: ['지수함수와 로그함수의 미분', '삼각함수의 미분', '여러가지 미분법', '도함수의 활용']
+      },
+      {
+        name: '적분법',
+        subUnits: ['여러가지 함수의 적분', '치환적분과 부분적분법', '정적분의 활용']
+      }
+    ]
+  },
+  '확률과통계': {
+    mainUnits: [
+      {
+        name: '순열과 조합',
+        subUnits: ['순열', '조합']
+      },
+      {
+        name: '확률',
+        subUnits: ['확률의 뜻과 활용', '조건부확률']
+      },
+      {
+        name: '통계',
+        subUnits: ['확률분포', '통계적추정']
+      }
+    ]
+  },
+  '기하': {
+    mainUnits: [
+      {
+        name: '이차곡선',
+        subUnits: ['포물선, 타원, 쌍곡선', '이차곡선의 접선']
+      },
+      {
+        name: '공간도형과 공간좌표',
+        subUnits: ['직선과 평면의 위치관계', '삼수선 정리', '정사영', '좌표공간의 거리 및 내분점', '구의 방정식']
+      },
+      {
+        name: '벡터',
+        subUnits: ['백터의 덧셈, 뺄셈, 실수배', '내적 계산', '평면의 방정식']
+      }
+    ]
+  }
+};
+
+const subjects = ['중1-1', '중1-2', '중2-1', '중2-2', '중3-1', '중3-2', '공통수학1', '공통수학2', '대수', '미적분1', '미적분2', '확률과통계', '기하'];
+
 function ClassRecordManage() {
   const navigate = useNavigate();
   const { classId } = useParams();
@@ -20,6 +254,9 @@ function ClassRecordManage() {
     progress: '',
     assignment: '',
     hasVideo: false,
+    subject: '',
+    mainUnit: '',
+    subUnit: '',
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,6 +313,9 @@ function ClassRecordManage() {
         progress: '',
         assignment: '',
         hasVideo: false,
+        subject: '',
+        mainUnit: '',
+        subUnit: '',
       });
       setEditingRecord(null);
       setStudentRecords({});
@@ -150,6 +390,9 @@ function ClassRecordManage() {
             progress: record.progress || '',
             assignment: record.assignment || '',
             hasVideo: record.hasVideo || false,
+            subject: record.subject || '',
+            mainUnit: record.mainUnit || '',
+            subUnit: record.subUnit || '',
           });
         } else {
           setEditingRecord(null);
@@ -158,6 +401,9 @@ function ClassRecordManage() {
             progress: '',
             assignment: '',
             hasVideo: false,
+            subject: '',
+            mainUnit: '',
+            subUnit: '',
           });
         }
       }
@@ -262,10 +508,31 @@ function ClassRecordManage() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // 과목이 변경되면 대단원과 소단원 초기화
+    if (name === 'subject') {
+      setFormData((prev) => ({
+        ...prev,
+        subject: value,
+        mainUnit: '',
+        subUnit: '',
+      }));
+    }
+    // 대단원이 변경되면 소단원 초기화
+    else if (name === 'mainUnit') {
+      setFormData((prev) => ({
+        ...prev,
+        mainUnit: value,
+        subUnit: '',
+      }));
+    }
+    else {
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    }
+    
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -293,6 +560,9 @@ function ClassRecordManage() {
         progress: formData.progress.trim(),
         assignment: formData.assignment.trim(),
         hasVideo: formData.hasVideo,
+        subject: formData.subject.trim(),
+        mainUnit: formData.mainUnit.trim(),
+        subUnit: formData.subUnit.trim(),
       };
 
       let response;
@@ -494,6 +764,9 @@ function ClassRecordManage() {
           progress: '',
           assignment: '',
           hasVideo: false,
+          subject: '',
+          mainUnit: '',
+          subUnit: '',
         });
         setEditingRecord(null);
         setStudentFormData({});
@@ -1005,6 +1278,60 @@ function ClassRecordManage() {
                     required
                   />
                   {errors.className && <span className="error-message">{errors.className}</span>}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">과목</label>
+                  <select
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="form-input"
+                  >
+                    <option value="">과목 선택</option>
+                    {subjects.map((subject) => (
+                      <option key={subject} value={subject}>
+                        {subject}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">대단원</label>
+                  <select
+                    name="mainUnit"
+                    value={formData.mainUnit}
+                    onChange={handleChange}
+                    className="form-input"
+                    disabled={!formData.subject}
+                  >
+                    <option value="">대단원 선택</option>
+                    {formData.subject && subjectData[formData.subject]?.mainUnits.map((unit, index) => (
+                      <option key={index} value={unit.name}>
+                        {unit.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">소단원</label>
+                  <select
+                    name="subUnit"
+                    value={formData.subUnit}
+                    onChange={handleChange}
+                    className="form-input"
+                    disabled={!formData.mainUnit}
+                  >
+                    <option value="">소단원 선택</option>
+                    {formData.subject && formData.mainUnit && subjectData[formData.subject]?.mainUnits
+                      .find(unit => unit.name === formData.mainUnit)?.subUnits.map((subUnit, index) => (
+                        <option key={index} value={subUnit}>
+                          {subUnit}
+                        </option>
+                      ))}
+                  </select>
                 </div>
               </div>
 

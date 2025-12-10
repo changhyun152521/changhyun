@@ -1,5 +1,8 @@
 const ClassRecord = require('../models/ClassRecord');
 const Class = require('../models/Class');
+const User = require('../models/User');
+const ParentStudentLink = require('../models/ParentStudentLink');
+const mongoose = require('mongoose');
 
 // 모든 교실관리 기록 조회
 exports.getAllClassRecords = async (req, res) => {
@@ -12,17 +15,170 @@ exports.getAllClassRecords = async (req, res) => {
     }
     if (date) {
       // 날짜 범위로 검색 (하루 전체)
+      // YYYY-MM-DD 형식의 문자열을 로컬 시간대 기준으로 파싱
+      const dateParts = date.split('-');
+      if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0], 10);
+        const month = parseInt(dateParts[1], 10) - 1; // 월은 0부터 시작
+        const day = parseInt(dateParts[2], 10);
+        
+        // 로컬 시간대 기준으로 날짜 생성 (시간대 문제 방지)
+        const startDate = new Date(year, month, day, 0, 0, 0, 0);
+        const endDate = new Date(year, month, day, 23, 59, 59, 999);
+        
+        query.date = { $gte: startDate, $lte: endDate };
+      } else {
+        // 기존 방식 (하위 호환성)
       const startDate = new Date(date);
       startDate.setHours(0, 0, 0, 0);
       const endDate = new Date(date);
       endDate.setHours(23, 59, 59, 999);
       query.date = { $gte: startDate, $lte: endDate };
+      }
     }
 
     const records = await ClassRecord.find(query)
       .populate('classId', 'grade className instructorName')
       .populate('createdBy', 'userId name email')
-      .sort({ date: -1, createdAt: -1 });
+      .sort({ date: -1, updatedAt: -1, createdAt: -1 }); // updatedAt 기준으로 최신 수정된 데이터 우선
+
+    // 디버깅: 날짜와 과목 정보 로깅
+    if (date) {
+      console.log(`[ClassRecords] 날짜 ${date} 조회:`, {
+        query: query,
+        foundRecords: records.length,
+        records: records.map(r => ({
+          id: r._id,
+          date: r.date,
+          dateString: r.date ? new Date(r.date).toISOString().split('T')[0] : null,
+          subject: r.subject,
+          mainUnit: r.mainUnit,
+          subUnit: r.subUnit,
+          updatedAt: r.updatedAt,
+          createdAt: r.createdAt,
+        })),
+      });
+    }
+
+    res.json({
+      success: true,
+      count: records.length,
+      data: records,
+    });
+  } catch (error) {
+    console.error('교실관리 기록 조회 오류:', error);
+    res.status(500).json({
+      success: false,
+      error: '교실관리 기록을 가져오는 중 오류가 발생했습니다',
+      message: error.message,
+    });
+  }
+};
+
+// 학생/학부모가 자신의 반에 대한 교실관리 기록 조회
+exports.getMyClassRecords = async (req, res) => {
+  try {
+    // req.user가 없으면 에러
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: '인증이 필요합니다.',
+      });
+    }
+
+    const userId = req.user.id;
+    const { classId, date } = req.query;
+
+    // 사용자 확인
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: '사용자를 찾을 수 없습니다.',
+      });
+    }
+
+    // 학생 또는 학부모만 접근 가능
+    if (user.userType !== '학생' && user.userType !== '학부모') {
+      return res.status(403).json({
+        success: false,
+        error: '학생 또는 학부모만 기록을 조회할 수 있습니다.',
+      });
+    }
+
+    // 반 ID 확인
+    if (!classId) {
+      return res.status(400).json({
+        success: false,
+        error: '반 ID가 필요합니다.',
+      });
+    }
+
+    // classId가 유효한 ObjectId 형식인지 확인
+    if (!mongoose.Types.ObjectId.isValid(classId)) {
+      return res.status(400).json({
+        success: false,
+        error: '유효하지 않은 반 ID입니다.',
+      });
+    }
+
+    // 반 정보 확인
+    const classData = await Class.findById(classId);
+    if (!classData) {
+      return res.status(404).json({
+        success: false,
+        error: '반을 찾을 수 없습니다.',
+      });
+    }
+
+    // 학생이 해당 반에 속해있는지 확인
+    const isStudentInClass = classData.students.some(
+      (id) => id.toString() === userId.toString()
+    );
+
+    // 학부모인 경우 자녀 학생이 해당 반에 속해있는지 확인
+    let isAuthorized = isStudentInClass;
+    if (user.userType === '학부모' && !isStudentInClass) {
+      const parentLinks = await ParentStudentLink.find({ parentId: userId });
+      const studentIds = parentLinks.map(link => link.studentId.toString());
+      isAuthorized = classData.students.some(
+        (id) => studentIds.includes(id.toString())
+      );
+    }
+
+    if (!isAuthorized) {
+      return res.status(403).json({
+        success: false,
+        error: '해당 반에 대한 접근 권한이 없습니다.',
+      });
+    }
+
+    // 날짜 범위로 검색
+    const query = { classId };
+    if (date) {
+      const dateParts = date.split('-');
+      if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0], 10);
+        const month = parseInt(dateParts[1], 10) - 1;
+        const day = parseInt(dateParts[2], 10);
+        
+        const startDate = new Date(year, month, day, 0, 0, 0, 0);
+        const endDate = new Date(year, month, day, 23, 59, 59, 999);
+        
+        query.date = { $gte: startDate, $lte: endDate };
+      } else {
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0);
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999);
+        query.date = { $gte: startDate, $lte: endDate };
+      }
+    }
+
+    const records = await ClassRecord.find(query)
+      .populate('classId', 'grade className instructorName')
+      .populate('createdBy', 'userId name email')
+      .sort({ date: -1, updatedAt: -1, createdAt: -1 });
 
     res.json({
       success: true,
@@ -144,6 +300,9 @@ exports.createClassRecord = async (req, res) => {
       progress: progress ? progress.trim() : '',
       assignment: assignment ? assignment.trim() : '',
       hasVideo: hasVideo === true || hasVideo === 'true' || hasVideo === 'O',
+      subject: subject ? subject.trim() : '',
+      mainUnit: mainUnit ? mainUnit.trim() : '',
+      subUnit: subUnit ? subUnit.trim() : '',
       createdBy: req.user.id,
     });
 
@@ -196,6 +355,9 @@ exports.updateClassRecord = async (req, res) => {
       progress,
       assignment,
       hasVideo,
+      subject,
+      mainUnit,
+      subUnit,
     } = req.body;
 
     const updateData = {};
@@ -242,6 +404,21 @@ exports.updateClassRecord = async (req, res) => {
     // 영상여부 변경
     if (hasVideo !== undefined) {
       updateData.hasVideo = hasVideo === true || hasVideo === 'true' || hasVideo === 'O';
+    }
+
+    // 과목 변경
+    if (subject !== undefined) {
+      updateData.subject = subject ? subject.trim() : '';
+    }
+
+    // 대단원 변경
+    if (mainUnit !== undefined) {
+      updateData.mainUnit = mainUnit ? mainUnit.trim() : '';
+    }
+
+    // 소단원 변경
+    if (subUnit !== undefined) {
+      updateData.subUnit = subUnit ? subUnit.trim() : '';
     }
 
     // 날짜나 반이 변경된 경우 중복 체크

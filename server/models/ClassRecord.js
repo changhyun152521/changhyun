@@ -32,6 +32,21 @@ const classRecordSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    subject: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    mainUnit: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    subUnit: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
