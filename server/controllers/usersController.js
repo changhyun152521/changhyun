@@ -60,15 +60,18 @@ exports.getAllUsers = async (req, res) => {
             .populate('parentId', 'userId name email phone')
             .lean();
           
-          userObj.linkedUsers = parentLinks.map(link => ({
-            _id: link.parentId._id,
-            userId: link.parentId.userId,
-            name: link.parentId.name,
-            email: link.parentId.email,
-            phone: link.parentId.phone,
-            userType: '학부모',
-            linkId: link._id,
-          }));
+          // 삭제된 유저를 참조하는 링크 필터링 (parentId가 null인 경우 제외)
+          userObj.linkedUsers = parentLinks
+            .filter(link => link.parentId !== null && link.parentId !== undefined)
+            .map(link => ({
+              _id: link.parentId._id,
+              userId: link.parentId.userId,
+              name: link.parentId.name,
+              email: link.parentId.email,
+              phone: link.parentId.phone,
+              userType: '학부모',
+              linkId: link._id,
+            }));
           
           // 하위 호환성을 위해 첫 번째 연동 정보를 linkedUser에도 저장
           userObj.linkedUser = userObj.linkedUsers.length > 0 ? {
@@ -82,16 +85,19 @@ exports.getAllUsers = async (req, res) => {
             .populate('studentId', 'userId name email phone schoolName')
             .lean();
           
-          userObj.linkedUsers = studentLinks.map(link => ({
-            _id: link.studentId._id,
-            userId: link.studentId.userId,
-            name: link.studentId.name,
-            email: link.studentId.email,
-            phone: link.studentId.phone,
-            schoolName: link.studentId.schoolName,
-            userType: '학생',
-            linkId: link._id,
-          }));
+          // 삭제된 유저를 참조하는 링크 필터링 (studentId가 null인 경우 제외)
+          userObj.linkedUsers = studentLinks
+            .filter(link => link.studentId !== null && link.studentId !== undefined)
+            .map(link => ({
+              _id: link.studentId._id,
+              userId: link.studentId.userId,
+              name: link.studentId.name,
+              email: link.studentId.email,
+              phone: link.studentId.phone,
+              schoolName: link.studentId.schoolName,
+              userType: '학생',
+              linkId: link._id,
+            }));
           
           // 하위 호환성을 위해 첫 번째 연동 정보를 linkedUser에도 저장
           userObj.linkedUser = userObj.linkedUsers.length > 0 ? {
@@ -1079,6 +1085,14 @@ exports.deleteUser = async (req, res) => {
 
     // 사용자 삭제
     await User.findByIdAndDelete(req.params.id);
+
+    // ParentStudentLink에서도 제거 (삭제된 유저를 참조하는 모든 링크 삭제)
+    await ParentStudentLink.deleteMany({
+      $or: [
+        { studentId: user._id },
+        { parentId: user._id }
+      ]
+    });
 
     // 반에서도 제거 (학생 또는 학부모인 경우)
     if (user.userType === '학생' || user.userType === '학부모') {
