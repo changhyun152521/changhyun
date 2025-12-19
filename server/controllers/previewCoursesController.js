@@ -3,63 +3,33 @@ const PreviewCourse = require('../models/PreviewCourse');
 // 모든 맛보기강좌 조회 (비회원 포함 모든 사용자 접근 가능)
 exports.getAllPreviewCourses = async (req, res) => {
   try {
-    console.log('\n=== 맛보기강좌 목록 조회 시작 ===');
-    console.log('요청 URL:', req.url);
-    console.log('요청 메서드:', req.method);
-    
-    // MongoDB 연결 확인
     const mongoose = require('mongoose');
     if (!mongoose.connection.readyState) {
-      console.error('MongoDB 연결이 끊어졌습니다');
-      // CORS 헤더 설정
-      const origin = req.headers.origin;
-      if (origin) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-      }
       return res.status(500).json({
         success: false,
         error: '데이터베이스 연결 오류가 발생했습니다',
       });
     }
-    
+
     const previewCourses = await PreviewCourse.find()
       .populate({
         path: 'createdBy',
         select: 'userId name email userType',
-        strictPopulate: false // 참조가 없어도 에러 발생하지 않도록
+        strictPopulate: false,
       })
       .sort({ createdAt: -1 })
-      .lean(); // 성능 향상 및 에러 방지
-    
-    console.log('맛보기강좌 개수:', previewCourses.length);
-    console.log('맛보기강좌 데이터:', previewCourses.map(c => ({ id: c._id, title: c.title })));
-    
+      .lean();
+
     res.json({
       success: true,
       count: previewCourses.length,
       data: previewCourses,
     });
-    
-    console.log('=== 맛보기강좌 목록 조회 완료 ===\n');
   } catch (error) {
-    console.error('\n=== 맛보기강좌 목록 가져오기 오류 ===');
-    console.error('오류 타입:', error.constructor.name);
-    console.error('오류 메시지:', error.message);
-    console.error('오류 스택:', error.stack);
-    console.error('===============================\n');
-    
-    // CORS 헤더 설정
-    const origin = req.headers.origin;
-    if (origin) {
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-    }
-    
     res.status(500).json({
       success: false,
       error: '맛보기강좌 목록을 가져오는 중 오류가 발생했습니다',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      ...(process.env.NODE_ENV === 'development' && { message: error.message }),
     });
   }
 };
@@ -136,8 +106,6 @@ exports.createPreviewCourse = async (req, res) => {
       data: populatedPreviewCourse,
     });
   } catch (error) {
-    console.error('맛보기강좌 생성 오류:', error);
-    
     // Mongoose 유효성 검사 오류 처리
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map((err) => err.message);
@@ -202,7 +170,6 @@ exports.updatePreviewCourse = async (req, res) => {
       data: previewCourse,
     });
   } catch (error) {
-    console.error('맛보기강좌 수정 오류:', error);
     if (error.name === 'CastError') {
       return res.status(400).json({
         success: false,
@@ -244,7 +211,6 @@ exports.deletePreviewCourse = async (req, res) => {
       message: '맛보기강좌가 성공적으로 삭제되었습니다',
     });
   } catch (error) {
-    console.error('맛보기강좌 삭제 오류:', error);
     if (error.name === 'CastError') {
       return res.status(400).json({
         success: false,

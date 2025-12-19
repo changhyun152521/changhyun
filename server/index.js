@@ -1,92 +1,75 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
 
-// 미들웨어
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  process.env.CLIENT_URL, // Vercel 배포 URL
-].filter(Boolean); // undefined 제거
+// 프록시 신뢰 설정 (Nginx 등 리버스 프록시 뒤에서 실행 시 필요)
+app.set('trust proxy', 1);
 
-// CORS 설정 로깅 (디버깅용)
-console.log('=== CORS 설정 ===');
-console.log('허용된 Origins:', allowedOrigins);
-console.log('CLIENT_URL:', process.env.CLIENT_URL);
+// 보안 헤더 설정
+app.use(helmet());
 
-// CORS 헤더를 모든 응답에 추가하는 미들웨어 (에러 응답 포함)
-// 이 미들웨어는 모든 요청에 대해 먼저 실행되어 CORS 헤더를 설정
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  console.log('CORS 미들웨어 - Origin:', origin);
-  console.log('CORS 미들웨어 - 허용된 Origins:', allowedOrigins);
-  
-  if (origin) {
-    // 허용된 origin이거나, 디버깅을 위해 일단 설정
-    if (allowedOrigins.includes(origin)) {
-      console.log('CORS 미들웨어 - 허용된 origin에 CORS 헤더 설정');
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-    } else {
-      // 허용되지 않았지만 디버깅을 위해 설정
-      console.log('CORS 미들웨어 - 허용 목록에 없지만 CORS 헤더 설정 (디버깅)');
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Credentials', 'true');
-    }
+// CORS 허용 origin 검사 함수
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // 같은 도메인 요청
+
+  // vercel.app 도메인 차단
+  if (origin.includes('vercel.app')) return false;
+
+  // 정적 허용 목록
+  const staticAllowedOrigins = [
+    'https://mathchang.com',
+    'https://www.mathchang.com',
+    'http://mathchang.com',
+    'http://www.mathchang.com',
+    process.env.CLIENT_URL,
+  ].filter(Boolean);
+
+  if (staticAllowedOrigins.includes(origin)) return true;
+
+  try {
+    const url = new URL(origin);
+    const hostname = url.hostname;
+
+    // localhost 모든 포트 허용
+    if (hostname === 'localhost') return true;
+
+    // 127.0.0.1 모든 포트 허용
+    if (hostname === '127.0.0.1') return true;
+
+    // 내부망 IP 허용 (10.x.x.x, 192.168.x.x, 172.16-31.x.x)
+    if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname)) return true;
+    if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname)) return true;
+    if (/^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname)) return true;
+
+  } catch (e) {
+    // URL 파싱 실패 시 거부
+    return false;
   }
-  next();
-});
 
+  return false;
+};
+
+// CORS 설정
 app.use(cors({
   origin: (origin, callback) => {
-    // origin이 없으면 (같은 도메인 요청 등) 허용
-    if (!origin) {
-      console.log('CORS: origin이 없음 (같은 도메인 요청)');
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
-    
-    // 허용된 origin인지 확인
-    if (allowedOrigins.includes(origin)) {
-      console.log('CORS: 허용된 origin:', origin);
-      return callback(null, true);
-    }
-    
-    // 허용 목록에 없어도 일단 허용 (환경변수 설정 문제 해결 전까지)
-    // TODO: 환경변수 CLIENT_URL 설정 후 이 부분 제거
-    console.log('CORS: 허용 목록에 없지만 임시로 허용:', origin);
-    console.log('CORS: 허용된 origins:', allowedOrigins);
-    console.log('CORS: CLIENT_URL 환경변수:', process.env.CLIENT_URL);
-    return callback(null, true); // 에러를 던지지 않고 허용
+    console.warn(`CORS 차단: ${origin}`);
+    return callback(new Error('CORS 정책에 의해 차단되었습니다'), false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-  preflightContinue: false,
   optionsSuccessStatus: 204,
 }));
 
-// OPTIONS 요청을 명시적으로 처리 (CORS preflight)
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
-  }
-  res.status(204).end();
-});
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // MongoDB 연결
 const connectDB = async () => {
@@ -117,57 +100,30 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 모든 요청 로깅 (디버깅용) - 라우터 이전에 위치해야 함 (API 요청만 로깅)
-app.use('/api', (req, res, next) => {
-  console.log(`\n========================================`);
-  console.log(`=== [${new Date().toISOString()}] ${req.method} ${req.path} ===`);
-  console.log(`========================================`);
-  console.log('Request URL:', req.url);
-  console.log('Request IP:', req.ip);
-  console.log('Request path:', req.path);
-  if (req.body && Object.keys(req.body).length > 0) {
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-  } else {
-    console.log('Request body: (empty or undefined)');
-  }
-  console.log('Request headers:', JSON.stringify(req.headers, null, 2));
-  next();
-});
-
 // 라우터 연결
-console.log('=== 라우터 등록 시작 ===');
 const usersRouter = require('./routes/users');
-console.log('usersRouter 타입:', typeof usersRouter);
 app.use('/api/users', usersRouter);
-console.log('=== 라우터 등록 완료: /api/users ===');
 
 const coursesRouter = require('./routes/courses');
 app.use('/api/courses', coursesRouter);
-console.log('=== 라우터 등록 완료: /api/courses ===');
 
 const classesRouter = require('./routes/classes');
 app.use('/api/classes', classesRouter);
-console.log('=== 라우터 등록 완료: /api/classes ===');
 
 const previewCoursesRouter = require('./routes/previewCourses');
 app.use('/api/preview-courses', previewCoursesRouter);
-console.log('=== 라우터 등록 완료: /api/preview-courses ===');
 
 const classRecordsRouter = require('./routes/classRecords');
 app.use('/api/class-records', classRecordsRouter);
-console.log('=== 라우터 등록 완료: /api/class-records ===');
 
 const studentRecordsRouter = require('./routes/studentRecords');
 app.use('/api/student-records', studentRecordsRouter);
-console.log('=== 라우터 등록 완료: /api/student-records ===');
 
 const noticesRouter = require('./routes/notices');
 app.use('/api/notices', noticesRouter);
-console.log('=== 라우터 등록 완료: /api/notices ===');
 
 const attendanceCommentsRouter = require('./routes/attendanceComments');
 app.use('/api/attendance-comments', attendanceCommentsRouter);
-console.log('=== 라우터 등록 완료: /api/attendance-comments ===');
 
 const parentStudentLinksRouter = require('./routes/parentStudentLinks');
 app.use('/api/parent-student-links', parentStudentLinksRouter);
@@ -176,71 +132,44 @@ console.log('=== 라우터 등록 완료: /api/attendance-comments ===');
 
 // 404 핸들러
 app.use((req, res) => {
-  console.log(`[404] 라우트를 찾을 수 없음: ${req.method} ${req.path}`);
-  console.log('Available routes: POST /api/users/login, POST /api/users/find-userid, POST /api/users/reset-password');
-  res.status(404).json({ 
+  res.status(404).json({
+    success: false,
     error: '라우트를 찾을 수 없습니다',
-    method: req.method,
-    path: req.path,
-    availableRoutes: [
-      'POST /api/users/login',
-      'POST /api/users/find-userid',
-      'POST /api/users/reset-password'
-    ]
   });
 });
 
-// 에러 핸들러 (4개의 파라미터 필요: err, req, res, next)
+// 에러 핸들러
 app.use((err, req, res, next) => {
-  console.error('\n========================================');
-  console.error('=== 서버 에러 핸들러 실행 ===');
-  console.error('========================================');
-  console.error('에러 타입:', err.constructor.name);
-  console.error('에러 이름:', err.name);
-  console.error('에러 메시지:', err.message);
-  console.error('에러 스택:', err.stack);
-  console.error('요청 경로:', req.path);
-  console.error('요청 URL:', req.url);
-  console.error('요청 메서드:', req.method);
-  console.error('요청 Origin:', req.headers.origin);
-  console.error('요청 Headers:', JSON.stringify(req.headers, null, 2));
-  if (req.body && Object.keys(req.body).length > 0) {
-    console.error('요청 body:', JSON.stringify(req.body, null, 2));
-  }
-  
-  // 이미 응답이 전송되었는지 확인
+  // 프로덕션에서는 최소한의 에러 로깅
+  console.error(`[ERROR] ${req.method} ${req.path}: ${err.message}`);
+
   if (res.headersSent) {
-    console.error('응답이 이미 전송되었습니다.');
     return next(err);
   }
-  
+
   // CORS 헤더 설정 (에러 응답에도 반드시 필요)
   const origin = req.headers.origin;
-  if (origin) {
+  if (origin && isAllowedOrigin(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   }
-  
-  // Content-Type을 명시적으로 설정하고 JSON 형식으로 응답
+
   res.setHeader('Content-Type', 'application/json');
-  
-  // 에러 메시지에 "모든 필수 필드를 입력해주세요"가 포함되어 있으면 그대로 반환
+
+  // 유효성 검사 에러는 그대로 반환
   if (err.message && err.message.includes('모든 필수 필드를 입력해주세요')) {
-    console.error('=== "모든 필수 필드를 입력해주세요" 에러 발생 ===');
-    console.error('에러가 발생한 위치:', err.stack);
     return res.status(400).json({
       success: false,
       error: err.message,
     });
   }
-  
-  return res.status(err.status || 500).json({ 
+
+  return res.status(err.status || 500).json({
     success: false,
     error: '서버 오류가 발생했습니다',
-    message: err.message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    ...(process.env.NODE_ENV === 'development' && { message: err.message, stack: err.stack })
   });
 });
 

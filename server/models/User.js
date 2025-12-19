@@ -94,18 +94,12 @@ const userSchema = new mongoose.Schema(
 
 // 저장 전 처리 (pre-save hook)
 userSchema.pre('save', async function (next) {
-  console.log('Pre-save hook 실행 - userType:', this.userType);
-  
   // 강사는 자동으로 관리자 권한 부여
   if (this.userType === '강사') {
     this.isAdmin = true;
-    console.log('강사로 설정됨 - isAdmin을 true로 설정');
   } else {
     this.isAdmin = false;
-    console.log('학생/학부모로 설정됨 - isAdmin을 false로 설정');
   }
-  
-  console.log('Pre-save hook 완료 - userType:', this.userType, 'isAdmin:', this.isAdmin);
 
   // password 필드가 없으면 스킵
   if (!this.password) {
@@ -114,20 +108,15 @@ userSchema.pre('save', async function (next) {
 
   // 이미 해시된 비밀번호인지 확인 ($2b$ 또는 $2a$로 시작하는지)
   if (this.password.startsWith('$2a$') || this.password.startsWith('$2b$')) {
-    console.log('비밀번호가 이미 해시되어 있습니다.');
     return next();
   }
 
   try {
-    console.log('비밀번호 암호화 시작:', this.password.substring(0, 3) + '...');
-    // 비밀번호 암호화
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(this.password, saltRounds);
     this.password = hashedPassword;
-    console.log('비밀번호 암호화 완료:', hashedPassword.substring(0, 20) + '...');
     next();
   } catch (error) {
-    console.error('비밀번호 암호화 오류:', error);
     next(error);
   }
 });

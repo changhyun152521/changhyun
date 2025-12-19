@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const usersController = require('../controllers/usersController');
 
 // async 에러를 자동으로 catch하는 헬퍼 함수
@@ -9,21 +10,49 @@ const asyncHandler = (fn) => {
   };
 };
 
-// 라우트 등록 확인
-console.log('=== Users 라우트 등록 시작 ===');
-console.log('findUserId 함수 타입:', typeof usersController.findUserId);
-console.log('resetPassword 함수 타입:', typeof usersController.resetPassword);
-console.log('login 함수 타입:', typeof usersController.login);
+// Rate Limiting 설정
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15분
+  max: 5, // 최대 5회 시도
+  message: {
+    success: false,
+    error: '로그인 시도 횟수가 초과되었습니다. 15분 후 다시 시도해주세요.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1시간
+  max: 3, // 최대 3회 시도
+  message: {
+    success: false,
+    error: '비밀번호 재설정 요청 횟수가 초과되었습니다. 1시간 후 다시 시도해주세요.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const findUserIdLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15분
+  max: 5, // 최대 5회 시도
+  message: {
+    success: false,
+    error: '아이디 찾기 요청 횟수가 초과되었습니다. 15분 후 다시 시도해주세요.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // 특정 경로 라우트를 먼저 정의 (동적 라우트보다 먼저)
 // 로그인 (POST /api/users/login)
-router.post('/login', asyncHandler(usersController.login));
+router.post('/login', loginLimiter, asyncHandler(usersController.login));
 
 // 아이디 찾기 (POST /api/users/find-userid)
-router.post('/find-userid', asyncHandler(usersController.findUserId));
+router.post('/find-userid', findUserIdLimiter, asyncHandler(usersController.findUserId));
 
 // 비밀번호 재설정 (POST /api/users/reset-password)
-router.post('/reset-password', asyncHandler(usersController.resetPassword));
+router.post('/reset-password', passwordResetLimiter, asyncHandler(usersController.resetPassword));
 
 // userId로 유저 조회 (GET /api/users/userId/:userId)
 router.get('/userId/:userId', usersController.getUserByUserId);
