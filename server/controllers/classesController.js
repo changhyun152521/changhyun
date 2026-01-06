@@ -39,7 +39,11 @@ exports.getClassById = async (req, res) => {
   try {
     const classData = await Class.findById(req.params.id)
       .populate('instructorId', 'userId name email userType')
-      .populate('students', 'userId name email userType schoolName studentContact parentContact')
+      .populate({
+        path: 'students',
+        select: 'userId name email userType schoolName studentContact parentContact',
+        options: { sort: { name: 1 } }  // 이름 가나다순 정렬
+      })
       .populate('courses', 'sku courseName instructorName grade courseCount courseStatus thumbnail');
     
     if (!classData) {
