@@ -5,27 +5,20 @@ const mongoose = require('mongoose');
 
 // 모든 강좌 조회
 exports.getAllCourses = async (req, res) => {
-  console.log('\n=== getAllCourses 함수 호출됨 ===');
   try {
-    console.log('Course.find() 실행 중...');
     const courses = await Course.find()
       .populate('instructorId', 'userId name email userType profileImage')
-      .sort({ createdAt: -1 }); // 생성일 기준 최신순 정렬
-    console.log(`강좌 ${courses.length}개 조회 성공`);
+      .sort({ createdAt: -1 });
     res.json({
       success: true,
       count: courses.length,
       data: courses,
     });
   } catch (error) {
-    console.error('=== getAllCourses 에러 발생 ===');
-    console.error('에러 타입:', error.name);
-    console.error('에러 메시지:', error.message);
-    console.error('에러 스택:', error.stack);
+    console.error('강좌 목록 조회 오류:', error.message);
     res.status(500).json({
       success: false,
       error: '강좌 목록을 가져오는 중 오류가 발생했습니다',
-      message: error.message,
     });
   }
 };
@@ -88,28 +81,14 @@ exports.getCourseBySku = async (req, res) => {
 
 // 새 강좌 생성
 exports.createCourse = async (req, res) => {
-  console.log('\n\n========================================');
-  console.log('=== createCourse 함수 호출됨 ===');
-  console.log('========================================');
-  console.log('요청 메서드:', req.method);
-  console.log('요청 경로:', req.path);
-  console.log('요청 URL:', req.url);
-  console.log('요청 본문:', JSON.stringify(req.body, null, 2));
-  console.log('요청 본문 타입:', typeof req.body);
-  console.log('요청 본문 키:', Object.keys(req.body || {}));
-  
   try {
-    console.log('=== 강좌 생성 요청 시작 ===');
-    
-    // req.body가 비어있는지 확인
     if (!req.body || Object.keys(req.body).length === 0) {
-      console.error('=== req.body가 비어있음 ===');
       return res.status(400).json({
         success: false,
         error: '요청 본문이 비어있습니다',
       });
     }
-    
+
     const {
       sku,
       courseName,
@@ -126,31 +105,9 @@ exports.createCourse = async (req, res) => {
       lectures,
     } = req.body;
 
-    console.log('파싱된 필드:', {
-      sku: sku,
-      courseName: courseName,
-      instructorId: instructorId,
-      instructorName: instructorName,
-      grade: grade,
-      courseCount: courseCount,
-      courseCountType: typeof courseCount,
-      textbook: textbook,
-    });
-    
-    // 각 필드가 실제로 존재하는지 확인
-    console.log('필드 존재 여부 확인:', {
-      'sku 존재': !!sku,
-      'courseName 존재': !!courseName,
-      'instructorId 존재': !!instructorId,
-      'instructorName 존재': !!instructorName,
-      'grade 존재': !!grade,
-      'courseCount 존재': courseCount !== undefined,
-      'textbook 존재': !!textbook,
-    });
-
-    // 필수 필드 검증 (강좌명, 강사, 학년, 강의수, SKU, 교재만 필수)
+    // 필수 필드 검증
     const validationErrors = [];
-    
+
     if (!sku || !sku.trim()) {
       validationErrors.push('SKU를 입력해주세요');
     }
@@ -166,37 +123,23 @@ exports.createCourse = async (req, res) => {
     if (!grade) {
       validationErrors.push('학년을 선택해주세요');
     }
-    
-    // courseCount 검증 (0 이상이면 허용)
-    console.log('courseCount 검증:', { courseCount, type: typeof courseCount });
+
+    // courseCount 검증
     let courseCountNum;
     if (courseCount === undefined || courseCount === null || courseCount === '') {
       validationErrors.push('강의 수를 입력해주세요 (0 이상)');
     } else {
       courseCountNum = Number(courseCount);
-      console.log('courseCountNum:', courseCountNum, 'isNaN:', isNaN(courseCountNum));
       if (isNaN(courseCountNum) || courseCountNum < 0) {
         validationErrors.push('강의 수는 0 이상의 숫자여야 합니다');
       }
     }
-    
+
     if (!textbook || !textbook.trim()) {
       validationErrors.push('교재를 입력해주세요');
     }
-    
+
     if (validationErrors.length > 0) {
-      console.log('=== 검증 실패 ===');
-      console.log('검증 오류 목록:', validationErrors);
-      console.log('실제 받은 데이터:', {
-        sku: sku ? `"${sku}"` : 'undefined',
-        courseName: courseName ? `"${courseName}"` : 'undefined',
-        instructorId: instructorId ? `"${instructorId}"` : 'undefined',
-        instructorName: instructorName ? `"${instructorName}"` : 'undefined',
-        grade: grade ? `"${grade}"` : 'undefined',
-        courseCount: courseCount !== undefined ? `${courseCount} (타입: ${typeof courseCount})` : 'undefined',
-        textbook: textbook ? `"${textbook}"` : 'undefined',
-      });
-      console.log('전체 req.body:', JSON.stringify(req.body, null, 2));
       return res.status(400).json({
         success: false,
         error: validationErrors.join(', '),
@@ -228,22 +171,13 @@ exports.createCourse = async (req, res) => {
       });
     }
 
-    // 강사명 일치 확인 (공백 제거 후 비교)
+    // 강사명 일치 확인
     const instructorNameTrimmed = instructor.name ? instructor.name.trim() : '';
     const submittedNameTrimmed = instructorName ? instructorName.trim() : '';
-    console.log('강사명 비교:', {
-      dbName: instructorNameTrimmed,
-      submittedName: submittedNameTrimmed,
-      match: instructorNameTrimmed === submittedNameTrimmed,
-    });
     if (instructorNameTrimmed !== submittedNameTrimmed) {
-      console.error('강사명 불일치:', {
-        dbName: instructorNameTrimmed,
-        submittedName: submittedNameTrimmed,
-      });
       return res.status(400).json({
         success: false,
-        error: `강사명이 일치하지 않습니다. (DB: "${instructorNameTrimmed}", 전송: "${submittedNameTrimmed}")`,
+        error: `강사명이 일치하지 않습니다`,
       });
     }
 
@@ -314,26 +248,16 @@ exports.createCourse = async (req, res) => {
       data: savedCourse,
     });
   } catch (error) {
-    console.error('=== 강좌 생성 오류 ===');
-    console.error('에러 타입:', error.name);
-    console.error('에러 메시지:', error.message);
-    console.error('에러 스택:', error.stack);
-    console.error('전체 에러 객체:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
-    
-    // Mongoose 유효성 검사 오류 처리
+    console.error('강좌 생성 오류:', error.message);
+
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map((err) => err.message);
-      console.error('Mongoose ValidationError 상세:');
-      Object.values(error.errors).forEach((err) => {
-        console.error(`  - ${err.path}: ${err.message}`);
-      });
       return res.status(400).json({
         success: false,
         error: errors.join(', '),
       });
     }
-    
-    // 일반 에러 처리
+
     if (error.message) {
       return res.status(400).json({
         success: false,
@@ -341,7 +265,6 @@ exports.createCourse = async (req, res) => {
       });
     }
 
-    // 중복 키 오류 처리 (SKU)
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
@@ -352,7 +275,6 @@ exports.createCourse = async (req, res) => {
     res.status(500).json({
       success: false,
       error: '강좌 생성 중 오류가 발생했습니다',
-      message: error.message,
     });
   }
 };
@@ -376,12 +298,9 @@ exports.updateCourse = async (req, res) => {
       lectures,
     } = req.body;
 
-    // 필수 필드 검증 (강좌명, 강사, 학년, 강의수, SKU, 교재만 필수)
-    console.log('=== 강좌 수정 요청 ===');
-    console.log('요청 본문:', JSON.stringify(req.body, null, 2));
-    
+    // 필수 필드 검증
     const validationErrors = [];
-    
+
     if (!sku || !sku.trim()) {
       validationErrors.push('SKU를 입력해주세요');
     }
@@ -397,26 +316,23 @@ exports.updateCourse = async (req, res) => {
     if (!grade) {
       validationErrors.push('학년을 선택해주세요');
     }
-    
-    // courseCount 검증 (0 이상이면 허용)
-    console.log('courseCount 검증:', { courseCount, type: typeof courseCount });
+
+    // courseCount 검증
     let courseCountNum;
     if (courseCount === undefined || courseCount === null || courseCount === '') {
       validationErrors.push('강의 수를 입력해주세요 (0 이상)');
     } else {
       courseCountNum = Number(courseCount);
-      console.log('courseCountNum:', courseCountNum, 'isNaN:', isNaN(courseCountNum));
       if (isNaN(courseCountNum) || courseCountNum < 0) {
         validationErrors.push('강의 수는 0 이상의 숫자여야 합니다');
       }
     }
-    
+
     if (!textbook || !textbook.trim()) {
       validationErrors.push('교재를 입력해주세요');
     }
-    
+
     if (validationErrors.length > 0) {
-      console.log('검증 실패:', validationErrors);
       return res.status(400).json({
         success: false,
         error: validationErrors.join(', '),
@@ -528,9 +444,7 @@ exports.updateCourse = async (req, res) => {
         updateData.lectures = [];
       } else {
         try {
-          console.log('강의 데이터 처리 시작, 총 개수:', lectures.length);
           updateData.lectures = lectures.map((lecture, index) => {
-            // lectureNumber 검증 및 변환
             let lectureNumber;
             if (lecture.lectureNumber !== undefined && lecture.lectureNumber !== null && lecture.lectureNumber !== '') {
               lectureNumber = Number(lecture.lectureNumber);
@@ -540,24 +454,23 @@ exports.updateCourse = async (req, res) => {
             } else {
               lectureNumber = index + 1;
             }
-            
-            // 필수 필드 검증 및 안전한 변환
+
             if (!lecture || typeof lecture !== 'object') {
               throw new Error(`강의 ${index + 1}의 데이터 형식이 올바르지 않습니다.`);
             }
-            
+
             const lectureTitle = lecture.lectureTitle && typeof lecture.lectureTitle === 'string' ? lecture.lectureTitle.trim() : '';
             if (!lectureTitle) {
               throw new Error(`강의 ${index + 1}의 제목을 입력해주세요.`);
             }
-            
+
             const videoLink = lecture.videoLink && typeof lecture.videoLink === 'string' ? lecture.videoLink.trim() : '';
             if (!videoLink) {
               throw new Error(`강의 ${index + 1}의 영상 링크를 입력해주세요.`);
             }
-            
+
             const duration = lecture.duration && typeof lecture.duration === 'string' && lecture.duration.trim() ? lecture.duration.trim() : undefined;
-            
+
             return {
               lectureNumber: lectureNumber,
               lectureTitle: lectureTitle,
@@ -565,11 +478,7 @@ exports.updateCourse = async (req, res) => {
               videoLink: videoLink,
             };
           });
-          console.log('모든 강의 데이터 처리 완료, 총 개수:', updateData.lectures.length);
         } catch (lectureError) {
-          console.error('강의 데이터 처리 오류:', lectureError);
-          console.error('에러 메시지:', lectureError.message);
-          console.error('에러 스택:', lectureError.stack);
           return res.status(400).json({
             success: false,
             error: lectureError.message || '강의 데이터 처리 중 오류가 발생했습니다.',
@@ -578,49 +487,26 @@ exports.updateCourse = async (req, res) => {
       }
     }
 
-    console.log('업데이트할 데이터 키:', Object.keys(updateData));
-    if (updateData.lectures) {
-      console.log('강의 데이터 개수:', updateData.lectures.length);
-      if (updateData.lectures.length > 0) {
-        console.log('첫 번째 강의 샘플:', JSON.stringify(updateData.lectures[0], null, 2));
-      }
-    }
-    
     let course;
     try {
-      console.log('MongoDB 업데이트 시작, 강좌 ID:', req.params.id);
       course = await Course.findByIdAndUpdate(
         req.params.id,
         updateData,
         {
-          new: true, // 업데이트된 문서 반환
-          runValidators: true, // 유효성 검증 실행
+          new: true,
+          runValidators: true,
         }
       ).populate('instructorId', 'userId name email userType profileImage');
-      
+
       if (!course) {
-        console.error('강좌를 찾을 수 없음, ID:', req.params.id);
         return res.status(404).json({
           success: false,
           error: '강좌를 찾을 수 없습니다',
         });
       }
-      
-      console.log('강좌 업데이트 성공');
     } catch (validationError) {
-      console.error('=== 강좌 업데이트 오류 발생 ===');
-      console.error('에러 타입:', validationError.name);
-      console.error('에러 메시지:', validationError.message);
-      console.error('에러 코드:', validationError.code);
-      if (validationError.errors) {
-        console.error('검증 오류 상세:', Object.keys(validationError.errors));
-        Object.keys(validationError.errors).forEach(key => {
-          console.error(`  ${key}:`, validationError.errors[key].message);
-        });
-      }
-      console.error('에러 스택:', validationError.stack);
-      console.error('==========================');
-      
+      console.error('강좌 업데이트 오류:', validationError.message);
+
       if (validationError.name === 'ValidationError') {
         const errors = Object.values(validationError.errors).map(err => err.message);
         return res.status(400).json({
@@ -629,19 +515,17 @@ exports.updateCourse = async (req, res) => {
           details: errors,
         });
       }
-      
+
       if (validationError.name === 'CastError') {
         return res.status(400).json({
           success: false,
           error: '유효하지 않은 데이터 형식입니다.',
         });
       }
-      
-      // 예상치 못한 에러인 경우
+
       return res.status(500).json({
         success: false,
         error: '강좌 수정 중 오류가 발생했습니다',
-        message: validationError.message || '알 수 없는 오류',
       });
     }
 
@@ -651,11 +535,8 @@ exports.updateCourse = async (req, res) => {
       data: course,
     });
   } catch (error) {
-    console.error('강좌 수정 최상위 오류:', error);
-    console.error('에러 타입:', error.name);
-    console.error('에러 메시지:', error.message);
-    console.error('에러 스택:', error.stack);
-    
+    console.error('강좌 수정 오류:', error.message);
+
     if (error.name === 'CastError') {
       return res.status(400).json({
         success: false,
@@ -684,8 +565,6 @@ exports.updateCourse = async (req, res) => {
     res.status(500).json({
       success: false,
       error: '강좌 수정 중 오류가 발생했습니다',
-      message: error.message || '알 수 없는 오류가 발생했습니다',
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   }
 };

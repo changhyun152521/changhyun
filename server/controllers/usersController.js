@@ -330,46 +330,34 @@ exports.createUserByAdmin = async (req, res) => {
           });
 
           parentUser = await parentUserData.save();
-          console.log('학부모 계정 자동 생성 완료:', parentUser.userId);
-          
+
           // 학부모 계정 생성 로그 기록
           await logPrivacyAction(parentUser._id, '생성', req.user?.id || parentUser._id, req, '관리자에 의한 학부모 계정 자동 생성');
         } else {
           parentUser = existingParent;
-          console.log('학부모 계정이 이미 존재합니다:', existingParent.userId);
         }
 
         // 학부모 계정이 있으면 n:m 연동 관계 생성
         if (parentUser) {
           try {
-            // 이미 연동되어 있는지 확인
             const existingLink = await ParentStudentLink.findOne({
               parentId: parentUser._id,
               studentId: savedUser._id,
             });
 
             if (!existingLink) {
-              // 새로운 연동 관계 생성
               const link = new ParentStudentLink({
                 parentId: parentUser._id,
                 studentId: savedUser._id,
               });
               await link.save();
-              console.log('관리자 - 연동 관계 생성 완료:', {
-                parentId: parentUser._id,
-                studentId: savedUser._id,
-              });
-            } else {
-              console.log('관리자 - 연동 관계가 이미 존재합니다');
             }
           } catch (linkError) {
-            console.error('관리자 - 연동 관계 생성 오류:', linkError);
-            // 연동 관계 생성 실패해도 학생 계정은 생성됨
+            console.error('연동 관계 생성 오류:', linkError.message);
           }
         }
       } catch (parentError) {
-        console.error('학부모 계정 생성 오류:', parentError);
-        // 학부모 계정 생성 실패해도 학생 계정은 생성됨
+        console.error('학부모 계정 생성 오류:', parentError.message);
       }
     }
     
@@ -504,9 +492,6 @@ exports.createUser = async (req, res) => {
       });
     }
 
-    console.log('회원가입 - userType:', userType);
-    console.log('회원가입 - 받은 데이터:', { userId, name, email, userType });
-
     // 중복 체크
     const existingUser = await User.findOne({
       $or: [{ userId }, { email }],
@@ -527,15 +512,13 @@ exports.createUser = async (req, res) => {
       });
     }
 
-    // 비밀번호 암호화 (명시적으로 암호화하여 저장)
-    console.log('회원가입 - 비밀번호 암호화 시작');
+    // 비밀번호 암호화
     const saltRounds = 10;
     let hashedPassword;
     try {
       hashedPassword = await bcrypt.hash(password, saltRounds);
-      console.log('회원가입 - 비밀번호 암호화 완료:', hashedPassword.substring(0, 20) + '...');
     } catch (hashError) {
-      console.error('비밀번호 암호화 오류:', hashError);
+      console.error('비밀번호 암호화 오류:', hashError.message);
       return res.status(500).json({
         success: false,
         error: '비밀번호 암호화 중 오류가 발생했습니다',
@@ -558,8 +541,6 @@ exports.createUser = async (req, res) => {
       termsAgreementDate: req.body.termsAgreement ? new Date() : null,
       // isAdmin은 pre-save hook에서 자동으로 설정됨 (강사일 때 true)
     });
-
-    console.log('회원가입 - User 객체 생성:', { userId: user.userId, userType: user.userType, isAdmin: user.isAdmin });
 
     const savedUser = await user.save();
     
@@ -605,13 +586,11 @@ exports.createUser = async (req, res) => {
           });
 
           parentUser = await parentUserData.save();
-          console.log('회원가입 - 학부모 계정 자동 생성 완료:', parentUser.userId);
-          
+
           // 학부모 계정 생성 로그 기록
           await logPrivacyAction(parentUser._id, '생성', parentUser._id, req, '학생 계정 연동을 통한 학부모 계정 자동 생성');
         } else {
           parentUser = existingParent;
-          console.log('회원가입 - 학부모 계정이 이미 존재합니다:', existingParent.userId);
         }
 
         // 학부모 계정이 있으면 n:m 연동 관계 생성
@@ -630,30 +609,16 @@ exports.createUser = async (req, res) => {
                 studentId: savedUser._id,
               });
               await link.save();
-              console.log('회원가입 - 연동 관계 생성 완료:', {
-                parentId: parentUser._id,
-                studentId: savedUser._id,
-              });
-            } else {
-              console.log('회원가입 - 연동 관계가 이미 존재합니다');
             }
           } catch (linkError) {
-            console.error('회원가입 - 연동 관계 생성 오류:', linkError);
-            // 연동 관계 생성 실패해도 학생 계정은 생성됨
+            console.error('연동 관계 생성 오류:', linkError.message);
           }
         }
       } catch (parentError) {
-        console.error('회원가입 - 학부모 계정 생성 오류:', parentError);
-        // 학부모 계정 생성 실패해도 학생 계정은 생성됨
+        console.error('학부모 계정 생성 오류:', parentError.message);
       }
     }
-    
-    console.log('회원가입 - 저장된 User:', { 
-      userId: savedUser.userId, 
-      userType: savedUser.userType, 
-      isAdmin: savedUser.isAdmin 
-    });
-    
+
     // 비밀번호 제외하고 응답
     const userResponse = savedUser.toObject();
     delete userResponse.password;
@@ -777,7 +742,6 @@ exports.updateUser = async (req, res) => {
           linkedParent.studentContact = phone;
         }
             await linkedParent.save();
-        console.log(`학부모 연락처 업데이트 (userId 유지): ${linkedParent.userId} - phone: ${parentContact}`);
       }
     } else if (parentContact) {
       updateData.parentContact = parentContact;
@@ -802,7 +766,6 @@ exports.updateUser = async (req, res) => {
           linkedStudent.phone = studentContact;
         }
         await linkedStudent.save();
-        console.log(`학생 연락처 업데이트 (연동 유지): ${linkedStudent.userId} - phone: ${studentContact || phone}`);
       }
     }
     if (userType) {
@@ -873,21 +836,18 @@ exports.updateUser = async (req, res) => {
     if (name && (existingUser.userType === '강사' || user.userType === '강사')) {
       try {
         // 해당 강사가 담당하는 모든 반의 instructorName 업데이트
-        const updatedClasses = await Class.updateMany(
+        await Class.updateMany(
           { instructorId: user._id },
           { $set: { instructorName: name } }
         );
-        console.log(`강사 ${user.userId}의 이름 변경: ${updatedClasses.modifiedCount}개의 반이 업데이트되었습니다.`);
 
         // 해당 강사가 담당하는 모든 강좌의 instructorName 업데이트
-        const updatedCourses = await Course.updateMany(
+        await Course.updateMany(
           { instructorId: user._id },
           { $set: { instructorName: name } }
         );
-        console.log(`강사 ${user.userId}의 이름 변경: ${updatedCourses.modifiedCount}개의 강좌가 업데이트되었습니다.`);
       } catch (teacherUpdateError) {
-        console.error('강사 이름 업데이트 중 오류:', teacherUpdateError);
-        // 강사명 업데이트 실패해도 사용자 정보 수정은 성공으로 처리
+        console.error('강사 이름 업데이트 오류:', teacherUpdateError.message);
       }
     }
 
@@ -960,11 +920,9 @@ exports.updateUser = async (req, res) => {
                   });
                 })
               );
-              console.log(`학생 ${updatedUser.userId}의 반 정보가 연동된 학부모 ${parentUser.userId}에게도 적용되었습니다.`);
             }
           } catch (parentError) {
-            console.error('연동된 학부모 반 추가 오류:', parentError);
-            // 학부모 반 추가 실패해도 학생 반 추가는 성공
+            console.error('연동된 학부모 반 추가 오류:', parentError.message);
           }
         }
       }
@@ -1033,14 +991,13 @@ exports.deleteUser = async (req, res) => {
             // studentContact가 삭제되는 학생의 연락처와 일치하는 경우에만 정리
             if (linkedParent.studentContact === user.phone || 
                 linkedParent.studentContact === user.studentContact) {
-              linkedParent.studentContact = '000-0000-0000'; // 기본값으로 설정
+              linkedParent.studentContact = '000-0000-0000';
               await linkedParent.save();
-              console.log(`학부모 계정(${linkedParent.userId})의 연동 정보가 정리되었습니다.`);
             }
           }
         }
       } catch (parentError) {
-        console.error('연동된 학부모 확인 및 연동 정보 정리 중 오류:', parentError);
+        console.error('연동된 학부모 정리 오류:', parentError.message);
       }
     }
 
@@ -1062,13 +1019,12 @@ exports.deleteUser = async (req, res) => {
 
           // 학생 계정의 연동 정보 정리 (parentContact 초기화)
           if (linkedStudent.parentContact === user.userId.trim()) {
-            linkedStudent.parentContact = '000-0000-0000'; // 기본값으로 설정
+            linkedStudent.parentContact = '000-0000-0000';
             await linkedStudent.save();
-            console.log(`학생 계정(${linkedStudent.userId})의 연동 정보가 정리되었습니다.`);
           }
         }
       } catch (studentError) {
-        console.error('연동된 학생 확인 및 연동 정보 정리 중 오류:', studentError);
+        console.error('연동된 학생 정리 오류:', studentError.message);
       }
     }
 
@@ -1132,19 +1088,11 @@ exports.deleteUser = async (req, res) => {
 
 // 아이디 찾기 (이름과 이메일로)
 exports.findUserId = async (req, res) => {
-  console.log('\n=== findUserId 컨트롤러 실행 ===');
-  console.log('요청 body:', JSON.stringify(req.body, null, 2));
-  console.log('요청 headers:', JSON.stringify(req.headers, null, 2));
   try {
     const { name, email } = req.body;
 
-    console.log('받은 데이터:', { name, email });
-    console.log('name 타입:', typeof name, '값:', name);
-    console.log('email 타입:', typeof email, '값:', email);
-
-    // 필수 필드 검증 (안전하게 처리)
+    // 필수 필드 검증
     if (!name || typeof name !== 'string' || !name.trim()) {
-      console.log('필수 필드 누락: name', { name, type: typeof name });
       return res.status(400).json({
         success: false,
         error: '이름을 입력해주세요',
@@ -1152,57 +1100,20 @@ exports.findUserId = async (req, res) => {
     }
 
     if (!email || typeof email !== 'string' || !email.trim()) {
-      console.log('필수 필드 누락: email', { email, type: typeof email });
       return res.status(400).json({
         success: false,
         error: '이메일을 입력해주세요',
       });
     }
 
-    // User 모델 확인
-    if (!User) {
-      console.error('User 모델이 정의되지 않았습니다');
-      return res.status(500).json({
-        success: false,
-        error: '서버 설정 오류가 발생했습니다',
-      });
-    }
-
-    // 안전하게 trim 처리
     const trimmedName = name.trim();
     const trimmedEmail = email.trim().toLowerCase();
 
-    console.log('데이터베이스 쿼리 시작:', { name: trimmedName, email: trimmedEmail });
-
-    // MongoDB 연결 상태 확인
-    const mongoose = require('mongoose');
-    if (mongoose.connection.readyState !== 1) {
-      console.error('MongoDB 연결 상태:', mongoose.connection.readyState);
-      console.error('0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting');
-      return res.status(500).json({
-        success: false,
-        error: '데이터베이스에 연결할 수 없습니다',
-      });
-    }
-
     // 이름과 이메일로 유저 찾기
-    let user;
-    try {
-      const query = { 
-        name: trimmedName, 
-        email: trimmedEmail 
-      };
-      console.log('MongoDB 쿼리:', JSON.stringify(query, null, 2));
-      
-      user = await User.findOne(query).exec();
-      console.log('쿼리 결과:', user ? `유저 찾음 (userId: ${user.userId})` : '유저 없음');
-    } catch (queryError) {
-      console.error('데이터베이스 쿼리 오류 상세:');
-      console.error('오류 타입:', queryError.constructor.name);
-      console.error('오류 메시지:', queryError.message);
-      console.error('오류 스택:', queryError.stack);
-      throw queryError; // 상위 catch로 전달
-    }
+    const user = await User.findOne({
+      name: trimmedName,
+      email: trimmedEmail
+    }).exec();
 
     if (!user) {
       return res.status(404).json({
@@ -1214,47 +1125,34 @@ exports.findUserId = async (req, res) => {
     // 아이디 일부만 보여주기 (보안)
     const userId = user.userId;
     if (!userId) {
-      console.error('유저 아이디가 없습니다:', user);
       return res.status(500).json({
         success: false,
         error: '유저 정보에 문제가 있습니다',
       });
     }
 
-    const maskedUserId = userId.length > 3 
+    const maskedUserId = userId.length > 3
       ? userId.substring(0, 3) + '*'.repeat(userId.length - 3)
       : '*'.repeat(userId.length);
-
-    console.log('아이디 찾기 성공:', { maskedUserId, fullUserId: userId });
 
     res.json({
       success: true,
       message: '아이디를 찾았습니다',
       data: {
         userId: maskedUserId,
-        fullUserId: userId, // 실제로는 이메일로 전송하는 것이 좋지만, 여기서는 간단히 반환
+        fullUserId: userId,
       },
     });
   } catch (error) {
-    console.error('\n=== 아이디 찾기 오류 상세 ===');
-    console.error('오류 타입:', error.constructor.name);
-    console.error('오류 메시지:', error.message);
-    console.error('오류 스택:', error.stack);
-    console.error('요청 body:', JSON.stringify(req.body, null, 2));
-    
-    // 이미 응답이 전송되었는지 확인
+    console.error('아이디 찾기 오류:', error.message);
+
     if (res.headersSent) {
-      console.error('응답이 이미 전송되었습니다.');
       return;
     }
-    
-    // Content-Type을 명시적으로 설정하고 JSON 형식으로 응답
-    res.setHeader('Content-Type', 'application/json');
+
     return res.status(500).json({
       success: false,
       error: '아이디 찾기 중 오류가 발생했습니다',
-      message: error.message,
-      ...(process.env.NODE_ENV === 'development' && { details: error.stack }),
     });
   }
 };
@@ -1314,23 +1212,15 @@ exports.resetPassword = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('=== 비밀번호 재설정 오류 상세 ===');
-    console.error('오류 타입:', error.constructor.name);
-    console.error('오류 메시지:', error.message);
-    console.error('오류 스택:', error.stack);
-    console.error('요청 body:', req.body);
-    
-    // 이미 응답이 전송되었는지 확인
+    console.error('비밀번호 재설정 오류:', error.message);
+
     if (res.headersSent) {
-      console.error('응답이 이미 전송되었습니다.');
       return;
     }
-    
+
     return res.status(500).json({
       success: false,
       error: '비밀번호 재설정 중 오류가 발생했습니다',
-      message: error.message,
-      ...(process.env.NODE_ENV === 'development' && { details: error.stack }),
     });
   }
 };
@@ -1338,44 +1228,29 @@ exports.resetPassword = async (req, res) => {
 // 로그인
 exports.login = async (req, res) => {
   try {
-    console.log('\n=== 로그인 요청 시작 ===');
-    console.log('요청 body:', JSON.stringify(req.body, null, 2));
-    
     const { userId, password } = req.body;
 
     // 필수 필드 검증
     if (!userId || !password) {
-      console.log('필수 필드 누락:', { userId: !!userId, password: !!password });
       return res.status(400).json({
         success: false,
         error: '아이디와 비밀번호를 입력해주세요',
       });
     }
 
-    console.log('유저 찾기 시작:', { userId });
-    
     // userId로 유저 찾기 (비밀번호 포함)
     const user = await User.findOne({ userId }).exec();
 
     // 유저가 존재하지 않는 경우
     if (!user) {
-      console.log('유저를 찾을 수 없음:', userId);
       return res.status(401).json({
         success: false,
         error: '아이디 또는 비밀번호가 올바르지 않습니다',
       });
     }
 
-    console.log('유저 찾음:', { 
-      userId: user.userId, 
-      hasPassword: !!user.password,
-      passwordType: typeof user.password,
-      passwordLength: user.password?.length 
-    });
-
     // 비밀번호가 없는 경우
     if (!user.password) {
-      console.error('유저 비밀번호가 없음:', user);
       return res.status(500).json({
         success: false,
         error: '유저 정보에 문제가 있습니다. 관리자에게 문의하세요.',
@@ -1383,22 +1258,9 @@ exports.login = async (req, res) => {
     }
 
     // 비밀번호 확인
-    console.log('비밀번호 비교 시작');
-    let isPasswordValid;
-    try {
-      isPasswordValid = await bcrypt.compare(password, user.password);
-      console.log('비밀번호 비교 결과:', isPasswordValid);
-    } catch (compareError) {
-      console.error('비밀번호 비교 오류:', compareError);
-      return res.status(500).json({
-        success: false,
-        error: '비밀번호 확인 중 오류가 발생했습니다',
-        message: compareError.message,
-      });
-    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      console.log('비밀번호 불일치');
       return res.status(401).json({
         success: false,
         error: '아이디 또는 비밀번호가 올바르지 않습니다',
@@ -1428,58 +1290,30 @@ exports.login = async (req, res) => {
       }
     );
 
-    console.log('로그인 성공:', { 
-      userId: user.userId, 
-      userType: user.userType, 
-      isAdmin: user.isAdmin,
-      tokenLength: token?.length,
-      hasToken: !!token
-    });
-
     // 토큰이 제대로 생성되었는지 확인
     if (!token) {
-      console.error('❌ JWT 토큰 생성 실패!');
       return res.status(500).json({
         success: false,
         error: '토큰 생성 중 오류가 발생했습니다',
       });
     }
 
-    const responseData = {
+    res.json({
       success: true,
       message: '로그인에 성공했습니다',
-      token: token, // JWT 토큰 반환
+      token: token,
       data: userResponse,
-    };
-
-    console.log('응답 데이터 확인:', {
-      success: responseData.success,
-      hasToken: !!responseData.token,
-      tokenLength: responseData.token?.length,
-      hasData: !!responseData.data
     });
-
-    res.json(responseData);
   } catch (error) {
-    console.error('\n=== 로그인 오류 상세 ===');
-    console.error('오류 타입:', error.constructor.name);
-    console.error('오류 메시지:', error.message);
-    console.error('오류 스택:', error.stack);
-    console.error('요청 body:', JSON.stringify(req.body, null, 2));
-    
-    // 이미 응답이 전송되었는지 확인
+    console.error('로그인 오류:', error.message);
+
     if (res.headersSent) {
-      console.error('응답이 이미 전송되었습니다.');
       return;
     }
-    
-    // Content-Type을 명시적으로 설정하고 JSON 형식으로 응답
-    res.setHeader('Content-Type', 'application/json');
-    return     res.status(500).json({
+
+    return res.status(500).json({
       success: false,
       error: '로그인 중 오류가 발생했습니다',
-      message: error.message,
-      ...(process.env.NODE_ENV === 'development' && { details: error.stack }),
     });
   }
 };
@@ -1704,7 +1538,6 @@ exports.unlinkUser = async (req, res) => {
       currentUser.parentContact = `${originalParentContact}_unlinked_${timestamp}`;
       await currentUser.save();
       
-      console.log(`연동 해지 완료: 학생 ${currentUser.userId}와 학부모 ${originalParentUserId}의 연동이 양쪽 모두에서 해지되었습니다.`);
     } else if (currentUser.userType === '학부모') {
       // 1. 학부모의 userId를 고유한 값으로 변경하여 연동 정보 제거
       const originalParentUserId = currentUser.userId;
@@ -1719,8 +1552,6 @@ exports.unlinkUser = async (req, res) => {
         linkedUser.parentContact = `${originalParentContact}_unlinked_${timestamp}`;
         await linkedUser.save();
       }
-      
-      console.log(`연동 해지 완료: 학부모 ${originalParentUserId}와 학생 ${linkedUser.userId}의 연동이 양쪽 모두에서 해지되었습니다.`);
     }
 
     res.json({
@@ -1728,7 +1559,7 @@ exports.unlinkUser = async (req, res) => {
       message: '연동이 해지되었습니다',
     });
   } catch (error) {
-    console.error('연동 해지 오류:', error);
+    console.error('연동 해지 오류:', error.message);
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,

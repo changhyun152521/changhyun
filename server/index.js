@@ -71,6 +71,24 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// 요청/응답 로깅 미들웨어
+app.use((req, res, next) => {
+  const start = Date.now();
+
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const log = `${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`;
+
+    if (res.statusCode >= 400) {
+      console.warn(`[API] ${log}`);
+    } else {
+      console.log(`[API] ${log}`);
+    }
+  });
+
+  next();
+});
+
 // MongoDB 연결
 const connectDB = async () => {
   try {
@@ -127,8 +145,6 @@ app.use('/api/attendance-comments', attendanceCommentsRouter);
 
 const parentStudentLinksRouter = require('./routes/parentStudentLinks');
 app.use('/api/parent-student-links', parentStudentLinksRouter);
-console.log('=== 라우터 등록 완료: /api/parent-student-links ===');
-console.log('=== 라우터 등록 완료: /api/attendance-comments ===');
 
 // 404 핸들러
 app.use((req, res) => {
